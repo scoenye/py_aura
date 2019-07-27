@@ -20,13 +20,9 @@
 
 import usb1
 
-report = bytearray(64)
-report[0] = 0x51
-report[1] = 0x28
-report[5] = 0x04
-report[6] = 0xff
-report[7] = 0x00
-report[8] = 0x00
+from report import GladiusIIReport
+
+report = GladiusIIReport()
 
 # find our device
 with usb1.USBContext() as context:
@@ -46,17 +42,19 @@ with usb1.USBContext() as context:
 
     handle.claimInterface(2)
 
-    report[2] = 0x00    # Controls logo
-#    xferred = handle.interruptWrite(0x04, report, 64)
-#    print('write 0: ', xferred)
+    report.color(0x20, 0x00, 0x20)      # Deep Purple
 
-    report[2] = 0x01    # Controls wheel
-    xferred = handle.interruptWrite(0x04, report, 64)
-#    print('write 1: ', xferred)
+    report.target(GladiusIIReport.LED_LOGO)
+    xferred = report.send(handle)
+    print('write 0: ', xferred)
 
-    report[2] = 0x02    # Controls bottom LED track
-#    xferred = handle.interruptWrite(0x04, report, 64)
-#    print('write 2: ', xferred)
+    report.target(GladiusIIReport.LED_WHEEL)
+    report.send(handle)
+    print('write 1: ', xferred)
+
+    report.target(GladiusIIReport.LED_BASE)
+    xferred = report.send(handle)
+    print('write 2: ', xferred)
 
 #    xferred = handle.interruptRead(0x83, 64)
 #    print('read 0: ', xferred)
@@ -66,7 +64,6 @@ with usb1.USBContext() as context:
 
 #    xferred = handle.interruptRead(0x83, 64)
 #    print('read 2: ', xferred)
-
 
     handle.releaseInterface(2)
 
