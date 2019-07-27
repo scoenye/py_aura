@@ -34,6 +34,8 @@ class Report:
     """
     def __init__(self):
         self.report = bytearray(Report.REPORT_SIZE)
+        self.endpoint_out = 0x00        # Override in subclass
+        self.endpoint_in = 0x00         # Override in subclass
 
     def send(self, usb_handle):
         """
@@ -41,7 +43,7 @@ class Report:
         :param usb_handle: handle to open USB device
         :return:
         """
-        pass
+        return usb_handle.interruptWrite(self.endpoint_out, self.report, Report.REPORT_SIZE)
 
 
 class GladiusIIReport(Report):
@@ -61,6 +63,8 @@ class GladiusIIReport(Report):
         self.report[Report.REPORT_ID] = Report.TYPE_GLADIUS
         self.report[1] = 0x28
         self.report[5] = 0x04
+        self.endpoint_out = 0x04
+        self.endpoint_in = 0x83
 
     def color(self, red, green, blue):
         """
@@ -81,6 +85,3 @@ class GladiusIIReport(Report):
         :return:
         """
         self.report[GladiusIIReport.SELECT_LED] = led
-
-    def send(self, usb_handle):
-        return usb_handle.interruptWrite(0x04, self.report, Report.REPORT_SIZE)
