@@ -31,7 +31,6 @@ class Device:
     def __init__(self):
         self.handle = None
         self.aura_interface = 0
-        self.kernel_attached = False
         self.endpoint_out = 0x00        # Override in subclass
         self.endpoint_in = 0x00         # Override in subclass
 
@@ -50,21 +49,11 @@ class Device:
         if self.handle is None:
             raise ValueError('Device not found')
 
-        self.kernel_attached = self.handle.kernelDriverActive(self.aura_interface)
-        if self.kernel_attached:
-            self.handle.detachKernelDriver(self.aura_interface)
-
-        self.handle.claimInterface(self.aura_interface)
-
     def close(self):
         """
         Release the device
         :return:
         """
-        self.handle.releaseInterface(self.aura_interface)
-        if self.kernel_attached:
-            self.handle.attachKernelDriver(self.aura_interface)
-
         self.handle.close()
 
     def write_interrupt(self, report, size):
@@ -72,9 +61,23 @@ class Device:
         Transmit the report to the device's interrupt endpoint
         :param size: length of the block of data to send
         :param report: data to send to the device
-        :return:
+        :return: number of bytes transferred to the device
         """
-        return self.handle.interruptWrite(self.endpoint_out, report, size)
+        kernel_attached = self.handle.kernelDriverActive(self.aura_interface)
+
+        if kernel_attached:
+            self.handle.detachKernelDriver(self.aura_interface)
+
+        self.handle.claimInterface(self.aura_interface)
+
+        try:
+            transferred = self.handle.interruptWrite(self.endpoint_out, report, size)
+        finally:
+            self.handle.releaseInterface(self.aura_interface)
+            if kernel_attached:
+                self.handle.attachKernelDriver(self.aura_interface)
+
+        return transferred
 
 
 class GladiusIIMouse(Device):

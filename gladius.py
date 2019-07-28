@@ -30,7 +30,7 @@ with usb1.USBContext() as context:
 
     mouse.open(context)
 
-    mouse.static_color(0x40, 0x00, 0x40)        # Change all colors
+    mouse.static_color(0x00, 0x00, 0x40)        # Change all colors
 
     time.sleep(1)
 
@@ -43,4 +43,12 @@ with usb1.USBContext() as context:
 #    xferred = handle.interruptRead(0x83, 64)
 #    print('read 2: ', xferred)
 
-    mouse.close()
+    # mouse.close()
+
+    # keyboard = ITEKeyboard()
+    #
+    # keyboard.open(context)
+    #
+    # keyboard.static_color(0x00, 0xff, 0xff)
+    #
+    # keyboard.close()
