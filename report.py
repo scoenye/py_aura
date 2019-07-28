@@ -28,6 +28,7 @@ class Report:
 
     # Observed values in the data transfers
     TYPE_GLADIUS = 0x51
+    TYPE_ITE = 0x5d
 
     """
     Base class for reports to be sent to the USB peripherals
@@ -80,3 +81,43 @@ class GladiusIIReport(Report):
         :return:
         """
         self.report[GladiusIIReport.SELECT_LED] = led
+
+
+class ITEKeyboardReport(Report):
+    """
+    Report class for the Asus ITE keyboard
+    """
+    def __init__(self):
+        super().__init__()
+        self.report[Report.REPORT_ID] = Report.TYPE_ITE
+        self.report[1] = 0xb3
+        self.endpoint_out = 0x02
+        self.endpoint_in = 0x81
+
+    def color(self, red, green, blue):
+        self.report[4] = red
+        self.report[5] = green
+        self.report[6] = blue
+
+    # Keyboard is complicated
+    # - may need SET_IDLE call
+    # - Send color report (64 b)
+    # - Send 0x0101 (2 b)
+    # - Returns 0x5decb300
+    # - Send color report (64 b)
+    # - Send "flush" report (64 b, 2nd byte 0xb5)
+    # - Returns 0x5decb300
+    # - Send color report with 0xe1 in byte 7 (64 b)
+    # - Returns 0x5decb500
+    # - Send "flush" report (64 b, 2nd byte 0xb5)
+    # - Returns 0x5decb300
+    # - Returns 0x5decb500
+
+
+class FlushReport(Report):
+    def __init__(self):
+        super().__init__()
+        self.report[Report.REPORT_ID] = Report.TYPE_ITE
+        self.report[1] = 0xb5
+        self.endpoint_out = 0x02
+        self.endpoint_in = 0x81

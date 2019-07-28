@@ -30,23 +30,9 @@ with usb1.USBContext() as context:
 
     mouse.open(context)
 
-    mouse.static_color(0x80, 0x80, 0x80)        # Change all colors
+    mouse.static_color(0x80, 0x00, 0x80)        # Change all colors
 
     time.sleep(1)
-
-    mouse.static_color(0x00, 0xff, 0x80, [GladiusIIMouse.LED_BASE])
-
-    time.sleep(1)
-
-    mouse.static_color(0x80, 0x00, 0xff, [GladiusIIMouse.LED_WHEEL])
-
-    time.sleep(1)
-
-    mouse.static_color(0xff, 0x00, 0x00, [GladiusIIMouse.LED_LOGO])
-
-    time.sleep(1)
-
-    mouse.static_color(0x80, 0x80, 0x00, [GladiusIIMouse.LED_BASE, GladiusIIMouse.LED_WHEEL])
 
 #    xferred = handle_mouse.interruptRead(0x83, 64)
 #    print('read M0: ', xferred.hex())

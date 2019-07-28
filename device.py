@@ -25,13 +25,51 @@ class Device:
     """
     Base class for Aura USB devices
     """
+    VENDOR_ID = 0x0b05
+    PRODUCT_ID = 0x0000
+
+    def __init__(self):
+        self.handle = None
+        self.aura_interface = 2
+        self.kernel_attached = False
+
+    def open(self, usb_context):
+        """
+        Ready the device for use
+        :param usb_context:
+        :return:
+        """
+        self.handle = usb_context.openByVendorIDAndProductID(
+            self.VENDOR_ID,
+            self.PRODUCT_ID,
+            skip_on_error=True,
+        )
+
+        if self.handle is None:
+            raise ValueError('Device not found')
+
+        self.kernel_attached = self.handle.kernelDriverActive(self.aura_interface)
+        if self.kernel_attached:
+            self.handle.detachKernelDriver(self.aura_interface)
+
+        self.handle.claimInterface(self.aura_interface)
+
+    def close(self):
+        """
+        Release the device
+        :return:
+        """
+        self.handle.releaseInterface(self.aura_interface)
+        if self.kernel_attached:
+            self.handle.attachKernelDriver(self.aura_interface)
+
+        self.handle.close()
 
 
 class GladiusIIMouse(Device):
     """
     Asus RoG Gladius II mouse
     """
-    VENDOR_ID = 0x0b05
     PRODUCT_ID = 0x1845
 
     # Selectable LEDs
@@ -40,10 +78,8 @@ class GladiusIIMouse(Device):
     LED_BASE = 0x02     # Selects the mouse base LED
 
     def __init__(self):
+        super().__init__()
         self.report = GladiusIIReport()
-        self.handle = None
-        self.aura_interface = 2
-        self.kernel_attached = False
 
     def static_color(self, red, green, blue, targets=None):
         """
@@ -64,34 +100,12 @@ class GladiusIIMouse(Device):
             xferred = self.report.send(self.handle)
             print('write M0: ', xferred)
 
-    def open(self, usb_context):
-        """
-        Ready the device for use
-        :param usb_context:
-        :return:
-        """
-        self.handle = usb_context.openByVendorIDAndProductID(
-            self.VENDOR_ID,
-            self.PRODUCT_ID,
-            skip_on_error=True,
-        )
 
-        if self.handle is None:
-            raise ValueError('Mouse not found')
+class ITEKeyboardDevice(Device):
+    """
+    Asus ITE keyboard (8910)
+    """
+    PRODUCT_ID = 0x1869
 
-        self.kernel_attached = self.handle.kernelDriverActive(self.aura_interface)
-        if self.kernel_attached:
-            self.handle.detachKernelDriver(self.aura_interface)
-
-        self.handle.claimInterface(self.aura_interface)
-
-    def close(self):
-        """
-        Release the device
-        :return:
-        """
-        self.handle.releaseInterface(self.aura_interface)
-        if self.kernel_attached:
-            self.handle.attachKernelDriver(self.aura_interface)
-
-        self.handle.close()
+    def __init__(self):
+        super().__init__()
