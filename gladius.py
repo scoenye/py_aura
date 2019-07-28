@@ -21,7 +21,7 @@
 import usb1
 import time
 
-from device import GladiusIIMouse
+from device import GladiusIIMouse, ITEKeyboard
 
 # find our device
 with usb1.USBContext() as context:
@@ -30,7 +30,7 @@ with usb1.USBContext() as context:
 
     mouse.open(context)
 
-    mouse.static_color(0x80, 0x00, 0x80)        # Change all colors
+    mouse.static_color(0x40, 0x00, 0x40)        # Change all colors
 
     time.sleep(1)
 

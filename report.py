@@ -35,16 +35,20 @@ class Report:
     """
     def __init__(self):
         self.report = bytearray(Report.REPORT_SIZE)
-        self.endpoint_out = 0x00        # Override in subclass
-        self.endpoint_in = 0x00         # Override in subclass
 
-    def send(self, usb_handle):
+    def size(self):
+        """
+        :return: length of the report
+        """
+        return len(self.report)
+
+    def send(self, device):
         """
         Send the report to the device
-        :param usb_handle: handle to open USB device
+        :param device: handle to open USB device
         :return:
         """
-        return usb_handle.interruptWrite(self.endpoint_out, self.report, Report.REPORT_SIZE)
+        return device.write_interrupt(self.report, Report.REPORT_SIZE)
 
 
 class GladiusIIReport(Report):
@@ -59,8 +63,6 @@ class GladiusIIReport(Report):
         self.report[Report.REPORT_ID] = Report.TYPE_GLADIUS
         self.report[1] = 0x28
         self.report[5] = 0x04
-        self.endpoint_out = 0x04
-        self.endpoint_in = 0x83
 
     def color(self, red, green, blue):
         """
@@ -91,27 +93,11 @@ class ITEKeyboardReport(Report):
         super().__init__()
         self.report[Report.REPORT_ID] = Report.TYPE_ITE
         self.report[1] = 0xb3
-        self.endpoint_out = 0x02
-        self.endpoint_in = 0x81
 
     def color(self, red, green, blue):
         self.report[4] = red
         self.report[5] = green
         self.report[6] = blue
-
-    # Keyboard is complicated
-    # - may need SET_IDLE call
-    # - Send color report (64 b)
-    # - Send 0x0101 (2 b)
-    # - Returns 0x5decb300
-    # - Send color report (64 b)
-    # - Send "flush" report (64 b, 2nd byte 0xb5)
-    # - Returns 0x5decb300
-    # - Send color report with 0xe1 in byte 7 (64 b)
-    # - Returns 0x5decb500
-    # - Send "flush" report (64 b, 2nd byte 0xb5)
-    # - Returns 0x5decb300
-    # - Returns 0x5decb500
 
 
 class FlushReport(Report):
@@ -119,5 +105,3 @@ class FlushReport(Report):
         super().__init__()
         self.report[Report.REPORT_ID] = Report.TYPE_ITE
         self.report[1] = 0xb5
-        self.endpoint_out = 0x02
-        self.endpoint_in = 0x81
