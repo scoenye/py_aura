@@ -50,11 +50,6 @@ class GladiusIIReport(Report):
     # LED selector offset. Defined here as it may not be the same for other devices
     SELECT_LED = 2
 
-    # Selectable LEDs
-    LED_LOGO = 0x00     # Selects the logo LED
-    LED_WHEEL = 0x01    # Selects the wheel LED
-    LED_BASE = 0x02     # Selects the mouse base LED
-
     """
     Report class for the Gladius II mouse
     """

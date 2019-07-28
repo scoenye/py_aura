@@ -19,45 +19,37 @@
 """
 
 import usb1
+import time
 
-from report import GladiusIIReport
-
-report = GladiusIIReport()
+from device import GladiusIIMouse
 
 # find our device
 with usb1.USBContext() as context:
-    handle = context.openByVendorIDAndProductID(
-        0x0b05,
-        0x1845,
-        skip_on_error=True,
-    )
 
-    # was it found?
-    if handle is None:
-        raise ValueError('Device not found')
+    mouse = GladiusIIMouse()
 
-    kernel_attached = handle.kernelDriverActive(2)
-    if kernel_attached:
-        handle.detachKernelDriver(2)
+    mouse.open(context)
 
-    handle.claimInterface(2)
+    mouse.static_color(0x80, 0x80, 0x80)        # Change all colors
 
-    report.color(0x20, 0x00, 0x20)      # Deep Purple
+    time.sleep(1)
 
-    report.target(GladiusIIReport.LED_LOGO)
-    xferred = report.send(handle)
-    print('write 0: ', xferred)
+    mouse.static_color(0x00, 0xff, 0x80, [GladiusIIMouse.LED_BASE])
 
-    report.target(GladiusIIReport.LED_WHEEL)
-    report.send(handle)
-    print('write 1: ', xferred)
+    time.sleep(1)
 
-    report.target(GladiusIIReport.LED_BASE)
-    xferred = report.send(handle)
-    print('write 2: ', xferred)
+    mouse.static_color(0x80, 0x00, 0xff, [GladiusIIMouse.LED_WHEEL])
 
-#    xferred = handle.interruptRead(0x83, 64)
-#    print('read 0: ', xferred)
+    time.sleep(1)
+
+    mouse.static_color(0xff, 0x00, 0x00, [GladiusIIMouse.LED_LOGO])
+
+    time.sleep(1)
+
+    mouse.static_color(0x80, 0x80, 0x00, [GladiusIIMouse.LED_BASE, GladiusIIMouse.LED_WHEEL])
+
+#    xferred = handle_mouse.interruptRead(0x83, 64)
+#    print('read M0: ', xferred.hex())
 
 #    xferred = handle.interruptRead(0x83, 64)
 #    print('read 1: ', xferred)
@@ -65,9 +57,4 @@ with usb1.USBContext() as context:
 #    xferred = handle.interruptRead(0x83, 64)
 #    print('read 2: ', xferred)
 
-    handle.releaseInterface(2)
-
-    if kernel_attached:
-        handle.attachKernelDriver(2)
-
-
+    mouse.close()
