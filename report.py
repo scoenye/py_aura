@@ -99,8 +99,11 @@ class ITEKeyboardReport(Report):
         self.report[5] = green
         self.report[6] = blue
 
+    def byte_7_e1(self):           # TODO: figure out purpose and improve name
+        self.report[7] = 0xe1
 
-class FlushReport(Report):
+
+class ITEFlushReport(ITEKeyboardReport):
     def __init__(self):
         super().__init__()
         self.report[Report.REPORT_ID] = Report.TYPE_ITE

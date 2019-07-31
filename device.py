@@ -17,8 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-
-from report import GladiusIIReport, ITEKeyboardReport
+from report import GladiusIIReport, ITEKeyboardReport, ITEFlushReport
 
 
 class Device:
@@ -58,7 +57,7 @@ class Device:
 
     def write_interrupt(self, report, size):
         """
-        Transmit the report to the device's interrupt endpoint
+        Transmit the report to the device's Aura endpoint
         :param size: length of the block of data to send
         :param report: data to send to the device
         :return: number of bytes transferred to the device
@@ -72,6 +71,28 @@ class Device:
 
         try:
             transferred = self.handle.interruptWrite(self.endpoint_out, report, size)
+        finally:
+            self.handle.releaseInterface(self.aura_interface)
+            if kernel_attached:
+                self.handle.attachKernelDriver(self.aura_interface)
+
+        return transferred
+
+    def read_interrupt(self, size):
+        """
+        Request a return report from the device's Aura endpoint
+        :param size: amount of data requested
+        :return: data transmitted by the device
+        """
+        kernel_attached = self.handle.kernelDriverActive(self.aura_interface)
+
+        if kernel_attached:
+            self.handle.detachKernelDriver(self.aura_interface)
+
+        self.handle.claimInterface(self.aura_interface)
+
+        try:
+            transferred = self.handle.interruptRead(self.endpoint_in, size)
         finally:
             self.handle.releaseInterface(self.aura_interface)
             if kernel_attached:
@@ -125,22 +146,15 @@ class ITEKeyboard(Device):
     PRODUCT_ID = 0x1869
 
     # Keyboard is complicated
-    # - may need SET_IDLE call
     # - Send color report (64 b)
-    # - Send 0x0101 (2 b)
-    # - Returns 0x5decb300
     # - Send color report (64 b)
-    # - Send "flush" report (64 b, 2nd byte 0xb5)
-    # - Returns 0x5decb300
     # - Send color report with 0xe1 in byte 7 (64 b)
-    # - Returns 0x5decb500
     # - Send "flush" report (64 b, 2nd byte 0xb5)
-    # - Returns 0x5decb300
-    # - Returns 0x5decb500
 
     def __init__(self):
         super().__init__()
         self.color_report = ITEKeyboardReport()
+        self.flush_report = ITEFlushReport()
         self.endpoint_out = 0x02
         self.endpoint_in = 0x81
 
@@ -155,11 +169,15 @@ class ITEKeyboard(Device):
         """
         self.color_report.color(red, green, blue)
 
-        xferred = self.color_report.send(self.handle)
+        xferred = self.color_report.send(self)
         print('write K0: ', xferred)
 
-        # ba_0101 = bytearray(2)
-        # ba_0101[0] = 0x01
-        # ba_0101[1] = 0x01
-        # xferred = self.handle.interruptWrite(0x02, ba_0101, 2)
-        # print('write K1: ', xferred)
+        xferred = self.color_report.send(self)
+        print('write K1: ', xferred)
+
+        self.color_report.byte_7_e1()
+        xferred = self.color_report.send(self)
+        print('write K3: ', xferred)
+
+        xferred = self.flush_report.send(self)
+        print('write K4: ', xferred)
