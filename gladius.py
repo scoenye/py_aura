@@ -22,6 +22,7 @@ import usb1
 import time
 
 from device import GladiusIIMouse, ITEKeyboard
+from animation import StaticEffect
 
 # find our device
 with usb1.USBContext() as context:
@@ -30,25 +31,21 @@ with usb1.USBContext() as context:
 
     mouse.open(context)
 
-    mouse.static_color(0x00, 0x00, 0x40)        # Change all colors
+    effect = StaticEffect()
+    effect.color(0xff, 0x00, 0x00)
+    effect.start(mouse, [GladiusIIMouse.LED_LOGO, GladiusIIMouse.LED_WHEEL])
 
     time.sleep(1)
 
-#    xferred = handle_mouse.interruptRead(0x83, 64)
-#    print('read M0: ', xferred.hex())
+    effect.color(0x00, 0x00, 0xff)
+    effect.start(mouse, [GladiusIIMouse.LED_BASE])
 
-#    xferred = handle.interruptRead(0x83, 64)
-#    print('read 1: ', xferred)
+    mouse.close()
 
-#    xferred = handle.interruptRead(0x83, 64)
-#    print('read 2: ', xferred)
+    keyboard = ITEKeyboard()
 
-    # mouse.close()
+    keyboard.open(context)
 
-    # keyboard = ITEKeyboard()
-    #
-    # keyboard.open(context)
-    #
-    # keyboard.static_color(0x00, 0xff, 0xff)
-    #
-    # keyboard.close()
+    effect.start(keyboard)
+
+    keyboard.close()

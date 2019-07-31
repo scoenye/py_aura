@@ -118,25 +118,35 @@ class GladiusIIMouse(Device):
         self.report = GladiusIIReport()
         self.endpoint_out = 0x04
         self.endpoint_in = 0x83
+        # Mouse needs all component LEDs targeted before it will acknowledge
+        # requests to change individual LEDs.
+        self.initialised = False
 
-    def static_color(self, red, green, blue, targets=None):
-        """
-        Change to a static color
-        :param red: Red value, 0 - 255
-        :param green: Green value, 0 - 255
-        :param blue: Blue value, 0 - 255
-        :param targets: list of LEDs to change color of, None to change all LEDs
-        :return:
-        """
-        if targets is None:
-            targets = [GladiusIIMouse.LED_LOGO, GladiusIIMouse.LED_WHEEL, GladiusIIMouse.LED_BASE]
-
+    def _change_color(self, red, green, blue, targets):
+        # Execute the actual color change
         self.report.color(red, green, blue)
 
         for target in targets:
             self.report.target(target)
             xferred = self.report.send(self)
             print('write M0: ', xferred)
+
+    def set_color(self, red, green, blue, targets=None):
+        """
+        Set one or more LEDs to the specified color.
+        :param red: Red value, 0 - 255
+        :param green: Green value, 0 - 255
+        :param blue: Blue value, 0 - 255
+        :param targets: list of LEDs to change color of, None to change all LEDs
+        :return:
+        """
+        if not self.initialised or targets is None:
+            targets = [GladiusIIMouse.LED_LOGO, GladiusIIMouse.LED_WHEEL, GladiusIIMouse.LED_BASE]
+            if not self.initialised:
+                self._change_color(0x00, 0x00, 0x00, targets)
+                self.initialised = True
+
+        self._change_color(red, green, blue, targets)
 
 
 class ITEKeyboard(Device):
@@ -158,7 +168,7 @@ class ITEKeyboard(Device):
         self.endpoint_out = 0x02
         self.endpoint_in = 0x81
 
-    def static_color(self, red, green, blue, targets=None):
+    def set_color(self, red, green, blue, targets=None):
         """
         Change to a static color
         :param red: Red value, 0 - 255
@@ -168,6 +178,7 @@ class ITEKeyboard(Device):
         :return:
         """
         self.color_report.color(red, green, blue)
+        # self.handle.attachKernelDriver(self.aura_interface)
 
         xferred = self.color_report.send(self)
         print('write K0: ', xferred)
