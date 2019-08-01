@@ -22,30 +22,23 @@ import usb1
 import time
 
 from device import GladiusIIMouse, ITEKeyboard
-from animation import StaticEffect
+from animation import StrobeEffect
 
 # find our device
 with usb1.USBContext() as context:
 
     mouse = GladiusIIMouse()
-
-    mouse.open(context)
-
-    effect = StaticEffect()
-    effect.color(0xff, 0x00, 0x00)
-    effect.start(mouse, [GladiusIIMouse.LED_LOGO, GladiusIIMouse.LED_WHEEL])
-
-    time.sleep(1)
-
-    effect.color(0x00, 0x00, 0xff)
-    effect.start(mouse, [GladiusIIMouse.LED_BASE])
-
-    mouse.close()
-
     keyboard = ITEKeyboard()
 
+    mouse.open(context)
     keyboard.open(context)
 
-    effect.start(keyboard)
+    effect = StrobeEffect()
+    effect.color(0xff, 0x00, 0x00)
 
+    for x in range(1, 10):
+        effect.start(mouse, [GladiusIIMouse.LED_LOGO])
+        effect.start(keyboard)
+
+    mouse.close()
     keyboard.close()

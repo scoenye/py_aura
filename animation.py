@@ -17,6 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
+import time
 
 
 class Effect:
@@ -61,7 +62,7 @@ class StrobeEffect(Effect):
     """
     Strobe effect
     """
-    def start(self, device, target=None):
+    def start(self, device, targets=None):
         # Interrupt interval: 0.05s
         # Set LED to 000000 (x14)  000000 (x15) 000000 (x16) 000000 (x16) 000000 (x15)
         #            060000        0c0000       05           0c           0c
@@ -81,4 +82,12 @@ class StrobeEffect(Effect):
         #            d80000        dd           da           da           de
         #            dd0000        df    0.1s   de           de           e0  0.1s
         #            df0000  0.1s               e0 0.1s      e0  0.1s
-        pass
+        for step in range(1, 16):
+            device.set_color(0, 0, 0, targets)
+            time.sleep(0.05)
+
+        for step in (0x05, 0x1a, 0x2e, 0x42, 0x56, 0x68, 0x7a, 0x8b, 0x9a, 0xa8, 0xb5, 0xc4, 0xcd, 0xd4, 0xda, 0xde, 0xe0):
+            device.set_color(step, step, step, targets)
+            time.sleep(0.05)
+
+        time.sleep(0.05)
