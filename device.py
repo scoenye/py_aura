@@ -132,18 +132,10 @@ class ITEKeyboard(Device):
     """
     PRODUCT_ID = 0x1869
 
-    # Keyboard is complicated
-    # - Send color report (64 b)
-    # - Send color report (64 b)
-    # - Send color report with 0xe1 in byte 7 (64 b)
-    # - Send "flush" report (64 b, 2nd byte 0xb5)
-
     def __init__(self):
         super().__init__()
         self.color_report = ITEKeyboardReport()
         self.flush_report = ITEFlushReport()
-        self.endpoint_out = 0x02
-        self.endpoint_in = 0x81
 
     def set_color(self, red, green, blue, targets=None):
         """
@@ -154,8 +146,12 @@ class ITEKeyboard(Device):
         :param targets: Unused for the keyboard
         :return:
         """
+        # Keyboard is complicated - this to change all segments at once
+        # - Send color report (64 b)
+        # - Send color report (64 b)
+        # - Send color report with 0xe1 in byte 7 (64 b)
+        # - Send "flush" report (64 b, 2nd byte 0xb5)
         self.color_report.color(red, green, blue)
-        # self.handle.attachKernelDriver(self.aura_interface)
 
         xferred = self.color_report.send(self)
         print('write K0: ', xferred)

@@ -24,16 +24,22 @@ from animation import StaticEffect
 
 # find our device
 mouse = GladiusIIMouse()
-#    keyboard = ITEKeyboard()
+keyboard = ITEKeyboard()
 
 mouse.open()
-#    keyboard.open(context)
+keyboard.open()
 
 effect = StaticEffect()
-effect.color(0x00, 0xff, 0x00)
 
+effect.color(0xff, 0x00, 0x00)
 effect.start(mouse, [GladiusIIMouse.LED_LOGO])
-#        effect.start(keyboard)
+
+effect.start(keyboard)
+
+effect.color(0x00, 0x00, 0xff)
+effect.start(mouse, [GladiusIIMouse.LED_WHEEL, GladiusIIMouse.LED_BASE])
+
+effect.start(keyboard)
 
 mouse.close()
-#    keyboard.close()
+keyboard.close()
