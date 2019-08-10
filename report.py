@@ -48,7 +48,7 @@ class Report:
         :param device: handle to open USB device
         :return:
         """
-        return device.write_interrupt(self.report, Report.REPORT_SIZE)
+        return device.write_interrupt(self.report)
 
 
 class GladiusIIReport(Report):

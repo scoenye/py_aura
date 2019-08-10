@@ -30,7 +30,7 @@ mouse.open()
 #    keyboard.open(context)
 
 effect = StaticEffect()
-effect.color(0xff, 0x00, 0x00)
+effect.color(0x00, 0xff, 0x00)
 
 effect.start(mouse, [GladiusIIMouse.LED_LOGO])
 #        effect.start(keyboard)

@@ -33,9 +33,6 @@ class Device:
 
     def __init__(self):
         self.handle = None
-        self.aura_interface = 0
-        self.endpoint_out = 0x00        # Override in subclass
-        self.endpoint_in = 0x00         # Override in subclass
 
     def _find_path(self):
         device_list = hid.enumerate(self.VENDOR_ID, self.PRODUCT_ID)
@@ -47,7 +44,6 @@ class Device:
     def open(self):
         """
         Ready the device for use
-        :param usb_context:
         :return:
         """
         path = self._find_path()
@@ -64,10 +60,9 @@ class Device:
         """
         self.handle.close()
 
-    def write_interrupt(self, report, size):
+    def write_interrupt(self, report):
         """
         Transmit the report to the device's Aura endpoint
-        :param size: length of the block of data to send
         :param report: data to send to the device
         :return: number of bytes transferred to the device
         """
@@ -75,28 +70,14 @@ class Device:
 
         return self.handle.write(c_report)
 
-    def read_interrupt(self, size):
+    def read_interrupt(self, size, timeout=None):
         """
         Request a return report from the device's Aura endpoint
         :param size: amount of data requested
+        :param timeout: milliseconds to wait before giving up
         :return: data transmitted by the device
         """
-        self.handle.attachKernelDriver(self.aura_interface)
-        kernel_attached = self.handle.kernelDriverActive(self.aura_interface)
-
-        if kernel_attached:
-            self.handle.detachKernelDriver(self.aura_interface)
-
-        self.handle.claimInterface(self.aura_interface)
-
-        try:
-            transferred = self.handle.interruptRead(self.endpoint_in, size)
-        finally:
-            self.handle.releaseInterface(self.aura_interface)
-            if kernel_attached:
-                self.handle.attachKernelDriver(self.aura_interface)
-
-        return transferred
+        return self.handle.read(size, timeout)
 
 
 class GladiusIIMouse(Device):
@@ -113,10 +94,7 @@ class GladiusIIMouse(Device):
 
     def __init__(self):
         super().__init__()
-        self.aura_interface = 2
         self.report = GladiusIIReport()
-        self.endpoint_out = 0x04
-        self.endpoint_in = 0x83
         # Mouse needs all component LEDs targeted before it will acknowledge
         # requests to change individual LEDs.
         self.initialised = False
