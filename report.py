@@ -87,8 +87,9 @@ class GladiusIIReport(Report):
 
 class ITEKeyboardReport(Report):
     """
-    Report class for the Asus ITE keyboard
+    Report class for the Asus ITE keyboard. This variation address the keyboard as a whole.
     """
+    # byte 04 has meaning. See Strobe sample in ITEKeyboardSegmentReport
     def __init__(self):
         super().__init__()
         self.report[Report.REPORT_ID] = Report.TYPE_ITE
@@ -101,6 +102,18 @@ class ITEKeyboardReport(Report):
 
     def byte_7_e1(self):           # TODO: figure out purpose and improve name
         self.report[7] = 0xe1
+
+
+class ITEKeyboardSegmentReport(Report):
+    """
+    Alternative ITE keyboard report which addresses different segments individually.
+    """
+    # Starting as a distinct report. May merge if there are sufficient commonalities.
+
+    def __init__(self):
+        super().__init__()
+        self.report[Report.REPORT_ID] = Report.TYPE_ITE
+        self.report[1] = 0xbc
 
 
 class ITEFlushReport(ITEKeyboardReport):

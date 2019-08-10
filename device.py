@@ -17,6 +17,9 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
+import ctypes
+import hid
+
 from report import GladiusIIReport, ITEKeyboardReport, ITEFlushReport
 
 
@@ -26,6 +29,7 @@ class Device:
     """
     VENDOR_ID = 0x0b05
     PRODUCT_ID = 0x0000
+    INTERFACE = 0
 
     def __init__(self):
         self.handle = None
@@ -33,19 +37,24 @@ class Device:
         self.endpoint_out = 0x00        # Override in subclass
         self.endpoint_in = 0x00         # Override in subclass
 
-    def open(self, usb_context):
+    def _find_path(self):
+        device_list = hid.enumerate(self.VENDOR_ID, self.PRODUCT_ID)
+
+        for device in device_list:
+            if device['interface_number'] == self.INTERFACE:
+                return device['path']
+
+    def open(self):
         """
         Ready the device for use
         :param usb_context:
         :return:
         """
-        self.handle = usb_context.openByVendorIDAndProductID(
-            self.VENDOR_ID,
-            self.PRODUCT_ID,
-            skip_on_error=True,
-        )
+        path = self._find_path()
 
-        if self.handle is None:
+        try:
+            self.handle = hid.Device(path=path)
+        except Exception:
             raise ValueError('Device not found')
 
     def close(self):
@@ -62,21 +71,9 @@ class Device:
         :param report: data to send to the device
         :return: number of bytes transferred to the device
         """
-        kernel_attached = self.handle.kernelDriverActive(self.aura_interface)
+        c_report = (ctypes.c_char * 64).from_buffer(report)
 
-        if kernel_attached:
-            self.handle.detachKernelDriver(self.aura_interface)
-
-        self.handle.claimInterface(self.aura_interface)
-
-        try:
-            transferred = self.handle.interruptWrite(self.endpoint_out, report, size)
-        finally:
-            self.handle.releaseInterface(self.aura_interface)
-            if kernel_attached:
-                self.handle.attachKernelDriver(self.aura_interface)
-
-        return transferred
+        return self.handle.write(c_report)
 
     def read_interrupt(self, size):
         """
@@ -84,6 +81,7 @@ class Device:
         :param size: amount of data requested
         :return: data transmitted by the device
         """
+        self.handle.attachKernelDriver(self.aura_interface)
         kernel_attached = self.handle.kernelDriverActive(self.aura_interface)
 
         if kernel_attached:
@@ -106,6 +104,7 @@ class GladiusIIMouse(Device):
     Asus RoG Gladius II mouse
     """
     PRODUCT_ID = 0x1845
+    INTERFACE = 2
 
     # Selectable LEDs
     LED_LOGO = 0x00     # Selects the logo LED

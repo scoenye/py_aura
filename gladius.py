@@ -17,28 +17,23 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-
-import usb1
 import time
 
 from device import GladiusIIMouse, ITEKeyboard
-from animation import StrobeEffect
+from animation import StaticEffect
 
 # find our device
-with usb1.USBContext() as context:
+mouse = GladiusIIMouse()
+#    keyboard = ITEKeyboard()
 
-    mouse = GladiusIIMouse()
-    keyboard = ITEKeyboard()
+mouse.open()
+#    keyboard.open(context)
 
-    mouse.open(context)
-    keyboard.open(context)
+effect = StaticEffect()
+effect.color(0xff, 0x00, 0x00)
 
-    effect = StrobeEffect()
-    effect.color(0xff, 0x00, 0x00)
+effect.start(mouse, [GladiusIIMouse.LED_LOGO])
+#        effect.start(keyboard)
 
-    for x in range(1, 10):
-        effect.start(mouse, [GladiusIIMouse.LED_LOGO])
-        effect.start(keyboard)
-
-    mouse.close()
-    keyboard.close()
+mouse.close()
+#    keyboard.close()
