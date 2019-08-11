@@ -63,12 +63,26 @@ class StrobeEffect(Effect):
     """
     Strobe effect
     """
+    STEPS = [0.02, 0.10, 0.18, 0.26, 0.34, 0.41, 0.48, 0.54, 0.60, 0.66, 0.71, 0.77, 0.80, 0.83, 0.85, 0.87, 0.88]
+
     def __init__(self):
         super().__init__()
         self.device = None
         self.targets = []
         self.thread = threading.Thread(target=self._runnable)
         self.keep_running = True
+        self.color_steps = []
+
+    def color(self, red, green, blue):
+        super().color(red, green, blue)
+
+        # Reset step store
+        self.color_steps = []
+
+        for step in self.STEPS:
+            self.color_steps.append(
+                (int(self.red * step), int(self.green * step), int(self.blue * step))
+            )
 
     def _runnable(self):
         # Interrupt interval: 0.05s
@@ -96,9 +110,8 @@ class StrobeEffect(Effect):
                 self.device.set_color(0, 0, 0, self.targets)
                 time.sleep(0.05)
 
-            for step in (
-                    0x05, 0x1a, 0x2e, 0x42, 0x56, 0x68, 0x7a, 0x8b, 0x9a, 0xa8, 0xb5, 0xc4, 0xcd, 0xd4, 0xda, 0xde, 0xe0):
-                self.device.set_color(step, step, step, self.targets)
+            for step in self.color_steps:
+                self.device.set_color(step[0], step[1], step[2], self.targets)
                 time.sleep(0.05)
 
             time.sleep(0.05)

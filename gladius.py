@@ -30,7 +30,7 @@ mouse.open()
 keyboard.open()
 
 effect = StaticEffect()
-effect.color(0xff, 0x00, 0x00)
+effect.color(0x00, 0x00, 0xff)
 effect.start(mouse, [GladiusIIMouse.LED_BASE, GladiusIIMouse.LED_WHEEL])  # Init the mouse LEDs
 
 mouse_strobe = StrobeEffect()
@@ -40,7 +40,7 @@ mouse_strobe.start(mouse, [GladiusIIMouse.LED_LOGO])
 
 keyboard_strobe = StrobeEffect()
 
-keyboard_strobe.color(0xff, 0x00, 0x00)
+keyboard_strobe.color(0xff, 0x00, 0x80)
 keyboard_strobe.start(keyboard)
 
 time.sleep(5)
