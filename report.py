@@ -109,11 +109,24 @@ class ITEKeyboardSegmentReport(Report):
     Alternative ITE keyboard report which addresses different segments individually.
     """
     # Starting as a distinct report. May merge if there are sufficient commonalities.
+    SEGMENT_OFFSETS = [9, 12, 15, 18, 21, 24, 28]
 
     def __init__(self):
         super().__init__()
         self.report[Report.REPORT_ID] = Report.TYPE_ITE
         self.report[1] = 0xbc
+
+    def color(self, red, green, blue, targets=None):
+        """
+        Set the color to be sent to the device
+        :param red: Red value, 0 - 255
+        :param green: Green value, 0 - 255
+        :param blue: Blue value, 0 - 255
+        :return:
+        """
+        for target in targets:
+            self.report[ITEKeyboardSegmentReport.SEGMENT_OFFSETS[target]:
+                        ITEKeyboardSegmentReport.SEGMENT_OFFSETS[target] + 2] = [red, green, blue]
 
 
 class ITEFlushReport(ITEKeyboardReport):
