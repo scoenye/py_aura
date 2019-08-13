@@ -115,6 +115,8 @@ class ITEKeyboardSegmentReport(Report):
         super().__init__()
         self.report[Report.REPORT_ID] = Report.TYPE_ITE
         self.report[1] = 0xbc
+        self.report[2] = 0x01
+        self.report[3] = 0x01  # 0x00 in "setup" report
 
     def color(self, red, green, blue, targets=None):
         """
@@ -130,6 +132,9 @@ class ITEKeyboardSegmentReport(Report):
 
 
 class ITEFlushReport(ITEKeyboardReport):
+    """
+    Causes the keyboard to revert to its stored color
+    """
     def __init__(self):
         super().__init__()
         self.report[Report.REPORT_ID] = Report.TYPE_ITE

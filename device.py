@@ -20,7 +20,7 @@
 import ctypes
 import hid
 
-from report import GladiusIIReport, ITEKeyboardReport, ITEFlushReport
+from report import GladiusIIReport, ITEKeyboardReport, ITEFlushReport, ITEKeyboardSegmentReport
 
 
 class Device:
@@ -132,18 +132,51 @@ class ITEKeyboard(Device):
     """
     PRODUCT_ID = 0x1869
 
+    # Selectable segments - value is the offset of the red byte
+    LED_SEGMENT1 = 0
+    LED_SEGMENT2 = 1
+    LED_SEGMENT3 = 2
+    LED_SEGMENT4 = 3
+    LED_SEGMENT5 = 4
+    LED_SEGMENT6 = 5
+    LED_SEGMENT7 = 6
+
     def __init__(self):
         super().__init__()
         self.color_report = ITEKeyboardReport()
+        self.segmented_report = ITEKeyboardSegmentReport()
         self.flush_report = ITEFlushReport()
 
-    def set_color(self, red, green, blue, targets=None):
+    def change_color(self):
         """
-        Change to a static color
+        Execute the color change
+        :return:
+        """
+        xferred = self.segmented_report.send(self)
+        print('write M0: ', xferred)
+
+    def stage_color(self, red, green, blue, targets=None):
+        """
+        Prepare a color change for a set of segments
         :param red: Red value, 0 - 255
         :param green: Green value, 0 - 255
         :param blue: Blue value, 0 - 255
-        :param targets: Unused for the keyboard
+        :param targets: list of segments to change color of, None to change all segments
+        :return:
+        """
+        if targets is None:
+            targets = [ITEKeyboard.LED_SEGMENT1, ITEKeyboard.LED_SEGMENT2, ITEKeyboard.LED_SEGMENT3,
+                       ITEKeyboard.LED_SEGMENT4, ITEKeyboard.LED_SEGMENT5, ITEKeyboard.LED_SEGMENT6,
+                       ITEKeyboard.LED_SEGMENT7]
+
+        self.segmented_report.color(red, green, blue, targets)
+
+    def set_color(self, red, green, blue):
+        """
+        Change all segments to a single color immediately
+        :param red:
+        :param green:
+        :param blue:
         :return:
         """
         # Keyboard is complicated - this to change all segments at once
@@ -158,6 +191,9 @@ class ITEKeyboard(Device):
 
         xferred = self.color_report.send(self)
         print('write K1: ', xferred)
+
+        xferred = self.flush_report.send(self)  # Additional observation in strobe effect
+        print('write K4: ', xferred)
 
         self.color_report.byte_7_e1()
         xferred = self.color_report.send(self)

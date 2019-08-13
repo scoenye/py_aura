@@ -107,14 +107,19 @@ class StrobeEffect(Effect):
 
         while self.keep_running:
             for step in range(1, 16):
-                self.device.set_color(0, 0, 0, self.targets)
+                self.device.stage_color(0, 0, 0, self.targets)
+                self.device.change_color()
                 time.sleep(0.05)
 
             for step in self.color_steps:
-                self.device.set_color(step[0], step[1], step[2], self.targets)
+                self.device.stage_color(step[0], step[1], step[2], self.targets)
+                self.device.change_color()
                 time.sleep(0.05)
 
             time.sleep(0.05)
+
+        # wind-down
+        self.device.set_color(0xff, 0xff, 0xff)
 
     def start(self, device, targets=None):
         self.device = device
