@@ -56,7 +56,8 @@ class StaticEffect(Effect):
     Single color change
     """
     def start(self, device, targets=None):
-        device.set_color(self.red, self.green, self.blue, targets)
+        device.stage_color(self.red, self.green, self.blue, targets)
+        device.change_color()
 
 
 class StrobeEffect(Effect):

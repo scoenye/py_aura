@@ -95,35 +95,43 @@ class GladiusIIMouse(Device):
     def __init__(self):
         super().__init__()
         self.report = GladiusIIReport()
-        # Mouse needs all component LEDs targeted before it will acknowledge
-        # requests to change individual LEDs.
-        self.initialised = False
+        self.targets = []
 
-    def _change_color(self, red, green, blue, targets):
-        # Execute the actual color change
-        self.report.color(red, green, blue)
-
-        for target in targets:
+    def change_color(self):
+        """
+        Execute the color change
+        :return:
+        """
+        for target in self.targets:
             self.report.target(target)
             xferred = self.report.send(self)
             print('write M0: ', xferred)
 
-    def set_color(self, red, green, blue, targets=None):
+    def stage_color(self, red, green, blue, targets=None):
         """
-        Set one or more LEDs to the specified color.
+        Prepare a color change for a set of LEDs
         :param red: Red value, 0 - 255
         :param green: Green value, 0 - 255
         :param blue: Blue value, 0 - 255
-        :param targets: list of LEDs to change color of, None to change all LEDs
+        :param targets: list of LEDs to change color of, None to change all segments
         :return:
         """
-        if not self.initialised or targets is None:
-            targets = [GladiusIIMouse.LED_LOGO, GladiusIIMouse.LED_WHEEL, GladiusIIMouse.LED_BASE]
-            if not self.initialised:
-                self._change_color(0x00, 0x00, 0x00, targets)
-                self.initialised = True
+        self.report.color(red, green, blue)
+        if targets is None:
+            self.targets = [GladiusIIMouse.LED_LOGO, GladiusIIMouse.LED_WHEEL, GladiusIIMouse.LED_BASE]
+        else:
+            self.targets = targets
 
-        self._change_color(red, green, blue, targets)
+    def set_color(self, red, green, blue):
+        """
+        Set all LEDs to the specified color immediately
+        :param red: Red value, 0 - 255
+        :param green: Green value, 0 - 255
+        :param blue: Blue value, 0 - 255
+        :return:
+        """
+        self.stage_color(red, green, blue)
+        self.change_color()
 
 
 class ITEKeyboard(Device):
@@ -153,7 +161,7 @@ class ITEKeyboard(Device):
         :return:
         """
         xferred = self.segmented_report.send(self)
-        print('write M0: ', xferred)
+        print('write K: ', xferred)
 
     def stage_color(self, red, green, blue, targets=None):
         """
