@@ -20,10 +20,11 @@
 import ctypes
 import hid
 
+from abc import ABC, abstractmethod
 from report import GladiusIIReport, ITEKeyboardReport, ITEFlushReport, ITEKeyboardSegmentReport
 
 
-class Device:
+class Device(ABC):
     """
     Base class for Aura USB devices
     """
@@ -79,6 +80,35 @@ class Device:
         """
         return self.handle.read(size, timeout)
 
+    @abstractmethod
+    def change_color(self):
+        """
+        Execute the staged color change report.
+        :return:
+        """
+
+    @abstractmethod
+    def stage_color(self, red, green, blue, targets=None):
+        """
+        Prepare a color change for a set of LEDs. This method can be called several times to build a single report.
+        Later calls will overwrite earlier changes where the target elements overlap.
+        :param red: Red value, 0 - 255
+        :param green: Green value, 0 - 255
+        :param blue: Blue value, 0 - 255
+        :param targets: list of LEDs or segments to change the color of, None to change all LEDs/segments
+        :return:
+        """
+
+    @abstractmethod
+    def set_color(self, red, green, blue):
+        """
+        Set all LEDs/segments to the specified color immediately
+        :param red: Red value, 0 - 255
+        :param green: Green value, 0 - 255
+        :param blue: Blue value, 0 - 255
+        :return:
+        """
+
 
 class GladiusIIMouse(Device):
     """
@@ -91,6 +121,9 @@ class GladiusIIMouse(Device):
     LED_LOGO = 0x00     # Selects the logo LED
     LED_WHEEL = 0x01    # Selects the wheel LED
     LED_BASE = 0x02     # Selects the mouse base LED
+
+    # The mouse does not appear to have a parallel report like ITEKeyboardSegmentReport. To make both devices look the
+    # same to clients, the parallel report is simulated by the stage_color and change_color methods in combination.
 
     def __init__(self):
         super().__init__()
@@ -187,11 +220,7 @@ class ITEKeyboard(Device):
         :param blue:
         :return:
         """
-        # Keyboard is complicated - this to change all segments at once
-        # - Send color report (64 b)
-        # - Send color report (64 b)
-        # - Send color report with 0xe1 in byte 7 (64 b)
-        # - Send "flush" report (64 b, 2nd byte 0xb5)
+        # This uses ITEKeyboardReport to change the color of all segments at once.
         self.color_report.color(red, green, blue)
 
         xferred = self.color_report.send(self)
