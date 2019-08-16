@@ -55,17 +55,36 @@ class Report:
 
 
 class GladiusIIReport(Report):
-    # LED selector offset. Defined here as it may not be the same for other devices
-    SELECT_LED = 2
-
     """
     Report class for the Gladius II mouse
     """
+    # LED selector offset. Defined here as it may not be the same for other devices
+    SELECT_LED = 2
+    SELECT_EFFECT = 4
+    SELECT_LEVEL = 5
+
+    # Built-in light effects
+    EFFECT_NONE = 0x00
+    EFFECT_IN_OUT = 0x01
+    EFFECT_CYCLE = 0x02
+    EFFECT_RAINBOW = 0x03      # All LEDs
+    EFFECT_BTN_PULSE = 0x04
+    EFFECT_RUNNING = 0x05
+
+    # Intensity
+    LEVEL_OFF = 0x00           # All LEDs off
+    LEVEL_25 = 0x01            # All LEDs, 25%
+    LEVEL_50 = 0x02            # All LEDs, 50%
+    LEVEL_75 = 0x03            # All LEDs, 75%
+    LEVEL_100 = 0x04           # All LEDs, 100%
+    LEVEL_100_LW = 0x05        # Logo + wheel, 100%, bottom nearly off. (Same for any other value)
+
     def __init__(self):
         super().__init__()
         self.report[Report.REPORT_ID] = Report.TYPE_GLADIUS
         self.report[1] = 0x28
-        self.report[5] = 0x04
+        self.report[GladiusIIReport.SELECT_EFFECT] = GladiusIIReport.EFFECT_NONE
+        self.report[GladiusIIReport.SELECT_LEVEL] = GladiusIIReport.LEVEL_100
 
     def color(self, red, green, blue):
         """
@@ -88,6 +107,10 @@ class GladiusIIReport(Report):
         self.report[GladiusIIReport.SELECT_LED] = led
 
 
+class GladiusIICycleReport(Report):
+    """
+
+    """
 class ITEKeyboardReport(Report):
     """
     Report class for the Asus ITE keyboard. This variation address the keyboard as a whole.
@@ -97,6 +120,7 @@ class ITEKeyboardReport(Report):
         super().__init__()
         self.report[Report.REPORT_ID] = Report.TYPE_ITE
         self.report[1] = 0xb3
+        self.report[7] = 0x44
 
     def color(self, red, green, blue):
         self.report[4] = red
