@@ -20,6 +20,9 @@
 import time
 import threading
 
+from report import GladiusIIReport
+from device import GladiusIIMouse
+
 
 class Effect:
     """
@@ -58,6 +61,22 @@ class StaticEffect(Effect):
     def start(self, device, targets=None):
         device.stage_color(self.red, self.green, self.blue, targets)
         device.change_color()
+
+
+class StaticEffectGladius(Effect):
+    """
+    Single color change for mouse
+    """
+    def start(self, device, targets=None):
+        report = GladiusIIReport()
+        report.color(self.red, self.green, self.blue)
+
+        if targets is None:
+            targets = [GladiusIIMouse.LED_LOGO, GladiusIIMouse.LED_WHEEL, GladiusIIMouse.LED_BASE]
+
+        for target in targets:
+            report.target(target)
+            device.write_interrupt(report)
 
 
 class StrobeEffect(Effect):

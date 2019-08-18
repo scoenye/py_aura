@@ -17,6 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
+import ctypes
 
 
 class Report:
@@ -42,13 +43,15 @@ class Report:
         """
         return len(self.report)
 
-    def send(self, device):
+    def send(self, handle):
         """
-        Send the report to the device
-        :param device: handle to open USB device
+        Send the report to the device Aura endpoint
+        :param handle: handle to open HIDAPI device
         :return:
         """
-        return device.write_interrupt(self.report)
+        c_report = (ctypes.c_char * 64).from_buffer(self.report)
+
+        return handle.write(c_report)
 
 
 class GladiusIIReport(Report):

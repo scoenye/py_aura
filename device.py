@@ -63,13 +63,11 @@ class Device(ABC):
 
     def write_interrupt(self, report):
         """
-        Transmit the report to the device's Aura endpoint
-        :param report: data to send to the device
+        Accept a report to send to the device's Aura endpoint
+        :param report: report to send to the device
         :return: number of bytes transferred to the device
         """
-        c_report = (ctypes.c_char * 64).from_buffer(report)
-
-        return self.handle.write(c_report)
+        return report.send(self.handle)
 
     def read_interrupt(self, size, timeout=None):
         """
