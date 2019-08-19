@@ -20,7 +20,7 @@
 import time
 import threading
 
-from report import GladiusIIReport
+from report import GladiusIIReport, ITEKeyboardReport, ITEFlushReport
 from device import GladiusIIMouse
 
 
@@ -77,6 +77,34 @@ class StaticEffectGladius(Effect):
         for target in targets:
             report.target(target)
             device.write_interrupt(report)
+
+
+class StaticEffectITE(Effect):
+    """
+    Single color change effect for ITE keyboard
+    """
+
+    def start(self, device, targets=None):
+        color_report = ITEKeyboardReport()
+        flush_report = ITEFlushReport()
+
+        color_report.color(self.red, self.green, self.blue)
+
+        xferred = device.write_interrupt(color_report)
+        print('write K0: ', xferred)
+
+        xferred = device.write_interrupt(color_report)
+        print('write K1: ', xferred)
+
+        xferred = device.write_interrupt(flush_report)  # Additional observation in strobe effect
+        print('write K4: ', xferred)
+
+        color_report.byte_7_e1()
+        xferred = device.write_interrupt(color_report)
+        print('write K3: ', xferred)
+
+        xferred = device.write_interrupt(flush_report)
+        print('write K4: ', xferred)
 
 
 class StrobeEffect(Effect):

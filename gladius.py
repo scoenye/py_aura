@@ -20,7 +20,7 @@
 import time
 
 from device import GladiusIIMouse, ITEKeyboard
-from animation import StaticEffectGladius, StrobeEffect
+from animation import StaticEffectGladius, StaticEffectITE
 
 # find our device
 mouse = GladiusIIMouse()
@@ -29,12 +29,16 @@ keyboard = ITEKeyboard()
 mouse.open()
 keyboard.open()
 
-effect = StaticEffectGladius()
-effect.color(0xff, 0x00, 0xff)
-effect.start(mouse)  # Init the mouse LEDs
+mouse_effect = StaticEffectGladius()
+mouse_effect.color(0xff, 0x00, 0xff)
+mouse_effect.start(mouse)  # Init the mouse LEDs
 
-effect.color(0xff, 0x00, 0x00)
-effect.start(mouse, [GladiusIIMouse.LED_LOGO])
+mouse_effect.color(0xff, 0x00, 0x00)
+mouse_effect.start(mouse, [GladiusIIMouse.LED_LOGO])
+
+kbd_effect = StaticEffectITE()
+kbd_effect.color(0x00, 0xff, 0x00)
+kbd_effect.start(keyboard)
 
 # mouse_strobe = StrobeEffect()
 #
