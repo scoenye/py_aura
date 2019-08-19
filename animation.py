@@ -20,8 +20,8 @@
 import time
 import threading
 
-from report import GladiusIIReport, ITEKeyboardReport, ITEFlushReport
-from device import GladiusIIMouse
+from report import GladiusIIReport, ITEKeyboardReport, ITEFlushReport, ITEKeyboardSegmentReport
+from device import GladiusIIMouse, ITEKeyboard
 
 
 class Effect:
@@ -173,6 +173,44 @@ class StrobeEffectGladius(StrobeEffect):
                 for target in self.targets:
                     report.target(target)
                     self.device.write_interrupt(report)
+
+                time.sleep(0.05)
+
+            time.sleep(0.05)
+
+
+class StrobeEffectITE(StrobeEffect):
+    """
+    Strobe effect for the mouse
+    """
+    def _preamble(self):
+        report = ITEKeyboardReport()
+        report.color(self.red, self.green, self.blue)
+        # report,byte_04(0x0a)
+        self.device.write_interrupt(report)
+
+    def _runnable(self):
+        report = ITEKeyboardSegmentReport()
+
+        self._preamble()
+
+        if self.targets is None:
+            self.targets = [ITEKeyboard.LED_SEGMENT1, ITEKeyboard.LED_SEGMENT2, ITEKeyboard.LED_SEGMENT3,
+                            ITEKeyboard.LED_SEGMENT4, ITEKeyboard.LED_SEGMENT5, ITEKeyboard.LED_SEGMENT6,
+                            ITEKeyboard.LED_SEGMENT7]
+
+        while self.keep_running:
+            for step in range(1, 16):
+                report.color(0, 0, 0, self.targets)
+
+                self.device.write_interrupt(report)
+
+                time.sleep(0.05)
+
+            for step in self.color_steps:
+                report.color(step[0], step[1], step[2], self.targets)
+
+                self.device.write_interrupt(report)
 
                 time.sleep(0.05)
 
