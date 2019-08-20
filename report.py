@@ -29,6 +29,7 @@ class Report:
 
     # Observed values in the data transfers
     TYPE_GLADIUS = 0x51
+    TYPE_GLADIUS_CC = 0x60
     TYPE_ITE = 0x5d
 
     """
@@ -106,11 +107,46 @@ class GladiusIIReport(Report):
         """
         self.report[GladiusIIReport.SELECT_LED] = led
 
+    def effect(self, effect):
+        """
+        Choose a hardware color effect
+        :param effect: the code of the hardware effect to set
+        :return:
+        """
+        self.report[GladiusIIReport.SELECT_EFFECT] = effect
 
-class GladiusIICycleReport(Report):
-    """
+    def level(self, level):
+        """
+        Choose a hardware intensity level
+        :param level: the code of the hardware intensity level
+        return:
+        """
+        self.report[GladiusIIReport.SELECT_LEVEL] = level
 
+
+class GladiusIICCReport(Report):
     """
+    Gladius report used by the Cycle effect
+    """
+    def __init__(self):
+        super().__init__()
+        self.report[Report.REPORT_ID] = Report.TYPE_GLADIUS_CC
+        self.report[1] = 0x01
+        self.report[5:63] = b'\xcc' * (63-5)
+
+    def color(self, red, green, blue):
+        """
+        Set the color to be sent to the device
+        :param red: Red value, 0 - 255
+        :param green: Green value, 0 - 255
+        :param blue: Blue value, 0 - 255
+        :return:
+        """
+        self.report[4] = red        # These may not be color values
+#        self.report[5] = green
+#        self.report[6] = blue
+
+
 class ITEKeyboardReport(Report):
     """
     Report class for the Asus ITE keyboard. This variation address the keyboard as a whole.
