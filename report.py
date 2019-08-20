@@ -156,7 +156,6 @@ class ITEKeyboardReport(Report):
         super().__init__()
         self.report[Report.REPORT_ID] = Report.TYPE_ITE
         self.report[1] = 0xb3
-        self.report[7] = 0x44
 
     def color(self, red, green, blue):
         self.report[4] = red
