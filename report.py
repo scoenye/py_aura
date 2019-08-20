@@ -162,8 +162,8 @@ class ITEKeyboardReport(Report):
         self.report[5] = green
         self.report[6] = blue
 
-    def byte_7_e1(self):           # TODO: figure out purpose and improve name
-        self.report[7] = 0xe1
+    def byte_7(self, value):           # TODO: figure out purpose and improve name
+        self.report[7] = value
 
 
 class ITEKeyboardSegmentReport(Report):
