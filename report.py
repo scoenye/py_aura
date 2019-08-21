@@ -59,7 +59,7 @@ class GladiusIIReport(Report):
     """
     Report class for the Gladius II mouse
     """
-    # LED selector offset. Defined here as it may not be the same for other devices
+    # Feature selector offsets. Defined here as they are not the same for other devices
     SELECT_LED = 2
     SELECT_EFFECT = 4
     SELECT_LEVEL = 5
@@ -151,7 +151,15 @@ class ITEKeyboardReport(Report):
     """
     Report class for the Asus ITE keyboard. This variation address the keyboard as a whole.
     """
-    # byte 04 has meaning. See Strobe sample in ITEKeyboardSegmentReport
+    SELECT_EFFECT = 3
+
+    # Built-in light effects
+    EFFECT_NONE = 0x00
+    EFFECT_IN_OUT = 0x01
+    EFFECT_CYCLE = 0x02
+    EFFECT_RAINBOW = 0x03      # Left to right effect. Also 0x0f, 0x11, some higher numbers.
+    EFFECT_STROBE = 0x0a
+
     def __init__(self):
         super().__init__()
         self.report[Report.REPORT_ID] = Report.TYPE_ITE
@@ -161,6 +169,14 @@ class ITEKeyboardReport(Report):
         self.report[4] = red
         self.report[5] = green
         self.report[6] = blue
+
+    def effect(self, effect):
+        """
+        Choose a hardware color effect
+        :param effect: the code of the hardware effect to set
+        :return:
+        """
+        self.report[ITEKeyboardReport.SELECT_EFFECT] = effect
 
     def byte_7(self, value):           # TODO: figure out purpose and improve name
         self.report[7] = value
