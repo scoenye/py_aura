@@ -182,6 +182,17 @@ class ITEKeyboardReport(Report):
         self.report[7] = value
 
 
+class ITEKeyboardCycleReport(ITEKeyboardReport):
+    def __init__(self):
+        super().__init__()
+        self.report[1] = 0xb6
+        self.report[2] = 0x02
+        self.report[3] = 0x02
+
+    def cycle(self, cycle):
+        self.report[4] = cycle
+
+
 class ITEKeyboardSegmentReport(Report):
     """
     Alternative ITE keyboard report which addresses different segments individually.

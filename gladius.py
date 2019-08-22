@@ -20,7 +20,7 @@
 import time
 
 from device import GladiusIIMouse, ITEKeyboard
-from animation import StaticEffectGladius, StaticEffectITE, CycleEffectGladius, StrobeEffectITE
+from animation import StaticEffectGladius, StaticEffectITE, CycleEffectGladius, CycleEffectITE
 
 # find our device
 mouse = GladiusIIMouse()
@@ -29,34 +29,34 @@ keyboard = ITEKeyboard()
 mouse.open()
 keyboard.open()
 
-mouse_static = StaticEffectGladius()
-mouse_static.color(0x00, 0xff, 0x00)
-mouse_static.start(mouse)  # Init the mouse LEDs
+# mouse_static = StaticEffectGladius()
+# mouse_static.color(0x00, 0xff, 0x00)
+# mouse_static.start(mouse)  # Init the mouse LEDs
 
 # mouse_static.color(0xff, 0x00, 0x00)
 # mouse_static.start(mouse, [GladiusIIMouse.LED_LOGO])
 
-# kbd_static = StaticEffectITE()
-# kbd_static.color(0x00, 0xff, 0x00)
-# kbd_static.start(keyboard)
+kbd_static = StaticEffectITE()
+kbd_static.color(0xff, 0x00, 0xff)
+kbd_static.start(keyboard)
 
-mouse_cycle = CycleEffectGladius()
-
-mouse_cycle.color(0xff, 0x00, 0x00)
-mouse_cycle.start(mouse, [GladiusIIMouse.LED_LOGO])
-
-# keyboard_strobe = StrobeEffectITE()
+# mouse_cycle = CycleEffectGladius()
 #
-# keyboard_strobe.color(0x00, 0xff, 0x00)
-# keyboard_strobe.start(keyboard)
+# mouse_cycle.color(0xff, 0x00, 0x00)
+# mouse_cycle.start(mouse, [GladiusIIMouse.LED_LOGO])
 
-time.sleep(5)
+keyboard_cycle = CycleEffectITE()
 
-mouse_cycle.stop()
+keyboard_cycle.color(0x00, 0xff, 0x00)
+keyboard_cycle.start(keyboard)
 
+time.sleep(10)
+
+# mouse_cycle.stop()
+#
 # time.sleep(5)
 
-# keyboard_strobe.stop()
+keyboard_cycle.stop()
 
 mouse.close()
 keyboard.close()

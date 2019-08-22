@@ -20,7 +20,8 @@
 import time
 import threading
 
-from report import GladiusIIReport, ITEKeyboardReport, ITEFlushReport, ITEKeyboardSegmentReport, GladiusIICCReport
+from report import GladiusIIReport, ITEKeyboardReport, ITEFlushReport, ITEKeyboardSegmentReport, GladiusIICCReport, \
+    ITEKeyboardCycleReport
 from device import GladiusIIMouse, ITEKeyboard
 
 
@@ -99,7 +100,7 @@ class StaticEffectITE(Effect):
         xferred = device.write_interrupt(flush_report)  # Additional observation in strobe effect
         print('write K4: ', xferred)
 
-        color_report.byte_7_e1()
+        color_report.byte_7(0xe1)
         xferred = device.write_interrupt(color_report)
         print('write K3: ', xferred)
 
@@ -280,6 +281,80 @@ class CycleEffectGladius(Effect):
 
     def start(self, device, targets=None):
         self.targets = targets or [GladiusIIMouse.LED_LOGO, GladiusIIMouse.LED_WHEEL, GladiusIIMouse.LED_BASE]
+        self.device = device
+        self.thread.start()
+
+    def stop(self):
+        self.keep_running = False
+        self.thread.join()
+
+
+class CycleEffectITE(Effect):
+    """
+    Cycle effect for the keyboard
+    """
+    def __init__(self):
+        super().__init__()
+        self.device = None
+        self.targets = []
+        self.thread = threading.Thread(target=self._runnable)
+        self.keep_running = True
+
+    def _preamble(self):
+        color_report = ITEKeyboardReport()
+        flush_report = ITEFlushReport()
+
+        color_report.color(0xff, 0, 0)
+        color_report.effect(ITEKeyboardReport.EFFECT_CYCLE)     # This is what makes the effect work.
+        color_report.byte_7(0xeb)
+        self.device.write_interrupt(color_report)
+
+        color_report.color(0xff, 0xff, 0xff)
+        color_report.byte_7(0xe1)
+        self.device.write_interrupt(color_report)
+
+        self.device.write_interrupt(flush_report)
+
+        self.device.write_interrupt(color_report)
+
+        self.device.write_interrupt(flush_report)
+
+    def _wind_down(self):
+        color_report = ITEKeyboardReport()
+        flush_report = ITEFlushReport()
+
+        color_report.color(0xff, 0xff, 0xff)
+        self.device.write_interrupt(color_report)
+
+        self.device.write_interrupt(color_report)
+
+        self.device.write_interrupt(flush_report)
+
+        color_report.byte_7(0xe1)
+
+        self.device.write_interrupt(color_report)
+
+        self.device.write_interrupt(flush_report)
+
+    def _runnable(self):
+        cycle_report = ITEKeyboardCycleReport()
+
+        self._preamble()
+
+        cycle = 1
+
+        while self.keep_running:                        # 0x5db6 report does not seem to have any influence
+            time.sleep(1)
+
+            cycle_report.cycle(cycle)
+            self.device.write_interrupt(cycle_report)
+
+            cycle = (cycle + 33) % 256
+
+        self._wind_down()
+
+    def start(self, device, targets=None):
+        self.targets = targets
         self.device = device
         self.thread.start()
 
