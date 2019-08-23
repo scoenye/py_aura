@@ -34,30 +34,26 @@ mouse_static = StaticEffectGladius()
 mouse_static.color(0x00, 0xff, 0x00)
 mouse_static.start(mouse)  # Init the mouse LEDs
 
-# mouse_static.color(0xff, 0x00, 0x00)
-# mouse_static.start(mouse, [GladiusIIMouse.LED_LOGO])
+mouse_static.color(0xff, 0x00, 0x00)
+mouse_static.start(mouse)
 
-# kbd_static = StaticEffectITE()
-# kbd_static.color(0xff, 0x00, 0xff)
-# kbd_static.start(keyboard)
+kbd_static = StaticEffectITE()
+kbd_static.color(0xff, 0x00, 0xff)
+kbd_static.start(keyboard)
 
-# mouse_cycle = CycleEffectGladius()
-#
-# mouse_cycle.color(0xff, 0x00, 0x00)
-# mouse_cycle.start(mouse, [GladiusIIMouse.LED_LOGO])
+mouse_cycle = CycleEffectGladius()
+keyboard_cycle = CycleEffectITE()
 
-# keyboard_cycle = CycleEffectITE()
-#
-# keyboard_cycle.color(0x00, 0xff, 0x00)
-# keyboard_cycle.start(keyboard)
-#
-# time.sleep(10)
+mouse_cycle.color(0xff, 0x00, 0x00)
+keyboard_cycle.color(0xff, 0x00, 0x00)
 
-# mouse_cycle.stop()
-#
-# time.sleep(5)
+mouse_cycle.start(mouse)
+keyboard_cycle.start(keyboard)
 
-# keyboard_cycle.stop()
+time.sleep(10)
+
+mouse_cycle.stop()
+keyboard_cycle.stop()
 
 mouse.close()
 keyboard.close()

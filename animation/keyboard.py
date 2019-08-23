@@ -20,7 +20,7 @@
 import threading
 import time
 
-from animation.effects import Effect, StrobeEffect
+from animation.effects import Effect, StrobeEffect, CycleEffect
 from device import ITEKeyboard
 from report import ITEKeyboardReport, ITEFlushReport, ITEKeyboardSegmentReport, ITEKeyboardCycleReport
 
@@ -91,17 +91,10 @@ class StrobeEffectITE(StrobeEffect):
             time.sleep(0.05)
 
 
-class CycleEffectITE(Effect):
+class CycleEffectITE(CycleEffect):
     """
     Cycle effect for the keyboard
     """
-    def __init__(self):
-        super().__init__()
-        self.device = None
-        self.targets = []
-        self.thread = threading.Thread(target=self._runnable)
-        self.keep_running = True
-
     def _preamble(self):
         color_report = ITEKeyboardReport()
         flush_report = ITEFlushReport()
@@ -155,11 +148,3 @@ class CycleEffectITE(Effect):
 
         self._wind_down()
 
-    def start(self, device, targets=None):
-        self.targets = targets
-        self.device = device
-        self.thread.start()
-
-    def stop(self):
-        self.keep_running = False
-        self.thread.join()

@@ -20,7 +20,7 @@
 import threading
 import time
 
-from animation.effects import Effect, StrobeEffect
+from animation.effects import Effect, StrobeEffect, CycleEffect
 from device import GladiusIIMouse
 from report import GladiusIIReport, GladiusIICCReport
 
@@ -73,17 +73,10 @@ class StrobeEffectGladius(StrobeEffect):
             time.sleep(0.05)
 
 
-class CycleEffectGladius(Effect):
+class CycleEffectGladius(CycleEffect):
     """
     Cycle effect for the mouse
     """
-    def __init__(self):
-        super().__init__()
-        self.device = None
-        self.targets = []
-        self.thread = threading.Thread(target=self._runnable)
-        self.keep_running = True
-
     def _send_all_targets(self, report):
         # Send the report to all active targets
         for target in self.targets:
@@ -135,10 +128,5 @@ class CycleEffectGladius(Effect):
         self._send_all_targets(hw_report)
 
     def start(self, device, targets=None):
-        self.targets = targets or [GladiusIIMouse.LED_LOGO, GladiusIIMouse.LED_WHEEL, GladiusIIMouse.LED_BASE]
-        self.device = device
-        self.thread.start()
-
-    def stop(self):
-        self.keep_running = False
-        self.thread.join()
+        targets = targets or [GladiusIIMouse.LED_LOGO, GladiusIIMouse.LED_WHEEL, GladiusIIMouse.LED_BASE]
+        super().start(device, targets)
