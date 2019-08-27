@@ -19,6 +19,8 @@
 """
 import threading
 
+from abc import ABC, abstractmethod
+
 
 class Effect:
     """
@@ -122,3 +124,22 @@ class CycleEffect(Effect):
     def stop(self):
         self.keep_running = False
         self.thread.join()
+
+
+class ColorGenerator(ABC):
+    """
+    Generate color values for effects
+    """
+    @abstractmethod
+    def color(self):
+        """
+        :return: a color value between 0 (black) and 255 (white)
+        """
+
+
+class HighGenerator(ColorGenerator):
+    """
+    Returns a constant 255
+    """
+    def color(self):
+        yield 255
