@@ -143,3 +143,11 @@ class HighGenerator(ColorGenerator):
     """
     def color(self):
         yield 255
+
+
+class LowGenerator(ColorGenerator):
+    """
+    Returns a constant 0
+    """
+    def color(self):
+        yield 0

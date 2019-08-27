@@ -19,7 +19,7 @@
 """
 import unittest
 
-from animation.effects import HighGenerator
+from animation.effects import HighGenerator, LowGenerator
 
 
 class HighGeneratorTest(unittest.TestCase):
@@ -29,4 +29,14 @@ class HighGeneratorTest(unittest.TestCase):
     def test_color(self):
         for color in self.generator.color():
             self.assertEqual(color, 255)
+            break   # This generator never ends
+
+
+class LowGeneratorTest(unittest.TestCase):
+    def setUp(self):
+        self.generator = LowGenerator()
+
+    def test_color(self):
+        for color in self.generator.color():
+            self.assertEqual(color, 0)
             break   # This generator never ends
