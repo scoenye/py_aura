@@ -139,20 +139,18 @@ class ColorGenerator(ABC):
         """
 
 
-class HighGenerator(ColorGenerator):
+class ConstantGenerator(ColorGenerator):
     """
-    Returns a constant 255
+    Returns a constant value
     """
-    def color(self):
-        yield 255
+    def __init__(self, **kwargs):
+        self.value = kwargs['value']
 
-
-class LowGenerator(ColorGenerator):
-    """
-    Returns a constant 0
-    """
-    def color(self):
-        yield 0
+    def color(self, start, end):
+        x = start
+        while x < end:
+            yield self.value
+            x += 1
 
 
 class LinearGenerator(ColorGenerator):
