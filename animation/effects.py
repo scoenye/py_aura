@@ -131,8 +131,10 @@ class ColorGenerator(ABC):
     Generate color values for effects
     """
     @abstractmethod
-    def color(self):
+    def color(self, start, end):
         """
+        :param start: starting position for the generator
+        :param end: final position of the generator
         :return: a color value between 0 (black) and 255 (white)
         """
 
@@ -151,3 +153,18 @@ class LowGenerator(ColorGenerator):
     """
     def color(self):
         yield 0
+
+
+class LinearGenerator(ColorGenerator):
+    """
+    Advances in a straight line
+    """
+    def __init__(self, **kwargs):
+        self.slope = kwargs['slope']
+        self.offset = kwargs['offset']
+
+    def color(self, start, end):
+        x = start
+        while x < end:
+            yield self.slope * x + self.offset
+            x += 1

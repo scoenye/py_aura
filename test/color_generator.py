@@ -19,7 +19,7 @@
 """
 import unittest
 
-from animation.effects import HighGenerator, LowGenerator
+from animation.effects import HighGenerator, LowGenerator, LinearGenerator
 
 
 class HighGeneratorTest(unittest.TestCase):
@@ -40,3 +40,14 @@ class LowGeneratorTest(unittest.TestCase):
         for color in self.generator.color():
             self.assertEqual(color, 0)
             break   # This generator never ends
+
+
+class LinearGeneratorTest(unittest.TestCase):
+    def setUp(self):
+        self.generator = LinearGenerator(slope=8, offset=0)
+
+    def test_color(self):
+        expected = 0
+        for color in self.generator.color(0, 33):
+            self.assertEqual(color, expected)
+            expected += 8
