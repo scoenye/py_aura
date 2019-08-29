@@ -19,8 +19,6 @@
 """
 import threading
 
-from abc import ABC, abstractmethod
-
 
 class Effect:
     """
@@ -124,61 +122,3 @@ class CycleEffect(Effect):
     def stop(self):
         self.keep_running = False
         self.thread.join()
-
-
-class ColorGenerator(ABC):
-    """
-    Generate color values for effects
-    """
-    @abstractmethod
-    def color(self, start, end):
-        """
-        :param start: starting position for the generator
-        :param end: final position of the generator
-        :return: a color value between 0 (black) and 255 (white)
-        """
-
-
-class ConstantGenerator(ColorGenerator):
-    """
-    Returns a constant value
-    """
-    def __init__(self, **kwargs):
-        self.value = kwargs['value']
-
-    def color(self, start, end):
-        x = start
-        while x < end:
-            yield self.value
-            x += 1
-
-
-class LinearGenerator(ColorGenerator):
-    """
-    Advances in a straight line
-    """
-    def __init__(self, **kwargs):
-        self.slope = kwargs['slope']
-        self.offset = kwargs['offset']
-
-    def color(self, start, end):
-        x = start
-        while x < end:
-            yield self.slope * x + self.offset
-            x += 1
-
-
-class QuadraticGenerator(ColorGenerator):
-    """
-    Generate a parabolic curve
-    """
-    def __init__(self, **kwargs):
-        self.order2 = kwargs['order2']
-        self.order1 = kwargs['order1']
-        self.constant = kwargs['constant']
-
-    def color(self, start, end):
-        x = start
-        while x < end:
-            yield min(255, self.order2 * x ** 2 + self.order1 * x + self.constant)  # Cap at 255
-            x += 1

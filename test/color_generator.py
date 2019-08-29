@@ -19,7 +19,7 @@
 """
 import unittest
 
-from animation.effects import ConstantGenerator, LinearGenerator, QuadraticGenerator
+from animation.generators import ConstantGenerator, LinearGenerator, QuadraticGenerator
 
 
 class ConstantGeneratorTest(unittest.TestCase):
