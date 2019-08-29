@@ -19,7 +19,7 @@
 """
 import unittest
 
-from animation.effects import ConstantGenerator, LinearGenerator
+from animation.effects import ConstantGenerator, LinearGenerator, QuadraticGenerator
 
 
 class ConstantGeneratorTest(unittest.TestCase):
@@ -37,6 +37,20 @@ class LinearGeneratorTest(unittest.TestCase):
 
     def test_color(self):
         expected = 0
-        for color in self.generator.color(0, 33):
+        for color in self.generator.color(0, 34):
             self.assertEqual(color, expected)
             expected += 8
+
+
+class QuadraticGeneratorTest(unittest.TestCase):
+    def setUp(self):
+        self.generator = QuadraticGenerator(order2=0.04, order1=0, constant=0)
+
+    def test_color(self):
+        expected = 255
+        x = -80.0
+
+        for color in self.generator.color(-80, 81):
+            self.assertEqual(color, expected)
+            x += 1
+            expected = min(255, 0.04 * x ** 2)
