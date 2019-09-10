@@ -19,7 +19,7 @@
 """
 import unittest
 
-from animation.generators import ConstantGenerator, LinearGenerator, QuadraticGenerator
+from animation.generators import ConstantGenerator, LinearGenerator, QuadraticGenerator, GeneratorState
 
 
 class ConstantGeneratorTest(unittest.TestCase):
@@ -54,3 +54,19 @@ class QuadraticGeneratorTest(unittest.TestCase):
             self.assertEqual(color, expected)
             x += 1
             expected = min(255, 0.04 * x ** 2)
+
+
+class GeneratorStateTest(unittest.TestCase):
+    def setUp(self):
+        self.state = GeneratorState(ConstantGenerator, 0, 40, value=128)
+        self.state.start()
+
+    def test_colors(self):
+        step_count = 0
+
+        for color in self.state.colors():
+            self.assertEqual(color, 128)
+            step_count += 1
+
+            if step_count > 40:     # In case a generator hangs
+                self.fail('GeneratorStateTest.test_colors: step count exceeded')

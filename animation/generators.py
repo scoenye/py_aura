@@ -18,6 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 from abc import ABC, abstractmethod
+from collections import deque
 
 
 class ColorGenerator(ABC):
@@ -76,3 +77,34 @@ class QuadraticGenerator(ColorGenerator):
         while x < end:
             yield min(255, self.order2 * x ** 2 + self.order1 * x + self.constant)  # Cap at 255
             x += 1
+
+
+class GeneratorState:
+    """
+    Elementary piece of a composite color generation sequence
+    """
+    def __init__(self, generator, begin, end, **kwargs):
+        """
+        :param generator: ColorGenerator class which will create the color values for this step
+        :param begin: starting ordinal value for the generator function
+        :param end: ending ordinal value for the generator function
+        :param **kwargs: parameters to pass to the generator's initializer
+        """
+        self.generator = generator
+        self.generator_args = kwargs
+        self.begin = begin
+        self.end = end
+        self.active_generator = None
+
+    def start(self):
+        """
+        Initiate the generator
+        :return:
+        """
+        self.active_generator = self.generator(**self.generator_args)
+
+    def colors(self):
+        """
+        :return: the color generator instance for this step
+        """
+        return self.active_generator.color(self.begin, self.end)
