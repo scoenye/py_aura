@@ -19,7 +19,8 @@
 """
 import unittest
 
-from animation.generators import ConstantGenerator, LinearGenerator, QuadraticGenerator, GeneratorState
+from animation.generators import ConstantGenerator, LinearGenerator, QuadraticGenerator, GeneratorState, \
+    CompositeGenerator
 
 
 class ConstantGeneratorTest(unittest.TestCase):
@@ -70,3 +71,23 @@ class GeneratorStateTest(unittest.TestCase):
 
             if step_count > 40:     # In case a generator hangs
                 self.fail('GeneratorStateTest.test_colors: step count exceeded')
+
+
+class CompositeGeneratorTest(unittest.TestCase):
+    def setUp(self):
+        self.generator = CompositeGenerator()
+        self.generator.add_state(GeneratorState(ConstantGenerator, 0, 10, value=128))
+        self.generator.add_state(GeneratorState(ConstantGenerator, 0, 10, value=255))
+
+    def test_advance(self):
+        self.generator.advance()
+        for color in self.generator.color():
+            self.assertEqual(color, 128)
+
+        self.generator.advance()
+        for color in self.generator.color():
+            self.assertEqual(color, 255)
+
+        self.generator.advance()                    # Loops the ringbuffer
+        for color in self.generator.color():
+            self.assertEqual(color, 128)

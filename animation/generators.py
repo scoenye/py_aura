@@ -101,6 +101,7 @@ class GeneratorState:
         Initiate the generator
         :return:
         """
+        # Generators cannot be reset -> must generate a new one every time
         self.active_generator = self.generator(**self.generator_args)
 
     def colors(self):
@@ -108,3 +109,37 @@ class GeneratorState:
         :return: the color generator instance for this step
         """
         return self.active_generator.color(self.begin, self.end)
+
+
+class CompositeGenerator:
+    """
+    Combine a number of generators and switch between them. This class generates values for a single color.
+    """
+    def __init__(self):
+        self.states = deque([])     # Collection of all states
+        self.state = None           # Currently active state
+
+    def add_state(self, state):
+        """
+        Append a GeneratorState to execution sequence. Generators will be loaded in order they were appended. When the
+        last state in the sequence is reached, it will restart with the first.
+        :param state: GeneratorState to add.
+        :return:
+        """
+        self.states.append(state)
+
+    def advance(self):
+        """
+        Move to the next state in sequence
+        :return:
+        """
+        self.state = self.states.popleft()
+        self.states.append(self.state)
+
+        self.state.start()
+
+    def color(self):
+        """
+        :return: a color value from the current generator state
+        """
+        yield from self.state.colors()
