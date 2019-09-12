@@ -143,3 +143,4 @@ class CompositeGenerator:
         :return: a color value from the current generator state
         """
         yield from self.state.colors()
+        self.advance()

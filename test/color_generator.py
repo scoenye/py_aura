@@ -80,14 +80,12 @@ class CompositeGeneratorTest(unittest.TestCase):
         self.generator.add_state(GeneratorState(ConstantGenerator, 0, 10, value=255))
 
     def test_advance(self):
-        self.generator.advance()
+        self.generator.advance()                # Get things started
         for color in self.generator.color():
             self.assertEqual(color, 128)
 
-        self.generator.advance()
         for color in self.generator.color():
             self.assertEqual(color, 255)
 
-        self.generator.advance()                    # Loops the ringbuffer
         for color in self.generator.color():
             self.assertEqual(color, 128)
