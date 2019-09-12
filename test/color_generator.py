@@ -20,7 +20,7 @@
 import unittest
 
 from animation.generators import ConstantGenerator, LinearGenerator, QuadraticGenerator, GeneratorState, \
-    CompositeGenerator
+    CompositeGenerator, CompositeGeneratorRGB
 
 
 class ConstantGeneratorTest(unittest.TestCase):
@@ -89,3 +89,30 @@ class CompositeGeneratorTest(unittest.TestCase):
 
         for color in self.generator.color():
             self.assertEqual(color, 128)
+
+
+class CompositeGeneratorRGBTest(unittest.TestCase):
+    def setUp(self):
+        red = CompositeGenerator()
+        red.add_state(GeneratorState(ConstantGenerator, 0, 5, value=0))
+        red.add_state(GeneratorState(ConstantGenerator, 0, 5, value=128))
+
+        green = CompositeGenerator()
+        green.add_state(GeneratorState(ConstantGenerator, 0, 5, value=32))
+        green.add_state(GeneratorState(ConstantGenerator, 0, 5, value=160))
+
+        blue = CompositeGenerator()
+        blue.add_state(GeneratorState(ConstantGenerator, 0, 5, value=64))
+        blue.add_state(GeneratorState(ConstantGenerator, 0, 5, value=192))
+
+        self.generator = CompositeGeneratorRGB(red, green, blue)
+
+    def test_color(self):
+        self.generator.start()
+        limit = 0
+
+        for color in self.generator.color():
+            print(color)
+            limit += 1
+            if limit > 10:
+                break

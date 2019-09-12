@@ -144,3 +144,34 @@ class CompositeGenerator:
         """
         yield from self.state.colors()
         self.advance()
+
+
+class CompositeGeneratorRGB:
+    """
+    Combine CompositeGenerators for red, green and blue colors
+    """
+    def __init__(self, red, green, blue):
+        """
+        :param red: CompositeGenerator for the red color values
+        :param green: CompositeGenerator for the green color values
+        :param blue: CompositeGenerator for the blue color values
+        """
+        self.generators = {'red': red, 'green': green, 'blue': blue}
+
+    def start(self):
+        """
+        Initialize all component generators
+        :return:
+        """
+        for generator in self.generators.values():
+            generator.advance()
+
+    def color(self):
+        """
+        :return: a 3-tuple of reg/green/blue colors obtained from the component generators
+        """
+        rgb = zip(self.generators['red'].color(),
+                  self.generators['green'].color(),
+                  self.generators['blue'].color())
+
+        yield from rgb
