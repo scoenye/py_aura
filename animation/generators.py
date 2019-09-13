@@ -19,6 +19,7 @@
 """
 from abc import ABC, abstractmethod
 from collections import deque
+from itertools import chain
 
 
 class ColorGenerator(ABC):
@@ -137,13 +138,13 @@ class CompositeGenerator:
         self.states.append(self.state)
 
         self.state.start()
+        yield self.state.colors()
 
     def color(self):
         """
         :return: a color value from the current generator state
         """
-        yield from self.state.colors()
-        self.advance()
+        yield from chain.from_iterable(self.advance())
 
 
 class CompositeGeneratorRGB:

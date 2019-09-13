@@ -76,19 +76,23 @@ class GeneratorStateTest(unittest.TestCase):
 class CompositeGeneratorTest(unittest.TestCase):
     def setUp(self):
         self.generator = CompositeGenerator()
-        self.generator.add_state(GeneratorState(ConstantGenerator, 0, 10, value=128))
-        self.generator.add_state(GeneratorState(ConstantGenerator, 0, 10, value=255))
+        self.generator.add_state(GeneratorState(ConstantGenerator, 0, 1, value=128))
+        self.generator.add_state(GeneratorState(ConstantGenerator, 0, 1, value=255))
 
     def test_advance(self):
         self.generator.advance()                # Get things started
-        for color in self.generator.color():
-            self.assertEqual(color, 128)
 
-        for color in self.generator.color():
-            self.assertEqual(color, 255)
+        color = next(self.generator.color())
+        self.assertEqual(color, 128)
 
-        for color in self.generator.color():
-            self.assertEqual(color, 128)
+        color = next(self.generator.color())
+        self.assertEqual(color, 255)
+
+        color = next(self.generator.color())
+        self.assertEqual(color, 128)
+
+        color = next(self.generator.color())
+        self.assertEqual(color, 255)
 
 
 class CompositeGeneratorRGBTest(unittest.TestCase):
