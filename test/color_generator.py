@@ -80,8 +80,6 @@ class CompositeGeneratorTest(unittest.TestCase):
         self.generator.add_state(GeneratorState(ConstantGenerator, 0, 1, value=255))
 
     def test_advance(self):
-        self.generator.advance()                # Get things started
-
         color = next(self.generator.color())
         self.assertEqual(color, 128)
 
@@ -98,25 +96,28 @@ class CompositeGeneratorTest(unittest.TestCase):
 class CompositeGeneratorRGBTest(unittest.TestCase):
     def setUp(self):
         red = CompositeGenerator()
-        red.add_state(GeneratorState(ConstantGenerator, 0, 5, value=0))
-        red.add_state(GeneratorState(ConstantGenerator, 0, 5, value=128))
+        red.add_state(GeneratorState(ConstantGenerator, 0, 1, value=0))
+        red.add_state(GeneratorState(ConstantGenerator, 0, 1, value=128))
 
         green = CompositeGenerator()
-        green.add_state(GeneratorState(ConstantGenerator, 0, 5, value=32))
-        green.add_state(GeneratorState(ConstantGenerator, 0, 5, value=160))
+        green.add_state(GeneratorState(ConstantGenerator, 0, 1, value=32))
+        green.add_state(GeneratorState(ConstantGenerator, 0, 1, value=160))
 
         blue = CompositeGenerator()
-        blue.add_state(GeneratorState(ConstantGenerator, 0, 5, value=64))
-        blue.add_state(GeneratorState(ConstantGenerator, 0, 5, value=192))
+        blue.add_state(GeneratorState(ConstantGenerator, 0, 1, value=64))
+        blue.add_state(GeneratorState(ConstantGenerator, 0, 1, value=192))
 
         self.generator = CompositeGeneratorRGB(red, green, blue)
 
     def test_color(self):
-        self.generator.start()
-        limit = 0
+        color = next(self.generator.color())
+        self.assertTupleEqual(color, (0, 32, 64))
 
-        for color in self.generator.color():
-            print(color)
-            limit += 1
-            if limit > 10:
-                break
+        color = next(self.generator.color())
+        self.assertTupleEqual(color, (128, 160, 192))
+
+        color = next(self.generator.color())
+        self.assertTupleEqual(color, (0, 32, 64))
+
+        color = next(self.generator.color())
+        self.assertTupleEqual(color, (128, 160, 192))

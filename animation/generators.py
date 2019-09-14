@@ -134,11 +134,12 @@ class CompositeGenerator:
         Move to the next state in sequence
         :return:
         """
-        self.state = self.states.popleft()
-        self.states.append(self.state)
+        while True:
+            self.state = self.states.popleft()
+            self.states.append(self.state)
 
-        self.state.start()
-        yield self.state.colors()
+            self.state.start()
+            yield self.state.colors()
 
     def color(self):
         """
@@ -158,14 +159,6 @@ class CompositeGeneratorRGB:
         :param blue: CompositeGenerator for the blue color values
         """
         self.generators = {'red': red, 'green': green, 'blue': blue}
-
-    def start(self):
-        """
-        Initialize all component generators
-        :return:
-        """
-        for generator in self.generators.values():
-            generator.advance()
 
     def color(self):
         """
