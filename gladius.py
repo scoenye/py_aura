@@ -23,37 +23,64 @@ from device import GladiusIIMouse, ITEKeyboard
 from animation.keyboard import StaticEffectITE, CycleEffectITE
 from animation.mouse import StaticEffectGladius, CycleEffectGladius
 
+from animation.generators import ConstantGenerator, GeneratorState, \
+    CompositeGenerator, CompositeGeneratorRGB
+
+red = CompositeGenerator()
+red.add_state(GeneratorState(ConstantGenerator, 0, 5, value=0))
+red.add_state(GeneratorState(ConstantGenerator, 0, 5, value=128))
+
+green = CompositeGenerator()
+green.add_state(GeneratorState(ConstantGenerator, 0, 5, value=32))
+green.add_state(GeneratorState(ConstantGenerator, 0, 5, value=160))
+
+blue = CompositeGenerator()
+blue.add_state(GeneratorState(ConstantGenerator, 0, 5, value=64))
+blue.add_state(GeneratorState(ConstantGenerator, 0, 5, value=192))
+
+generator = CompositeGeneratorRGB(red, green, blue)
+
+# generator.start()
+
+limit = 0
+
+for color in generator.color():
+    print(color)
+    limit += 1
+    if limit > 20:
+        break
+
 # find our device
-mouse = GladiusIIMouse()
-keyboard = ITEKeyboard()
-
-mouse.open()
-keyboard.open()
-
-mouse_static = StaticEffectGladius()
-mouse_static.color(0x00, 0xff, 0x00)
-mouse_static.start(mouse)  # Init the mouse LEDs
-
-mouse_static.color(0xff, 0x00, 0x00)
-mouse_static.start(mouse)
-
-kbd_static = StaticEffectITE()
-kbd_static.color(0xff, 0x00, 0xff)
-kbd_static.start(keyboard)
-
-mouse_cycle = CycleEffectGladius()
-keyboard_cycle = CycleEffectITE()
-
-mouse_cycle.color(0xff, 0x00, 0x00)
-keyboard_cycle.color(0xff, 0x00, 0x00)
-
-mouse_cycle.start(mouse)
-keyboard_cycle.start(keyboard)
-
-time.sleep(10)
-
-mouse_cycle.stop()
-keyboard_cycle.stop()
-
-mouse.close()
-keyboard.close()
+# mouse = GladiusIIMouse()
+# keyboard = ITEKeyboard()
+#
+# mouse.open()
+# keyboard.open()
+#
+# mouse_static = StaticEffectGladius()
+# mouse_static.color(0x00, 0xff, 0x00)
+# mouse_static.start(mouse)  # Init the mouse LEDs
+#
+# mouse_static.color(0xff, 0x00, 0x00)
+# mouse_static.start(mouse)
+#
+# kbd_static = StaticEffectITE()
+# kbd_static.color(0xff, 0x00, 0xff)
+# kbd_static.start(keyboard)
+#
+# mouse_cycle = CycleEffectGladius()
+# keyboard_cycle = CycleEffectITE()
+#
+# mouse_cycle.color(0xff, 0x00, 0x00)
+# keyboard_cycle.color(0xff, 0x00, 0x00)
+#
+# mouse_cycle.start(mouse)
+# keyboard_cycle.start(keyboard)
+#
+# time.sleep(10)
+#
+# mouse_cycle.stop()
+# keyboard_cycle.stop()
+#
+# mouse.close()
+# keyboard.close()

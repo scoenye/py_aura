@@ -129,7 +129,7 @@ class CompositeGenerator:
         """
         self.states.append(state)
 
-    def advance(self):
+    def _advance(self):
         """
         Move to the next state in sequence
         :return:
@@ -145,7 +145,7 @@ class CompositeGenerator:
         """
         :return: a color value from the current generator state
         """
-        yield from chain.from_iterable(self.advance())
+        yield from chain.from_iterable(self._advance())
 
 
 class CompositeGeneratorRGB:
