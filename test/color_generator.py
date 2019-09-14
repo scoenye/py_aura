@@ -25,7 +25,7 @@ from animation.generators import ConstantGenerator, LinearGenerator, QuadraticGe
 
 class ConstantGeneratorTest(unittest.TestCase):
     def setUp(self):
-        self.generator = ConstantGenerator(value=123)
+        self.generator = ConstantGenerator(constant=123)
 
     def test_color(self):
         for color in self.generator.color(0, 1):
@@ -34,7 +34,7 @@ class ConstantGeneratorTest(unittest.TestCase):
 
 class LinearGeneratorTest(unittest.TestCase):
     def setUp(self):
-        self.generator = LinearGenerator(slope=8, offset=0)
+        self.generator = LinearGenerator(order1=8, constant=0)
 
     def test_color(self):
         expected = 0
@@ -59,7 +59,7 @@ class QuadraticGeneratorTest(unittest.TestCase):
 
 class GeneratorStateTest(unittest.TestCase):
     def setUp(self):
-        self.state = GeneratorState(ConstantGenerator, 0, 40, value=128)
+        self.state = GeneratorState(ConstantGenerator, 0, 40, constant=128)
         self.state.start()
 
     def test_colors(self):
@@ -76,8 +76,8 @@ class GeneratorStateTest(unittest.TestCase):
 class CompositeGeneratorTest(unittest.TestCase):
     def setUp(self):
         self.generator = CompositeGenerator()
-        self.generator.add_state(GeneratorState(ConstantGenerator, 0, 1, value=128))
-        self.generator.add_state(GeneratorState(ConstantGenerator, 0, 1, value=255))
+        self.generator.add_state(GeneratorState(ConstantGenerator, 0, 1, constant=128))
+        self.generator.add_state(GeneratorState(ConstantGenerator, 0, 1, constant=255))
 
     def test_advance(self):
         color = next(self.generator.color())
@@ -96,16 +96,16 @@ class CompositeGeneratorTest(unittest.TestCase):
 class CompositeGeneratorRGBTest(unittest.TestCase):
     def setUp(self):
         red = CompositeGenerator()
-        red.add_state(GeneratorState(ConstantGenerator, 0, 1, value=0))
-        red.add_state(GeneratorState(ConstantGenerator, 0, 1, value=128))
+        red.add_state(GeneratorState(ConstantGenerator, 0, 1, constant=0))
+        red.add_state(GeneratorState(ConstantGenerator, 0, 1, constant=128))
 
         green = CompositeGenerator()
-        green.add_state(GeneratorState(ConstantGenerator, 0, 1, value=32))
-        green.add_state(GeneratorState(ConstantGenerator, 0, 1, value=160))
+        green.add_state(GeneratorState(ConstantGenerator, 0, 1, constant=32))
+        green.add_state(GeneratorState(ConstantGenerator, 0, 1, constant=160))
 
         blue = CompositeGenerator()
-        blue.add_state(GeneratorState(ConstantGenerator, 0, 1, value=64))
-        blue.add_state(GeneratorState(ConstantGenerator, 0, 1, value=192))
+        blue.add_state(GeneratorState(ConstantGenerator, 0, 1, constant=64))
+        blue.add_state(GeneratorState(ConstantGenerator, 0, 1, constant=192))
 
         self.generator = CompositeGeneratorRGB(red, green, blue)
 

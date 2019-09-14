@@ -40,7 +40,7 @@ class ConstantGenerator(ColorGenerator):
     Returns a constant value
     """
     def __init__(self, **kwargs):
-        self.value = kwargs['value']
+        self.value = kwargs['constant']
 
     def color(self, start, end):
         x = start
@@ -54,8 +54,8 @@ class LinearGenerator(ColorGenerator):
     Advances in a straight line
     """
     def __init__(self, **kwargs):
-        self.slope = kwargs['slope']
-        self.offset = kwargs['offset']
+        self.slope = kwargs['order1']
+        self.offset = kwargs['constant']
 
     def color(self, start, end):
         x = start
