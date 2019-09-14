@@ -111,6 +111,31 @@ class CycleEffect(Effect):
         self.keep_running = True
 
     def _runnable(self):
+        # Core of the cycle effect thread
+        pass
+
+    def start(self, device, targets=None):
+        self.targets = targets
+        self.device = device
+        self.thread.start()
+
+    def stop(self):
+        self.keep_running = False
+        self.thread.join()
+
+
+class RainbowEffect(Effect):
+    """
+    Cycle effect
+    """
+    def __init__(self):
+        super().__init__()
+        self.device = None
+        self.targets = []
+        self.thread = threading.Thread(target=self._runnable)
+        self.keep_running = True
+
+    def _runnable(self):
         # Core of the strobe effect thread
         pass
 

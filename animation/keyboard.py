@@ -20,7 +20,9 @@
 import threading
 import time
 
-from animation.effects import Effect, StrobeEffect, CycleEffect
+from animation.effects import Effect, StrobeEffect, CycleEffect, RainbowEffect
+from animation.generators import ConstantGenerator, LinearGenerator, QuadraticGenerator, \
+    GeneratorState, CompositeGenerator, CompositeGeneratorRGB
 from device import ITEKeyboard
 from report import ITEKeyboardReport, ITEFlushReport, ITEKeyboardSegmentReport, ITEKeyboardCycleReport
 
@@ -148,3 +150,60 @@ class CycleEffectITE(CycleEffect):
 
         self._wind_down()
 
+
+class RainbowEffectITE(RainbowEffect):
+    """
+    Rainbow effect for the keyboard
+    """
+    def __init__(self):
+        super().__init__()
+        red = CompositeGenerator()
+        red.add_state(GeneratorState(ConstantGenerator, 0, 80, constant=255))
+        red.add_state(GeneratorState(LinearGenerator, -40, 0, order1=-6.4, constant=-1))
+        red.add_state(GeneratorState(ConstantGenerator, 0, 40, constant=0))
+        red.add_state(GeneratorState(LinearGenerator, 0, 40, order1=6.4, constant=0))
+        red.add_state(GeneratorState(ConstantGenerator, 0, 90, constant=255))
+
+        green = CompositeGenerator()
+        green.add_state(GeneratorState(ConstantGenerator, 0, 120, constant=0))
+        green.add_state(GeneratorState(LinearGenerator, 0, 40, order1=6.4, constant=0))
+        green.add_state(GeneratorState(ConstantGenerator, 0, 40, constant=255))
+        green.add_state(GeneratorState(QuadraticGenerator, -80, 80, order2=0.04, order1=0, constant=0))
+        green.add_state(GeneratorState(ConstantGenerator, 0, 40, constant=255))
+        green.add_state(GeneratorState(LinearGenerator, -40, 0, order1=-6.4, constant=-1))
+        green.add_state(GeneratorState(ConstantGenerator, 0, 120, constant=0))
+
+        blue = CompositeGenerator()
+        blue.add_state(GeneratorState(QuadraticGenerator, 0, 80, order2=0.04, order1=0, constant=0))
+        blue.add_state(GeneratorState(ConstantGenerator, 0, 40, constant=255))
+        blue.add_state(GeneratorState(LinearGenerator, -40, 0, order1=-6.4, constant=-1))
+        blue.add_state(GeneratorState(ConstantGenerator, 0, 240, constant=0))
+        blue.add_state(GeneratorState(LinearGenerator, 0, 40, order1=6.4, constant=0))
+        blue.add_state(GeneratorState(ConstantGenerator, 0, 40, constant=255))
+        blue.add_state(GeneratorState(QuadraticGenerator, -80, 0, order2=0.04, order1=0, constant=0))
+
+        self.generator = CompositeGeneratorRGB(red, green, blue)
+
+    def _preamble(self):
+        report = ITEKeyboardReport()
+        report.color(0, 0, 0)
+        # report,byte_04(0x0a)
+        self.device.write_interrupt(report)
+
+    def _runnable(self):
+        report = ITEKeyboardSegmentReport()
+
+        self._preamble()
+
+        if self.targets is None:
+            self.targets = [ITEKeyboard.LED_SEGMENT1, ITEKeyboard.LED_SEGMENT2, ITEKeyboard.LED_SEGMENT3,
+                            ITEKeyboard.LED_SEGMENT4, ITEKeyboard.LED_SEGMENT5, ITEKeyboard.LED_SEGMENT6,
+                            ITEKeyboard.LED_SEGMENT7]
+
+        while self.keep_running:
+            color = next(self.generator.color())
+            print(color)
+            report.color(int(color[0]), int(color[1]), int(color[2]), self.targets)
+            self.device.write_interrupt(report)
+
+            time.sleep(0.05)

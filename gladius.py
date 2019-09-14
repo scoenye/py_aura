@@ -20,43 +20,16 @@
 import time
 
 from device import GladiusIIMouse, ITEKeyboard
-from animation.keyboard import StaticEffectITE, CycleEffectITE
+from animation.keyboard import StaticEffectITE, CycleEffectITE, RainbowEffectITE
 from animation.mouse import StaticEffectGladius, CycleEffectGladius
-
-from animation.generators import ConstantGenerator, GeneratorState, \
-    CompositeGenerator, CompositeGeneratorRGB
-
-red = CompositeGenerator()
-red.add_state(GeneratorState(ConstantGenerator, 0, 5, value=0))
-red.add_state(GeneratorState(ConstantGenerator, 0, 5, value=128))
-
-green = CompositeGenerator()
-green.add_state(GeneratorState(ConstantGenerator, 0, 5, value=32))
-green.add_state(GeneratorState(ConstantGenerator, 0, 5, value=160))
-
-blue = CompositeGenerator()
-blue.add_state(GeneratorState(ConstantGenerator, 0, 5, value=64))
-blue.add_state(GeneratorState(ConstantGenerator, 0, 5, value=192))
-
-generator = CompositeGeneratorRGB(red, green, blue)
-
-# generator.start()
-
-limit = 0
-
-for color in generator.color():
-    print(color)
-    limit += 1
-    if limit > 20:
-        break
 
 # find our device
 # mouse = GladiusIIMouse()
-# keyboard = ITEKeyboard()
-#
+keyboard = ITEKeyboard()
+
 # mouse.open()
-# keyboard.open()
-#
+keyboard.open()
+
 # mouse_static = StaticEffectGladius()
 # mouse_static.color(0x00, 0xff, 0x00)
 # mouse_static.start(mouse)  # Init the mouse LEDs
@@ -77,10 +50,13 @@ for color in generator.color():
 # mouse_cycle.start(mouse)
 # keyboard_cycle.start(keyboard)
 #
-# time.sleep(10)
+keyboard_rainbow = RainbowEffectITE()
+keyboard_rainbow.start(keyboard)
+time.sleep(10)
 #
 # mouse_cycle.stop()
 # keyboard_cycle.stop()
+keyboard_rainbow.stop()
 #
 # mouse.close()
-# keyboard.close()
+keyboard.close()
