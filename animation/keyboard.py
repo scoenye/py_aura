@@ -200,10 +200,10 @@ class RainbowEffectITE(RainbowEffect):
                             ITEKeyboard.LED_SEGMENT4, ITEKeyboard.LED_SEGMENT5, ITEKeyboard.LED_SEGMENT6,
                             ITEKeyboard.LED_SEGMENT7]
 
-        while self.keep_running:
-            color = next(self.generator.color())
-            print(color)
+        for color in  self.generator.color():
             report.color(int(color[0]), int(color[1]), int(color[2]), self.targets)
             self.device.write_interrupt(report)
 
             time.sleep(0.05)
+            if not self.keep_running:
+                break

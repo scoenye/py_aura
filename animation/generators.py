@@ -109,7 +109,7 @@ class GeneratorState:
         """
         :return: the color generator instance for this step
         """
-        return self.active_generator.color(self.begin, self.end)
+        yield from self.active_generator.color(self.begin, self.end)
 
 
 class CompositeGenerator:

@@ -76,8 +76,8 @@ class GeneratorStateTest(unittest.TestCase):
 class CompositeGeneratorTest(unittest.TestCase):
     def setUp(self):
         self.generator = CompositeGenerator()
-        self.generator.add_state(GeneratorState(ConstantGenerator, 0, 1, constant=128))
-        self.generator.add_state(GeneratorState(ConstantGenerator, 0, 1, constant=255))
+        self.generator.add_state(GeneratorState(ConstantGenerator, 0, 2, constant=128))
+        self.generator.add_state(GeneratorState(ConstantGenerator, 0, 2, constant=255))
 
     def test_advance(self):
         color = next(self.generator.color())
@@ -96,28 +96,28 @@ class CompositeGeneratorTest(unittest.TestCase):
 class CompositeGeneratorRGBTest(unittest.TestCase):
     def setUp(self):
         red = CompositeGenerator()
-        red.add_state(GeneratorState(ConstantGenerator, 0, 1, constant=0))
-        red.add_state(GeneratorState(ConstantGenerator, 0, 1, constant=128))
+        red.add_state(GeneratorState(ConstantGenerator, 0, 2, constant=0))
+        red.add_state(GeneratorState(ConstantGenerator, 0, 2, constant=128))
 
         green = CompositeGenerator()
-        green.add_state(GeneratorState(ConstantGenerator, 0, 1, constant=32))
-        green.add_state(GeneratorState(ConstantGenerator, 0, 1, constant=160))
+        green.add_state(GeneratorState(ConstantGenerator, 0, 2, constant=32))
+        green.add_state(GeneratorState(ConstantGenerator, 0, 2, constant=160))
 
         blue = CompositeGenerator()
-        blue.add_state(GeneratorState(ConstantGenerator, 0, 1, constant=64))
-        blue.add_state(GeneratorState(ConstantGenerator, 0, 1, constant=192))
+        blue.add_state(GeneratorState(ConstantGenerator, 0, 2, constant=64))
+        blue.add_state(GeneratorState(ConstantGenerator, 0, 2, constant=192))
 
         self.generator = CompositeGeneratorRGB(red, green, blue)
 
     def test_color(self):
-        color = next(self.generator.color())
-        self.assertTupleEqual(color, (0, 32, 64))
+        count = 0
 
-        color = next(self.generator.color())
-        self.assertTupleEqual(color, (128, 160, 192))
+        for color in self.generator.color():
+            if count % 4 < 2:
+                self.assertTupleEqual(color, (0, 32, 64))
+            else:
+                self.assertTupleEqual(color, (128, 160, 192))
+            count += 1
 
-        color = next(self.generator.color())
-        self.assertTupleEqual(color, (0, 32, 64))
-
-        color = next(self.generator.color())
-        self.assertTupleEqual(color, (128, 160, 192))
+            if count > 8:
+                break
