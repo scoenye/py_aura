@@ -20,7 +20,9 @@
 import threading
 import time
 
-from animation.effects import Effect, StrobeEffect, CycleEffect
+from animation.effects import Effect, StrobeEffect, CycleEffect, RainbowEffect
+from animation.generators import ConstantGenerator, LinearGenerator, QuadraticGenerator, \
+    GeneratorState, CompositeGenerator, CompositeGeneratorRGB
 from device import GladiusIIMouse
 from report import GladiusIIReport, GladiusIICCReport
 
@@ -130,3 +132,55 @@ class CycleEffectGladius(CycleEffect):
     def start(self, device, targets=None):
         targets = targets or [GladiusIIMouse.LED_LOGO, GladiusIIMouse.LED_WHEEL, GladiusIIMouse.LED_BASE]
         super().start(device, targets)
+
+
+class RainbowEffectGladius(RainbowEffect):
+    """
+    Rainbow effect for the mouse
+    """
+    def __init__(self):
+        super().__init__()
+        red = CompositeGenerator()
+        red.add_state(GeneratorState(ConstantGenerator, 0, 80, constant=255))
+        red.add_state(GeneratorState(LinearGenerator, -40, 0, order1=-6.4, constant=-1))
+        red.add_state(GeneratorState(ConstantGenerator, 0, 40, constant=0))
+        red.add_state(GeneratorState(LinearGenerator, 0, 40, order1=6.4, constant=0))
+        red.add_state(GeneratorState(ConstantGenerator, 0, 90, constant=255))
+
+        green = CompositeGenerator()
+        green.add_state(GeneratorState(ConstantGenerator, 0, 120, constant=0))
+        green.add_state(GeneratorState(LinearGenerator, 0, 40, order1=6.4, constant=0))
+        green.add_state(GeneratorState(ConstantGenerator, 0, 40, constant=255))
+        green.add_state(GeneratorState(QuadraticGenerator, -80, 80, order2=0.04, order1=0, constant=0))
+        green.add_state(GeneratorState(ConstantGenerator, 0, 40, constant=255))
+        green.add_state(GeneratorState(LinearGenerator, -40, 0, order1=-6.4, constant=-1))
+        green.add_state(GeneratorState(ConstantGenerator, 0, 120, constant=0))
+
+        blue = CompositeGenerator()
+        blue.add_state(GeneratorState(QuadraticGenerator, 0, 80, order2=0.04, order1=0, constant=0))
+        blue.add_state(GeneratorState(ConstantGenerator, 0, 40, constant=255))
+        blue.add_state(GeneratorState(LinearGenerator, -40, 0, order1=-6.4, constant=-1))
+        blue.add_state(GeneratorState(ConstantGenerator, 0, 240, constant=0))
+        blue.add_state(GeneratorState(LinearGenerator, 0, 40, order1=6.4, constant=0))
+        blue.add_state(GeneratorState(ConstantGenerator, 0, 40, constant=255))
+        blue.add_state(GeneratorState(QuadraticGenerator, -80, 0, order2=0.04, order1=0, constant=0))
+
+        self.generator = CompositeGeneratorRGB(red, green, blue)
+
+    def _runnable(self):
+        report = GladiusIIReport()
+
+        if self.targets is None:
+            self.targets = [GladiusIIMouse.LED_LOGO, GladiusIIMouse.LED_WHEEL, GladiusIIMouse.LED_BASE]
+
+        for color in self.generator.color():
+            report.color(int(color[0]), int(color[1]), int(color[2]))
+
+            for target in self.targets:
+                report.target(target)
+                self.device.write_interrupt(report)
+
+            time.sleep(0.05)
+
+            if not self.keep_running:
+                break
