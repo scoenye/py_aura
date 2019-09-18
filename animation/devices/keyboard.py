@@ -19,9 +19,9 @@
 """
 import time
 
+from animation.devices.common import RainbowBlockLine, RainbowCurvedLine
 from animation.effects import Effect, StrobeEffect, CycleEffect, RainbowEffect
-from animation.generators import ConstantGenerator, LinearGenerator, QuadraticGenerator, \
-    GeneratorState, CompositeGenerator, CompositeGeneratorRGB
+from animation.generators import CompositeGeneratorRGB
 from device import ITEKeyboard
 from report import ITEKeyboardReport, ITEFlushReport, ITEKeyboardSegmentReport, ITEKeyboardCycleReport
 
@@ -150,32 +150,6 @@ class CycleEffectITE(CycleEffect):
         self._wind_down()
 
 
-class RainbowBlockLine(CompositeGenerator):
-    """
-    Canonical "square wave" line for the keyboard rainbow effect
-    """
-    def __init__(self, initial=0):
-        super().__init__(initial)
-        self.add_state(GeneratorState(ConstantGenerator, 0, 160, constant=255))
-        self.add_state(GeneratorState(LinearGenerator, -40, 0, order1=-6.4, constant=-1))
-        self.add_state(GeneratorState(ConstantGenerator, 0, 80, constant=0))
-        self.add_state(GeneratorState(LinearGenerator, 0, 40, order1=6.4, constant=0))
-
-
-class RainbowCurvedLine(CompositeGenerator):
-    """
-    Canonical quadratic curve sequence for the keyboard rainbow effect
-    """
-    def __init__(self, initial=0):
-        super().__init__(initial)
-        self.add_state(GeneratorState(QuadraticGenerator, -80, 80, order2=0.04, order1=0, constant=0))
-        self.add_state(GeneratorState(ConstantGenerator, 0, 80, constant=255))
-        self.add_state(GeneratorState(LinearGenerator, -40, 0, order1=-6.4, constant=-1))
-        self.add_state(GeneratorState(ConstantGenerator, 0, 240, constant=0))
-        self.add_state(GeneratorState(LinearGenerator, 0, 40, order1=6.4, constant=0))
-        self.add_state(GeneratorState(ConstantGenerator, 0, 80, constant=255))
-
-
 class RainbowEffectITE(RainbowEffect):
     """
     Rainbow effect for the keyboard
@@ -204,7 +178,7 @@ class RainbowEffectITE(RainbowEffect):
                             ITEKeyboard.LED_SEGMENT4, ITEKeyboard.LED_SEGMENT5, ITEKeyboard.LED_SEGMENT6,
                             ITEKeyboard.LED_SEGMENT7]
 
-        for color in  self.generator.color():
+        for color in self.generator.color():
             report.color(int(color[0]), int(color[1]), int(color[2]), self.targets)
             self.device.write_interrupt(report)
 

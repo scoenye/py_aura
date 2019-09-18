@@ -20,8 +20,8 @@
 import time
 
 from device import GladiusIIMouse, ITEKeyboard
-from animation.keyboard import StaticEffectITE, CycleEffectITE, RainbowEffectITE
-from animation.mouse import StaticEffectGladius, CycleEffectGladius, RainbowEffectGladius
+from animation.devices.keyboard import RainbowEffectITE
+from animation.devices.mouse import StaticEffectGladius, RainbowEffectGladius
 
 # find our device
 mouse = GladiusIIMouse()
