@@ -72,6 +72,14 @@ class GeneratorStateTest(unittest.TestCase):
             if step_count > 40:     # In case a generator hangs
                 self.fail('GeneratorStateTest.test_colors: step count exceeded')
 
+    def test_colors_initial(self):
+        step_count = 0
+
+        for color in self.state.colors(38):
+            step_count += 1
+
+        self.assertEqual(step_count, 40 - 38)
+
 
 class CompositeGeneratorTest(unittest.TestCase):
     def setUp(self):
@@ -79,18 +87,52 @@ class CompositeGeneratorTest(unittest.TestCase):
         self.generator.add_state(GeneratorState(ConstantGenerator, 0, 2, constant=128))
         self.generator.add_state(GeneratorState(ConstantGenerator, 0, 2, constant=255))
 
-    def test_advance(self):
-        color = next(self.generator.color())
+    def test_color(self):
+        colors = self.generator.color()
+
+        color = next(colors)
         self.assertEqual(color, 128)
 
-        color = next(self.generator.color())
-        self.assertEqual(color, 255)
-
-        color = next(self.generator.color())
+        color = next(colors)
         self.assertEqual(color, 128)
 
-        color = next(self.generator.color())
+        color = next(colors)
         self.assertEqual(color, 255)
+
+        color = next(colors)
+        self.assertEqual(color, 255)
+
+        color = next(colors)
+        self.assertEqual(color, 128)
+
+        color = next(colors)
+        self.assertEqual(color, 128)
+
+        color = next(colors)
+        self.assertEqual(color, 255)
+
+        color = next(colors)
+        self.assertEqual(color, 255)
+
+
+class CompositeGeneratorOffsetTest(unittest.TestCase):
+    def setUp(self):
+        self.generator = CompositeGenerator(108)
+        self.generator.add_state(GeneratorState(ConstantGenerator, 0, 100, constant=128))
+        self.generator.add_state(GeneratorState(ConstantGenerator, 0, 10, constant=255))
+        self.generator.add_state(GeneratorState(ConstantGenerator, 0, 2, constant=64))
+
+    def test_color(self):
+        colors = self.generator.color()
+
+        color = next(colors)
+        self.assertEqual(color, 255)
+
+        color = next(colors)
+        self.assertEqual(color, 255)
+
+        color = next(colors)
+        self.assertEqual(color, 64)
 
 
 class CompositeGeneratorRGBTest(unittest.TestCase):

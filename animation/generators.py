@@ -105,20 +105,33 @@ class GeneratorState:
         # Generators cannot be reset -> must generate a new one every time
         self.active_generator = self.generator(**self.generator_args)
 
-    def colors(self):
+    def colors(self, initial=0):
         """
+        :param initial: optional offset to apply to the state's starting point
         :return: the color generator instance for this step
         """
-        yield from self.active_generator.color(self.begin, self.end)
+        yield from self.active_generator.color(self.begin + initial, self.end)
+
+    def span(self):
+        """
+        :return: amount of "time" provided by this state
+        """
+        return abs(self.end - self.begin)
 
 
 class CompositeGenerator:
     """
     Combine a number of generators and switch between them. This class generates values for a single color.
+    Instances take an initial offset which will be applied to the first state invocation. This enables the same
+    CompositeGenerator to be used for related curves.
     """
-    def __init__(self):
+    def __init__(self, initial=0):
+        """
+        :param initial: offset in the generator curve on first invocation
+        """
         self.states = deque([])     # Collection of all states
         self.state = None           # Currently active state
+        self.initial = initial
 
     def add_state(self, state):
         """
@@ -129,17 +142,25 @@ class CompositeGenerator:
         """
         self.states.append(state)
 
+    def _first_call(self):
+        # Handle the offset on the first invocation
+        while self.states[0].span() < self.initial:
+            self.initial -= self.states[0].span()
+            self.states.append(self.states.popleft())
+
     def _advance(self):
-        """
-        Move to the next state in sequence
-        :return:
-        """
+        # Move to the next state in sequence
+        # The initial invocation advances to the initial offset specified for the instance.
+        if self.initial:
+            self._first_call()
+
         while True:
             self.state = self.states.popleft()
             self.states.append(self.state)
 
             self.state.start()
-            yield self.state.colors()
+            yield self.state.colors(self.initial)
+            self.initial = 0
 
     def color(self):
         """
