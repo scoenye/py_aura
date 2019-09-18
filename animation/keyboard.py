@@ -152,45 +152,28 @@ class CycleEffectITE(CycleEffect):
 
 class RainbowBlockLine(CompositeGenerator):
     """
-    "Squarewave" line for the keyboard rainbow effect
+    Canonical "square wave" line for the keyboard rainbow effect
     """
-    def __init__(self):
-        super().__init__()
-        self.add_state(GeneratorState(ConstantGenerator, 0, 80, constant=255))
+    def __init__(self, initial=0):
+        super().__init__(initial)
+        self.add_state(GeneratorState(ConstantGenerator, 0, 160, constant=255))
         self.add_state(GeneratorState(LinearGenerator, -40, 0, order1=-6.4, constant=-1))
-        self.add_state(GeneratorState(ConstantGenerator, 0, 40, constant=0))
+        self.add_state(GeneratorState(ConstantGenerator, 0, 80, constant=0))
         self.add_state(GeneratorState(LinearGenerator, 0, 40, order1=6.4, constant=0))
-        self.add_state(GeneratorState(ConstantGenerator, 0, 90, constant=255))
 
 
-class RainbowCurvedLine1(CompositeGenerator):
+class RainbowCurvedLine(CompositeGenerator):
     """
-    Line with leading quadratic curve
+    Canonical quadratic curve sequence for the keyboard rainbow effect
     """
-    def __init__(self):
-        super().__init__()
-        self.add_state(GeneratorState(ConstantGenerator, 0, 120, constant=0))
-        self.add_state(GeneratorState(LinearGenerator, 0, 40, order1=6.4, constant=0))
-        self.add_state(GeneratorState(ConstantGenerator, 0, 40, constant=255))
+    def __init__(self, initial=0):
+        super().__init__(initial)
         self.add_state(GeneratorState(QuadraticGenerator, -80, 80, order2=0.04, order1=0, constant=0))
-        self.add_state(GeneratorState(ConstantGenerator, 0, 40, constant=255))
-        self.add_state(GeneratorState(LinearGenerator, -40, 0, order1=-6.4, constant=-1))
-        self.add_state(GeneratorState(ConstantGenerator, 0, 120, constant=0))
-
-
-class RainbowCurvedLine2(CompositeGenerator):
-    """
-    Leading square wave with quadratic curve
-    """
-    def __init__(self):
-        super().__init__()
-        self.add_state(GeneratorState(QuadraticGenerator, 0, 80, order2=0.04, order1=0, constant=0))
-        self.add_state(GeneratorState(ConstantGenerator, 0, 40, constant=255))
+        self.add_state(GeneratorState(ConstantGenerator, 0, 80, constant=255))
         self.add_state(GeneratorState(LinearGenerator, -40, 0, order1=-6.4, constant=-1))
         self.add_state(GeneratorState(ConstantGenerator, 0, 240, constant=0))
         self.add_state(GeneratorState(LinearGenerator, 0, 40, order1=6.4, constant=0))
-        self.add_state(GeneratorState(ConstantGenerator, 0, 40, constant=255))
-        self.add_state(GeneratorState(QuadraticGenerator, -80, 0, order2=0.04, order1=0, constant=0))
+        self.add_state(GeneratorState(ConstantGenerator, 0, 80, constant=255))
 
 
 class RainbowEffectITE(RainbowEffect):
@@ -199,9 +182,9 @@ class RainbowEffectITE(RainbowEffect):
     """
     def __init__(self):
         super().__init__()
-        red = RainbowBlockLine()
-        green = RainbowCurvedLine1()
-        blue = RainbowCurvedLine2()
+        red = RainbowBlockLine(80)
+        green = RainbowCurvedLine(80)
+        blue = RainbowCurvedLine(400)
 
         self.generator = CompositeGeneratorRGB(red, green, blue)
 
@@ -226,5 +209,6 @@ class RainbowEffectITE(RainbowEffect):
             self.device.write_interrupt(report)
 
             time.sleep(0.05)
+
             if not self.keep_running:
                 break
