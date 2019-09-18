@@ -17,12 +17,11 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-import threading
 import time
 
+from animation.devices.common import RainbowBlockLine, RainbowCurvedLine
 from animation.effects import Effect, StrobeEffect, CycleEffect, RainbowEffect
-from animation.generators import ConstantGenerator, LinearGenerator, QuadraticGenerator, \
-    GeneratorState, CompositeGenerator, CompositeGeneratorRGB
+from animation.generators import CompositeGeneratorRGB
 from device import GladiusIIMouse
 from report import GladiusIIReport, GladiusIICCReport
 
@@ -140,30 +139,9 @@ class RainbowEffectGladius(RainbowEffect):
     """
     def __init__(self):
         super().__init__()
-        red = CompositeGenerator()
-        red.add_state(GeneratorState(ConstantGenerator, 0, 80, constant=255))
-        red.add_state(GeneratorState(LinearGenerator, -40, 0, order1=-6.4, constant=-1))
-        red.add_state(GeneratorState(ConstantGenerator, 0, 40, constant=0))
-        red.add_state(GeneratorState(LinearGenerator, 0, 40, order1=6.4, constant=0))
-        red.add_state(GeneratorState(ConstantGenerator, 0, 90, constant=255))
-
-        green = CompositeGenerator()
-        green.add_state(GeneratorState(ConstantGenerator, 0, 120, constant=0))
-        green.add_state(GeneratorState(LinearGenerator, 0, 40, order1=6.4, constant=0))
-        green.add_state(GeneratorState(ConstantGenerator, 0, 40, constant=255))
-        green.add_state(GeneratorState(QuadraticGenerator, -80, 80, order2=0.04, order1=0, constant=0))
-        green.add_state(GeneratorState(ConstantGenerator, 0, 40, constant=255))
-        green.add_state(GeneratorState(LinearGenerator, -40, 0, order1=-6.4, constant=-1))
-        green.add_state(GeneratorState(ConstantGenerator, 0, 120, constant=0))
-
-        blue = CompositeGenerator()
-        blue.add_state(GeneratorState(QuadraticGenerator, 0, 80, order2=0.04, order1=0, constant=0))
-        blue.add_state(GeneratorState(ConstantGenerator, 0, 40, constant=255))
-        blue.add_state(GeneratorState(LinearGenerator, -40, 0, order1=-6.4, constant=-1))
-        blue.add_state(GeneratorState(ConstantGenerator, 0, 240, constant=0))
-        blue.add_state(GeneratorState(LinearGenerator, 0, 40, order1=6.4, constant=0))
-        blue.add_state(GeneratorState(ConstantGenerator, 0, 40, constant=255))
-        blue.add_state(GeneratorState(QuadraticGenerator, -80, 0, order2=0.04, order1=0, constant=0))
+        red = RainbowBlockLine(80)
+        green = RainbowCurvedLine(80)
+        blue = RainbowCurvedLine(400)
 
         self.generator = CompositeGeneratorRGB(red, green, blue)
 
