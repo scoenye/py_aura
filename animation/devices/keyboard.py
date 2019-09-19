@@ -156,11 +156,10 @@ class RainbowEffectITE(RainbowEffect):
     """
     def __init__(self):
         super().__init__()
-        red = RainbowBlockLine(80)
-        green = RainbowCurvedLine(80)
-        blue = RainbowCurvedLine(400)
-
-        self.generator = CompositeGeneratorRGB(red, green, blue)
+        self.segment1 = CompositeGeneratorRGB(RainbowBlockLine(112), RainbowCurvedLine(112), RainbowCurvedLine(432))
+        self.segment2 = CompositeGeneratorRGB(RainbowBlockLine(75), RainbowCurvedLine(75), RainbowCurvedLine(395))
+        self.segment3 = CompositeGeneratorRGB(RainbowBlockLine(37), RainbowCurvedLine(37), RainbowCurvedLine(357))
+        self.segment4 = CompositeGeneratorRGB(RainbowBlockLine(0), RainbowCurvedLine(0), RainbowCurvedLine(320))
 
     def _preamble(self):
         report = ITEKeyboardReport()
@@ -168,21 +167,50 @@ class RainbowEffectITE(RainbowEffect):
         # report,byte_04(0x0a)
         self.device.write_interrupt(report)
 
+    def _wind_down(self):
+        color_report = ITEKeyboardReport()
+        flush_report = ITEFlushReport()
+
+        color_report.color(0xff, 0x00, 0xff)
+        self.device.write_interrupt(color_report)
+        self.device.write_interrupt(color_report)
+
+        self.device.write_interrupt(flush_report)
+
+        color_report.byte_7(0xe1)
+        self.device.write_interrupt(color_report)
+
+        self.device.write_interrupt(flush_report)
+
     def _runnable(self):
         report = ITEKeyboardSegmentReport()
 
         self._preamble()
 
-        if self.targets is None:
-            self.targets = [ITEKeyboard.LED_SEGMENT1, ITEKeyboard.LED_SEGMENT2, ITEKeyboard.LED_SEGMENT3,
-                            ITEKeyboard.LED_SEGMENT4, ITEKeyboard.LED_SEGMENT5, ITEKeyboard.LED_SEGMENT6,
-                            ITEKeyboard.LED_SEGMENT7]
+        clear_targets = [ITEKeyboard.LED_SEGMENT5, ITEKeyboard.LED_SEGMENT6, ITEKeyboard.LED_SEGMENT7]
 
-        for color in self.generator.color():
-            report.color(int(color[0]), int(color[1]), int(color[2]), self.targets)
+        colors1 = self.segment1.color()
+        colors2 = self.segment2.color()
+        colors3 = self.segment3.color()
+        colors4 = self.segment4.color()
+
+        while self.keep_running:
+            color = next(colors1)
+            report.color(int(color[0]), int(color[1]), int(color[2]), [ITEKeyboard.LED_SEGMENT1, ITEKeyboard.LED_SEGMENT6])
+
+            color = next(colors2)
+            report.color(int(color[0]), int(color[1]), int(color[2]), [ITEKeyboard.LED_SEGMENT2])
+
+            color = next(colors3)
+            report.color(int(color[0]), int(color[1]), int(color[2]), [ITEKeyboard.LED_SEGMENT3, ITEKeyboard.LED_SEGMENT7])
+
+            color = next(colors4)
+            report.color(int(color[0]), int(color[1]), int(color[2]), [ITEKeyboard.LED_SEGMENT4, ITEKeyboard.LED_SEGMENT5])
             self.device.write_interrupt(report)
 
-            time.sleep(0.05)
+            report.color(0, 0, 0, clear_targets)
+            self.device.write_interrupt(report)
 
-            if not self.keep_running:
-                break
+            time.sleep(0.01)
+
+        self._wind_down()

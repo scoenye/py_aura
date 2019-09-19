@@ -158,7 +158,7 @@ class RainbowEffectGladius(RainbowEffect):
                 report.target(target)
                 self.device.write_interrupt(report)
 
-            time.sleep(0.05)
+            time.sleep(0.01)
 
             if not self.keep_running:
                 break

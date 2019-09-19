@@ -213,6 +213,7 @@ class ITEKeyboardSegmentReport(Report):
         :param red: Red value, 0 - 255
         :param green: Green value, 0 - 255
         :param blue: Blue value, 0 - 255
+        :param targets: segments affected by the color change
         :return:
         """
         for target in targets:
