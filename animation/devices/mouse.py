@@ -139,19 +139,17 @@ class RainbowEffectGladius(RainbowEffect):
     """
     def __init__(self):
         super().__init__()
-        red = RainbowBlockLine(80)
-        green = RainbowCurvedLine(80)
-        blue = RainbowCurvedLine(400)
-
-        self.generator = CompositeGeneratorRGB(red, green, blue)
+        self.generator = CompositeGeneratorRGB(RainbowBlockLine(112), RainbowCurvedLine(112), RainbowCurvedLine(432))
 
     def _runnable(self):
         report = GladiusIIReport()
+        colors = self.generator.color()
 
         if self.targets is None:
             self.targets = [GladiusIIMouse.LED_LOGO, GladiusIIMouse.LED_WHEEL, GladiusIIMouse.LED_BASE]
 
-        for color in self.generator.color():
+        while self.keep_running:
+            color = next(colors)
             report.color(int(color[0]), int(color[1]), int(color[2]))
 
             for target in self.targets:
@@ -159,6 +157,3 @@ class RainbowEffectGladius(RainbowEffect):
                 self.device.write_interrupt(report)
 
             time.sleep(0.01)
-
-            if not self.keep_running:
-                break
