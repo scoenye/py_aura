@@ -40,7 +40,7 @@ class ConstantGenerator(ColorGenerator):
     Returns a constant value
     """
     def __init__(self, **kwargs):
-        self.value = kwargs['constant']
+        self.value = int(kwargs['constant'])
 
     def color(self, start, end):
         x = start
@@ -60,7 +60,7 @@ class LinearGenerator(ColorGenerator):
     def color(self, start, end):
         x = start
         while x < end:
-            yield self.slope * x + self.offset
+            yield int(self.slope * x + self.offset)
             x += 1
 
 
@@ -76,7 +76,7 @@ class QuadraticGenerator(ColorGenerator):
     def color(self, start, end):
         x = start
         while x < end:
-            yield min(255, self.order2 * x ** 2 + self.order1 * x + self.constant)  # Cap at 255
+            yield min(255, int(self.order2 * x ** 2 + self.order1 * x + self.constant))  # Cap at 255
             x += 1
 
 

@@ -150,7 +150,7 @@ class RainbowEffectGladius(RainbowEffect):
 
         while self.keep_running:
             color = next(colors)
-            report.color(int(color[0]), int(color[1]), int(color[2]))
+            report.color(color[0], color[1], color[2])
 
             for target in self.targets:
                 report.target(target)

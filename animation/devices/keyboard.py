@@ -196,16 +196,16 @@ class RainbowEffectITE(RainbowEffect):
 
         while self.keep_running:
             color = next(colors1)
-            report.color(int(color[0]), int(color[1]), int(color[2]), [ITEKeyboard.LED_SEGMENT1, ITEKeyboard.LED_SEGMENT6])
+            report.color(color[0], color[1], color[2], [ITEKeyboard.LED_SEGMENT1, ITEKeyboard.LED_SEGMENT6])
 
             color = next(colors2)
-            report.color(int(color[0]), int(color[1]), int(color[2]), [ITEKeyboard.LED_SEGMENT2])
+            report.color(color[0], color[1], color[2], [ITEKeyboard.LED_SEGMENT2])
 
             color = next(colors3)
-            report.color(int(color[0]), int(color[1]), int(color[2]), [ITEKeyboard.LED_SEGMENT3, ITEKeyboard.LED_SEGMENT7])
+            report.color(color[0], color[1], color[2], [ITEKeyboard.LED_SEGMENT3, ITEKeyboard.LED_SEGMENT7])
 
             color = next(colors4)
-            report.color(int(color[0]), int(color[1]), int(color[2]), [ITEKeyboard.LED_SEGMENT4, ITEKeyboard.LED_SEGMENT5])
+            report.color(color[0], color[1], color[2], [ITEKeyboard.LED_SEGMENT4, ITEKeyboard.LED_SEGMENT5])
             self.device.write_interrupt(report)
 
             report.color(0, 0, 0, clear_targets)
