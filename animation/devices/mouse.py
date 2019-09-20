@@ -19,7 +19,7 @@
 """
 import time
 
-from animation.devices.common import RainbowBlockLine, RainbowCurvedLine
+from animation.devices.common import RainbowBlockLine, RainbowCurvedLine, CycleCurve
 from animation.effects import Effect, StrobeEffect, CycleEffect, RainbowEffect
 from animation.generators import CompositeGeneratorRGB
 from device import GladiusIIMouse
@@ -103,7 +103,8 @@ class CycleEffectGladius(CycleEffect):
         hw_report = GladiusIIReport()
         sw_report = GladiusIICCReport()
 
-        sw_byte_04 = 0
+        cycle_generator = CycleCurve(0)
+        colors = cycle_generator.color()
 
         self._preamble()
 
@@ -114,12 +115,10 @@ class CycleEffectGladius(CycleEffect):
 
         time.sleep(1)
 
-        sw_report.color(sw_byte_04, 0, 0)               # Value may not be color related at all
-
         while self.keep_running:                        # 0x60 report does not seem to have any influence
             self.device.write_interrupt(sw_report)      # No targets in this thing...
 
-            sw_byte_04 = (sw_byte_04 + 33) % 256
+            sw_byte_04 = next(colors)                    # Value may not be color related at all
 
             sw_report.color(sw_byte_04, 0, 0)
 
