@@ -17,6 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
+import sys
 import unittest
 
 from animation.generators import ConstantGenerator, LinearGenerator, QuadraticGenerator, CycleGenerator, \
@@ -29,6 +30,13 @@ class ConstantGeneratorTest(unittest.TestCase):
 
     def test_color(self):
         for color in self.generator.color(0, 1):
+            self.assertEqual(color, 123)
+
+    def test_indef(self):
+        colors = self.generator.color(0)
+
+        for x in range(0, 10):
+            color = next(colors)
             self.assertEqual(color, 123)
 
 
@@ -91,6 +99,17 @@ class GeneratorStateTest(unittest.TestCase):
             step_count += 1
 
         self.assertEqual(step_count, 40 - 38)
+
+    def test_span(self):
+        self.assertEqual(self.state.span(), 40)
+
+
+class GeneratorStateIndefTest(unittest.TestCase):
+    def setUp(self):
+        self.state = GeneratorState(ConstantGenerator, 0, constant=64)
+
+    def test_span(self):
+        self.assertEqual(self.state.span(), sys.maxsize)
 
 
 class CompositeGeneratorTest(unittest.TestCase):

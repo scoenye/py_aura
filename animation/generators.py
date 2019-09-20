@@ -17,6 +17,8 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
+import sys
+
 from abc import ABC, abstractmethod
 from collections import deque
 from itertools import chain
@@ -27,7 +29,7 @@ class ColorGenerator(ABC):
     Generate color values for effects
     """
     @abstractmethod
-    def color(self, start, end):
+    def color(self, start, end=sys.maxsize):
         """
         :param start: starting position for the generator
         :param end: final position of the generator
@@ -42,7 +44,7 @@ class ConstantGenerator(ColorGenerator):
     def __init__(self, **kwargs):
         self.value = int(kwargs['constant'])
 
-    def color(self, start, end):
+    def color(self, start, end=sys.maxsize):
         x = start
         while x < end:
             yield self.value
@@ -57,7 +59,7 @@ class LinearGenerator(ColorGenerator):
         self.slope = kwargs['order1']
         self.offset = kwargs['constant']
 
-    def color(self, start, end):
+    def color(self, start, end=sys.maxsize):
         x = start
         while x < end:
             yield int(self.slope * x + self.offset)
@@ -73,7 +75,7 @@ class QuadraticGenerator(ColorGenerator):
         self.order1 = kwargs['order1']
         self.constant = kwargs['constant']
 
-    def color(self, start, end):
+    def color(self, start, end=sys.maxsize):
         x = start
         while x < end:
             yield min(255, int(self.order2 * x ** 2 + self.order1 * x + self.constant))  # Cap at 255
@@ -87,7 +89,7 @@ class CycleGenerator(ColorGenerator):
     def __init__(self, **kwargs):
         self.constant = kwargs['constant']
 
-    def color(self, start, end):
+    def color(self, start, end=sys.maxsize):
         x = start
         while x < end:
             yield (x * self.constant) % 256
@@ -98,7 +100,7 @@ class GeneratorState:
     """
     Elementary piece of a composite color generation sequence
     """
-    def __init__(self, generator, begin, end, **kwargs):
+    def __init__(self, generator, begin, end=sys.maxsize, **kwargs):
         """
         :param generator: ColorGenerator class which will create the color values for this step
         :param begin: starting ordinal value for the generator function
