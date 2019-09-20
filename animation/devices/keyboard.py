@@ -19,7 +19,7 @@
 """
 import time
 
-from animation.devices.common import RainbowBlockLine, RainbowCurvedLine
+from animation.devices.common import RainbowBlockLine, RainbowCurvedLine, CycleCurve
 from animation.effects import Effect, StrobeEffect, CycleEffect, RainbowEffect
 from animation.generators import CompositeGeneratorRGB
 from device import ITEKeyboard
@@ -134,18 +134,17 @@ class CycleEffectITE(CycleEffect):
 
     def _runnable(self):
         cycle_report = ITEKeyboardCycleReport()
+        cycle_generator = CycleCurve(0)
+        colors = cycle_generator.color()
 
         self._preamble()
-
-        cycle = 1
 
         while self.keep_running:                        # 0x5db6 report does not seem to have any influence
             time.sleep(1)
 
+            cycle = next(colors)
             cycle_report.cycle(cycle)
             self.device.write_interrupt(cycle_report)
-
-            cycle = (cycle + 33) % 256
 
         self._wind_down()
 
