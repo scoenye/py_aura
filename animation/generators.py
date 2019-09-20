@@ -80,6 +80,20 @@ class QuadraticGenerator(ColorGenerator):
             x += 1
 
 
+class CycleGenerator(ColorGenerator):
+    """
+    Continuously increase the color value by a constant amount, wrapping around at 256.
+    """
+    def __init__(self, **kwargs):
+        self.constant = kwargs['constant']
+
+    def color(self, start, end):
+        x = start
+        while x < end:
+            yield (x * self.constant) % 256
+            x += 1
+
+
 class GeneratorState:
     """
     Elementary piece of a composite color generation sequence

@@ -19,8 +19,8 @@
 """
 import unittest
 
-from animation.generators import ConstantGenerator, LinearGenerator, QuadraticGenerator, GeneratorState, \
-    CompositeGenerator, CompositeGeneratorRGB
+from animation.generators import ConstantGenerator, LinearGenerator, QuadraticGenerator, CycleGenerator, \
+    GeneratorState, CompositeGenerator, CompositeGeneratorRGB
 
 
 class ConstantGeneratorTest(unittest.TestCase):
@@ -54,7 +54,19 @@ class QuadraticGeneratorTest(unittest.TestCase):
         for color in self.generator.color(-80, 81):
             self.assertEqual(color, expected)
             x += 1
-            expected = min(255, 0.04 * x ** 2)
+            expected = min(255, int(0.04 * x ** 2))
+
+
+class CycleGeneratorTest(unittest.TestCase):
+    def setUp(self):
+        self.generator = CycleGenerator(constant=33)
+
+    def test_color(self):
+        expected = 33 * 5
+
+        for color in self.generator.color(5, 10):
+            self.assertEqual(color, expected)
+            expected = (expected + 33) % 256
 
 
 class GeneratorStateTest(unittest.TestCase):
