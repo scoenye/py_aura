@@ -96,6 +96,24 @@ class CycleGenerator(ColorGenerator):
             x += 1
 
 
+class StrobeGenerator(ColorGenerator):
+    """
+    Ramp part of the strobe curve
+    """
+    STEPS = [0.02, 0.10, 0.18, 0.26, 0.34, 0.41, 0.48, 0.54, 0.60, 0.66, 0.71, 0.77, 0.80, 0.83, 0.85, 0.87, 0.88]
+
+    def __init__(self, **kwargs):
+        self.constant = kwargs['constant']
+
+    def color(self, start, end=sys.maxsize):
+        end = min(end, len(StrobeGenerator.STEPS))
+
+        x = start
+        while x < end:
+            yield min(255, int(self.constant * StrobeGenerator.STEPS[x]))
+            x += 1
+
+
 class GeneratorState:
     """
     Elementary piece of a composite color generation sequence

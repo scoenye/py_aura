@@ -21,6 +21,7 @@ import sys
 import unittest
 
 from animation.generators import ConstantGenerator, LinearGenerator, QuadraticGenerator, CycleGenerator, \
+    StrobeGenerator, \
     GeneratorState, CompositeGenerator, CompositeGeneratorRGB
 
 
@@ -75,6 +76,19 @@ class CycleGeneratorTest(unittest.TestCase):
         for color in self.generator.color(5, 10):
             self.assertEqual(color, expected)
             expected = (expected + 33) % 256
+
+
+class StrobeGeneratorTest(unittest.TestCase):
+    def setUp(self):
+        self.generator = StrobeGenerator(constant=255)
+
+    def test_color(self):
+        expected = [5, 25, 45, 66, 86, 104, 122, 137, 153, 168, 181, 196, 204, 211, 216, 221, 224]
+        x = 0
+
+        for color in self.generator.color(0):
+            self.assertEqual(color, expected[x])
+            x += 1
 
 
 class GeneratorStateTest(unittest.TestCase):

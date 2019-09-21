@@ -20,8 +20,8 @@
 import time
 
 from device import GladiusIIMouse, ITEKeyboard
-from animation.devices.keyboard import RainbowEffectITE, CycleEffectITE
-from animation.devices.mouse import StaticEffectGladius, RainbowEffectGladius, CycleEffectGladius
+from animation.devices.keyboard import RainbowEffectITE, CycleEffectITE, StrobeEffectITE
+from animation.devices.mouse import StaticEffectGladius, RainbowEffectGladius, CycleEffectGladius, StrobeEffectGladius
 
 # find our device
 mouse = GladiusIIMouse()
@@ -41,14 +41,23 @@ mouse_static.start(mouse)
 # kbd_static.color(0xff, 0x00, 0xff)
 # kbd_static.start(keyboard)
 
-mouse_cycle = CycleEffectGladius()
-keyboard_cycle = CycleEffectITE()
+mouse_strobe = StrobeEffectGladius()
+keyboard_strobe = StrobeEffectITE()
 
-mouse_cycle.color(0xff, 0x00, 0x00)
-keyboard_cycle.color(0xff, 0x00, 0x00)
+mouse_strobe.color(0xff, 0x00, 0x00)
+keyboard_strobe.color(0xff, 0x00, 0x00)
 
-mouse_cycle.start(mouse)
-keyboard_cycle.start(keyboard)
+mouse_strobe.start(mouse)
+keyboard_strobe.start(keyboard)
+
+# mouse_cycle = CycleEffectGladius()
+# keyboard_cycle = CycleEffectITE()
+#
+# mouse_cycle.color(0xff, 0x00, 0x00)
+# keyboard_cycle.color(0xff, 0x00, 0x00)
+#
+# mouse_cycle.start(mouse)
+# keyboard_cycle.start(keyboard)
 
 # mouse_rainbow = RainbowEffectGladius()
 # mouse_rainbow.start(mouse)
@@ -58,8 +67,11 @@ keyboard_cycle.start(keyboard)
 
 time.sleep(10)
 
-mouse_cycle.stop()
-keyboard_cycle.stop()
+mouse_strobe.stop()
+keyboard_strobe.stop()
+
+# mouse_cycle.stop()
+# keyboard_cycle.stop()
 
 # mouse_rainbow.stop()
 # keyboard_rainbow.stop()

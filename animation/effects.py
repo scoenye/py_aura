@@ -63,27 +63,12 @@ class StrobeEffect(Effect):
     """
     Strobe effect
     """
-    STEPS = [0.02, 0.10, 0.18, 0.26, 0.34, 0.41, 0.48, 0.54, 0.60, 0.66, 0.71, 0.77, 0.80, 0.83, 0.85, 0.87, 0.88]
-
     def __init__(self):
         super().__init__()
         self.device = None
         self.targets = []
         self.thread = threading.Thread(target=self._runnable)
         self.keep_running = True
-        self.color_steps = []
-
-    def color(self, red, green, blue):
-        super().color(red, green, blue)
-
-        # Reset step store
-        self.color_steps = []
-
-        # Pre-calculate the strobe steps for the user's RGB combination
-        for step in self.STEPS:
-            self.color_steps.append(
-                (int(self.red * step), int(self.green * step), int(self.blue * step))
-            )
 
     def _runnable(self):
         # Core of the strobe effect thread

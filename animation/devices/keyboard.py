@@ -19,7 +19,7 @@
 """
 import time
 
-from animation.devices.common import RainbowBlockLine, RainbowCurvedLine, CycleCurve
+from animation.devices.common import RainbowBlockLine, RainbowCurvedLine, CycleCurve, StrobeCurve
 from animation.effects import Effect, StrobeEffect, CycleEffect, RainbowEffect
 from animation.generators import CompositeGeneratorRGB
 from device import ITEKeyboard
@@ -67,6 +67,13 @@ class StrobeEffectITE(StrobeEffect):
     def _runnable(self):
         report = ITEKeyboardSegmentReport()
 
+        generator = CompositeGeneratorRGB(
+            StrobeCurve(0, self.red),
+            StrobeCurve(0, self.green),
+            StrobeCurve(0, self.blue))
+
+        colors = generator.color()
+
         self._preamble()
 
         if self.targets is None:
@@ -75,19 +82,10 @@ class StrobeEffectITE(StrobeEffect):
                             ITEKeyboard.LED_SEGMENT7]
 
         while self.keep_running:
-            for step in range(1, 16):
-                report.color(0, 0, 0, self.targets)
+            color = next(colors)
 
-                self.device.write_interrupt(report)
-
-                time.sleep(0.05)
-
-            for step in self.color_steps:
-                report.color(step[0], step[1], step[2], self.targets)
-
-                self.device.write_interrupt(report)
-
-                time.sleep(0.05)
+            report.color(color[0], color[1], color[2], self.targets)
+            self.device.write_interrupt(report)
 
             time.sleep(0.05)
 

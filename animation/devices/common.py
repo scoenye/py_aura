@@ -18,7 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 from animation.generators import CompositeGenerator, GeneratorState, ConstantGenerator, LinearGenerator, \
-    QuadraticGenerator, CycleGenerator
+    QuadraticGenerator, CycleGenerator, StrobeGenerator
 
 
 class RainbowBlockLine(CompositeGenerator):
@@ -54,3 +54,13 @@ class CycleCurve(CompositeGenerator):
     def __init__(self, initial=0):
         super().__init__(initial)
         self.add_state(GeneratorState(CycleGenerator, 0, constant=33))
+
+
+class StrobeCurve(CompositeGenerator):
+    """
+    Strobe effect color curve
+    """
+    def __init__(self, initial=0, color=255):
+        super().__init__(initial)
+        self.add_state(GeneratorState(ConstantGenerator, 0, 17, constant=0))
+        self.add_state(GeneratorState(StrobeGenerator, 0, constant=color))
