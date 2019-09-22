@@ -60,6 +60,9 @@ class StaticEffect(Effect):
 
 
 class RunnableEffect(Effect):
+    """
+
+    """
     def __init__(self):
         super().__init__()
         self.device = None
@@ -79,21 +82,3 @@ class RunnableEffect(Effect):
     def stop(self):
         self.keep_running = False
         self.thread.join()
-
-
-class StrobeEffect(RunnableEffect):
-    """
-    Strobe effect
-    """
-
-
-class CycleEffect(RunnableEffect):
-    """
-    Cycle effect
-    """
-
-
-class RainbowEffect(RunnableEffect):
-    """
-    Cycle effect
-    """

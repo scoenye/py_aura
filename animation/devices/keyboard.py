@@ -20,7 +20,7 @@
 import time
 
 from animation.devices.common import RainbowBlockLine, RainbowCurvedLine, CycleCurve, StrobeCurve
-from animation.effects import Effect, StrobeEffect, CycleEffect, RainbowEffect
+from animation.effects import Effect, RunnableEffect
 from animation.generators import CompositeGeneratorRGB
 from device import ITEKeyboard
 from report import ITEKeyboardReport, ITEFlushReport, ITEKeyboardSegmentReport, ITEKeyboardCycleReport
@@ -54,7 +54,7 @@ class StaticEffectITE(Effect):
         print('write K4: ', xferred)
 
 
-class StrobeEffectITE(StrobeEffect):
+class StrobeEffectITE(RunnableEffect):
     """
     Strobe effect for the mouse
     """
@@ -90,7 +90,7 @@ class StrobeEffectITE(StrobeEffect):
             time.sleep(0.05)
 
 
-class CycleEffectITE(CycleEffect):
+class CycleEffectITE(RunnableEffect):
     """
     Cycle effect for the keyboard
     """
@@ -147,7 +147,7 @@ class CycleEffectITE(CycleEffect):
         self._wind_down()
 
 
-class RainbowEffectITE(RainbowEffect):
+class RainbowEffectITE(RunnableEffect):
     """
     Rainbow effect for the keyboard
     """

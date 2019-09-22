@@ -20,7 +20,7 @@
 import time
 
 from animation.devices.common import RainbowBlockLine, RainbowCurvedLine, CycleCurve, StrobeCurve
-from animation.effects import Effect, StrobeEffect, CycleEffect, RainbowEffect
+from animation.effects import Effect, RunnableEffect
 from animation.generators import CompositeGeneratorRGB
 from device import GladiusIIMouse
 from report import GladiusIIReport, GladiusIICCReport
@@ -42,7 +42,7 @@ class StaticEffectGladius(Effect):
             device.write_interrupt(report)
 
 
-class StrobeEffectGladius(StrobeEffect):
+class StrobeEffectGladius(RunnableEffect):
     """
     Strobe effect for the mouse
     """
@@ -68,7 +68,7 @@ class StrobeEffectGladius(StrobeEffect):
             time.sleep(0.05)
 
 
-class CycleEffectGladius(CycleEffect):
+class CycleEffectGladius(RunnableEffect):
     """
     Cycle effect for the mouse
     """
@@ -126,7 +126,7 @@ class CycleEffectGladius(CycleEffect):
         super().start(device, targets)
 
 
-class RainbowEffectGladius(RainbowEffect):
+class RainbowEffectGladius(RunnableEffect):
     """
     Rainbow effect for the mouse
     """
