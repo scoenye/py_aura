@@ -130,13 +130,10 @@ class RainbowEffectGladius(RunnableEffect):
     """
     Rainbow effect for the mouse
     """
-    def __init__(self):
-        super().__init__()
-        self.generator = CompositeGeneratorRGB(RainbowBlockLine(112), RainbowCurvedLine(112), RainbowCurvedLine(432))
-
     def _runnable(self):
         report = GladiusIIReport()
-        colors = self.generator.color()
+        generator = CompositeGeneratorRGB(RainbowBlockLine(112), RainbowCurvedLine(112), RainbowCurvedLine(432))
+        colors = generator.color()
 
         if self.targets is None:
             self.targets = [GladiusIIMouse.LED_LOGO, GladiusIIMouse.LED_WHEEL, GladiusIIMouse.LED_BASE]

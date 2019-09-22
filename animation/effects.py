@@ -48,20 +48,12 @@ class Effect:
         :param targets: list of LEDs to change color of, None to change all LEDs
         :return:
         """
-
-
-class StaticEffect(Effect):
-    """
-    Single color change
-    """
-    def start(self, device, targets=None):
-        device.stage_color(self.red, self.green, self.blue, targets)
-        device.change_color()
+        pass
 
 
 class RunnableEffect(Effect):
     """
-
+    Threaded lighting effect
     """
     def __init__(self):
         super().__init__()
@@ -75,10 +67,20 @@ class RunnableEffect(Effect):
         pass
 
     def start(self, device, targets=None):
+        """
+        Start the execution of the effect as a separate thread.
+        :param device: Device to apply the effect to.
+        :param targets: list of LEDs to change color of, None to change all LEDs
+        :return:
+        """
         self.device = device
         self.targets = targets
         self.thread.start()
 
     def stop(self):
+        """
+        Signal the thread to stop running.
+        :return:
+        """
         self.keep_running = False
         self.thread.join()

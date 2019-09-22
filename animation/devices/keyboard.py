@@ -37,21 +37,16 @@ class StaticEffectITE(Effect):
 
         color_report.color(self.red, self.green, self.blue)
 
-        xferred = device.write_interrupt(color_report)
-        print('write K0: ', xferred)
+        device.write_interrupt(color_report)
 
-        xferred = device.write_interrupt(color_report)
-        print('write K1: ', xferred)
+        device.write_interrupt(color_report)
 
-        xferred = device.write_interrupt(flush_report)  # Additional observation in strobe effect
-        print('write K4: ', xferred)
+        device.write_interrupt(flush_report)  # Additional observation in strobe effect
 
         color_report.byte_7(0xe1)
-        xferred = device.write_interrupt(color_report)
-        print('write K3: ', xferred)
+        device.write_interrupt(color_report)
 
-        xferred = device.write_interrupt(flush_report)
-        print('write K4: ', xferred)
+        device.write_interrupt(flush_report)
 
 
 class StrobeEffectITE(RunnableEffect):
@@ -151,13 +146,6 @@ class RainbowEffectITE(RunnableEffect):
     """
     Rainbow effect for the keyboard
     """
-    def __init__(self):
-        super().__init__()
-        self.segment1 = CompositeGeneratorRGB(RainbowBlockLine(112), RainbowCurvedLine(112), RainbowCurvedLine(432))
-        self.segment2 = CompositeGeneratorRGB(RainbowBlockLine(75), RainbowCurvedLine(75), RainbowCurvedLine(395))
-        self.segment3 = CompositeGeneratorRGB(RainbowBlockLine(37), RainbowCurvedLine(37), RainbowCurvedLine(357))
-        self.segment4 = CompositeGeneratorRGB(RainbowBlockLine(0), RainbowCurvedLine(0), RainbowCurvedLine(320))
-
     def _preamble(self):
         report = ITEKeyboardReport()
         report.color(0, 0, 0)
@@ -186,10 +174,15 @@ class RainbowEffectITE(RunnableEffect):
 
         clear_targets = [ITEKeyboard.LED_SEGMENT5, ITEKeyboard.LED_SEGMENT6, ITEKeyboard.LED_SEGMENT7]
 
-        colors1 = self.segment1.color()
-        colors2 = self.segment2.color()
-        colors3 = self.segment3.color()
-        colors4 = self.segment4.color()
+        segment1 = CompositeGeneratorRGB(RainbowBlockLine(112), RainbowCurvedLine(112), RainbowCurvedLine(432))
+        segment2 = CompositeGeneratorRGB(RainbowBlockLine(75), RainbowCurvedLine(75), RainbowCurvedLine(395))
+        segment3 = CompositeGeneratorRGB(RainbowBlockLine(37), RainbowCurvedLine(37), RainbowCurvedLine(357))
+        segment4 = CompositeGeneratorRGB(RainbowBlockLine(0), RainbowCurvedLine(0), RainbowCurvedLine(320))
+
+        colors1 = segment1.color()
+        colors2 = segment2.color()
+        colors3 = segment3.color()
+        colors4 = segment4.color()
 
         while self.keep_running:
             color = next(colors1)
