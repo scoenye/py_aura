@@ -20,7 +20,7 @@
 import time
 
 from device import GladiusIIMouse, ITEKeyboard
-from animation.devices.keyboard import RainbowEffectITE, CycleEffectITE, StrobeEffectITE
+from animation.devices.keyboard import StaticEffectITE, RainbowEffectITE, CycleEffectITE, StrobeEffectITE
 from animation.devices.mouse import StaticEffectGladius, RainbowEffectGladius, CycleEffectGladius, StrobeEffectGladius
 
 # find our device
@@ -37,38 +37,38 @@ mouse_static.start(mouse)  # Init the mouse LEDs
 mouse_static.color(0xff, 0x00, 0x00)
 mouse_static.start(mouse)
 
-# kbd_static = StaticEffectITE()
-# kbd_static.color(0xff, 0x00, 0xff)
-# kbd_static.start(keyboard)
+kbd_static = StaticEffectITE()
+kbd_static.color(0xff, 0x00, 0xff)
+kbd_static.start(keyboard)
 
-mouse_strobe = StrobeEffectGladius()
-keyboard_strobe = StrobeEffectITE()
-
-mouse_strobe.color(0xff, 0x00, 0x00)
-keyboard_strobe.color(0xff, 0x00, 0x00)
-
-mouse_strobe.start(mouse)
-keyboard_strobe.start(keyboard)
-
-# mouse_cycle = CycleEffectGladius()
-# keyboard_cycle = CycleEffectITE()
+# mouse_effect = StrobeEffectGladius()
+# keyboard_effect = StrobeEffectITE()
 #
-# mouse_cycle.color(0xff, 0x00, 0x00)
-# keyboard_cycle.color(0xff, 0x00, 0x00)
+# mouse_effect.color(0xff, 0x00, 0xff)
+# keyboard_effect.color(0xff, 0x00, 0x00)
 #
-# mouse_cycle.start(mouse)
-# keyboard_cycle.start(keyboard)
+# mouse_effect.start(mouse, [GladiusIIMouse.LED_LOGO])
+# keyboard_effect.start(keyboard)
 
-# mouse_rainbow = RainbowEffectGladius()
-# mouse_rainbow.start(mouse)
+# mouse_effect = CycleEffectGladius()
+# keyboard_effect = CycleEffectITE()
 #
-# keyboard_rainbow = RainbowEffectITE()
-# keyboard_rainbow.start(keyboard)
+# mouse_effect.color(0xff, 0x00, 0x00)
+# keyboard_effect.color(0xff, 0x00, 0x00)
+#
+# mouse_effect.start(mouse)
+# keyboard_effect.start(keyboard)
+
+mouse_effect = RainbowEffectGladius()
+mouse_effect.start(mouse, [GladiusIIMouse.LED_BASE])
+
+keyboard_effect = RainbowEffectITE()
+keyboard_effect.start(keyboard)
 
 time.sleep(10)
 
-mouse_strobe.stop()
-keyboard_strobe.stop()
+mouse_effect.stop()
+keyboard_effect.stop()
 
 # mouse_cycle.stop()
 # keyboard_cycle.stop()

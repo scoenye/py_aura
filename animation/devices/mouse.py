@@ -42,7 +42,22 @@ class StaticEffectGladius(Effect):
             device.write_interrupt(report)
 
 
-class StrobeEffectGladius(RunnableEffect):
+class GladiusRunnableEffect(RunnableEffect):
+    """
+    Mouse specific RunnableEffect
+    """
+    def _send_all_targets(self, report):
+        # Send the report to all active targets
+        for target in self.targets:
+            report.target(target)
+            self.device.write_interrupt(report)
+
+    def start(self, device, targets=None):
+        targets = targets or [GladiusIIMouse.LED_LOGO, GladiusIIMouse.LED_WHEEL, GladiusIIMouse.LED_BASE]
+        super().start(device, targets)      # Stores device and targets as instance variables
+
+
+class StrobeEffectGladius(GladiusRunnableEffect):
     """
     Strobe effect for the mouse
     """
@@ -56,28 +71,19 @@ class StrobeEffectGladius(RunnableEffect):
 
         colors = generator.color()
 
-        if self.targets is None:
-            self.targets = [GladiusIIMouse.LED_LOGO, GladiusIIMouse.LED_WHEEL, GladiusIIMouse.LED_BASE]
-
         while self.keep_running:
             color = next(colors)
 
             report.color(color[0], color[1], color[2])
-            self.device.write_interrupt(report)
+            self._send_all_targets(report)
 
             time.sleep(0.05)
 
 
-class CycleEffectGladius(RunnableEffect):
+class CycleEffectGladius(GladiusRunnableEffect):
     """
     Cycle effect for the mouse
     """
-    def _send_all_targets(self, report):
-        # Send the report to all active targets
-        for target in self.targets:
-            report.target(target)
-            self.device.write_interrupt(report)
-
     def _preamble(self):
         report = GladiusIIReport()
 
@@ -121,12 +127,8 @@ class CycleEffectGladius(RunnableEffect):
         hw_report.effect(GladiusIIReport.EFFECT_NONE)   # Cancel the hardware cycle effect.
         self._send_all_targets(hw_report)
 
-    def start(self, device, targets=None):
-        targets = targets or [GladiusIIMouse.LED_LOGO, GladiusIIMouse.LED_WHEEL, GladiusIIMouse.LED_BASE]
-        super().start(device, targets)
 
-
-class RainbowEffectGladius(RunnableEffect):
+class RainbowEffectGladius(GladiusRunnableEffect):
     """
     Rainbow effect for the mouse
     """
@@ -135,15 +137,10 @@ class RainbowEffectGladius(RunnableEffect):
         generator = CompositeGeneratorRGB(RainbowBlockLine(112), RainbowCurvedLine(112), RainbowCurvedLine(432))
         colors = generator.color()
 
-        if self.targets is None:
-            self.targets = [GladiusIIMouse.LED_LOGO, GladiusIIMouse.LED_WHEEL, GladiusIIMouse.LED_BASE]
-
         while self.keep_running:
             color = next(colors)
             report.color(color[0], color[1], color[2])
 
-            for target in self.targets:
-                report.target(target)
-                self.device.write_interrupt(report)
+            self._send_all_targets(report)
 
             time.sleep(0.01)
