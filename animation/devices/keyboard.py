@@ -38,18 +38,40 @@ class StaticEffectITE(Effect):
         color_report.color(self.red, self.green, self.blue)
 
         device.write_interrupt(color_report)
-
         device.write_interrupt(color_report)
-
         device.write_interrupt(flush_report)  # Additional observation in strobe effect
 
         color_report.byte_7(0xe1)
         device.write_interrupt(color_report)
-
         device.write_interrupt(flush_report)
 
 
-class StrobeEffectITE(RunnableEffect):
+class ITERunnableEffect(RunnableEffect):
+    """
+    Keyboard specific RunnableEffect
+    """
+    def start(self, device, targets=None):
+        targets = targets or [ITEKeyboard.LED_SEGMENT1, ITEKeyboard.LED_SEGMENT2, ITEKeyboard.LED_SEGMENT3,
+                              ITEKeyboard.LED_SEGMENT4, ITEKeyboard.LED_SEGMENT5, ITEKeyboard.LED_SEGMENT6,
+                              ITEKeyboard.LED_SEGMENT7]
+        super().start(device, targets)  # Stores device and targets as instance variables
+
+    def _wind_down(self):
+        # Really just a change back to a single color
+        color_report = ITEKeyboardReport()
+        flush_report = ITEFlushReport()
+
+        color_report.color(self.red, self.green, self.blue)
+        self.device.write_interrupt(color_report)
+        self.device.write_interrupt(color_report)
+        self.device.write_interrupt(flush_report)
+
+        color_report.byte_7(0xe1)
+        self.device.write_interrupt(color_report)
+        self.device.write_interrupt(flush_report)
+
+
+class StrobeEffectITE(ITERunnableEffect):
     """
     Strobe effect for the mouse
     """
@@ -71,11 +93,6 @@ class StrobeEffectITE(RunnableEffect):
 
         self._preamble()
 
-        if self.targets is None:
-            self.targets = [ITEKeyboard.LED_SEGMENT1, ITEKeyboard.LED_SEGMENT2, ITEKeyboard.LED_SEGMENT3,
-                            ITEKeyboard.LED_SEGMENT4, ITEKeyboard.LED_SEGMENT5, ITEKeyboard.LED_SEGMENT6,
-                            ITEKeyboard.LED_SEGMENT7]
-
         while self.keep_running:
             color = next(colors)
 
@@ -85,7 +102,7 @@ class StrobeEffectITE(RunnableEffect):
             time.sleep(0.05)
 
 
-class CycleEffectITE(RunnableEffect):
+class CycleEffectITE(ITERunnableEffect):
     """
     Cycle effect for the keyboard
     """
@@ -108,23 +125,6 @@ class CycleEffectITE(RunnableEffect):
 
         self.device.write_interrupt(flush_report)
 
-    def _wind_down(self):
-        color_report = ITEKeyboardReport()
-        flush_report = ITEFlushReport()
-
-        color_report.color(0xff, 0xff, 0xff)
-        self.device.write_interrupt(color_report)
-
-        self.device.write_interrupt(color_report)
-
-        self.device.write_interrupt(flush_report)
-
-        color_report.byte_7(0xe1)
-
-        self.device.write_interrupt(color_report)
-
-        self.device.write_interrupt(flush_report)
-
     def _runnable(self):
         cycle_report = ITEKeyboardCycleReport()
         cycle_generator = CycleCurve(0)
@@ -142,7 +142,7 @@ class CycleEffectITE(RunnableEffect):
         self._wind_down()
 
 
-class RainbowEffectITE(RunnableEffect):
+class RainbowEffectITE(ITERunnableEffect):
     """
     Rainbow effect for the keyboard
     """
@@ -151,21 +151,6 @@ class RainbowEffectITE(RunnableEffect):
         report.color(0, 0, 0)
         # report,byte_04(0x0a)
         self.device.write_interrupt(report)
-
-    def _wind_down(self):
-        color_report = ITEKeyboardReport()
-        flush_report = ITEFlushReport()
-
-        color_report.color(0xff, 0x00, 0xff)
-        self.device.write_interrupt(color_report)
-        self.device.write_interrupt(color_report)
-
-        self.device.write_interrupt(flush_report)
-
-        color_report.byte_7(0xe1)
-        self.device.write_interrupt(color_report)
-
-        self.device.write_interrupt(flush_report)
 
     def _runnable(self):
         report = ITEKeyboardSegmentReport()
