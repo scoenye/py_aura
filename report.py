@@ -87,17 +87,15 @@ class GladiusIIReport(Report):
         self.report[GladiusIIReport.SELECT_EFFECT] = GladiusIIReport.EFFECT_NONE
         self.report[GladiusIIReport.SELECT_LEVEL] = GladiusIIReport.LEVEL_100
 
-    def color(self, red, green, blue):
+    def color(self, color_rgb):
         """
-        Set the color to be sent to the device
-        :param red: Red value, 0 - 255
-        :param green: Green value, 0 - 255
-        :param blue: Blue value, 0 - 255
+        Set the color to be sent to the device.
+        :param color_rgb: 3-tuple with red/green/blue color components. Integer, range 0 - 255.
         :return:
         """
-        self.report[6] = red
-        self.report[7] = green
-        self.report[8] = blue
+        self.report[6] = color_rgb[0]
+        self.report[7] = color_rgb[1]
+        self.report[8] = color_rgb[2]
 
     def target(self, led):
         """
