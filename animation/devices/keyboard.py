@@ -35,7 +35,7 @@ class StaticEffectITE(Effect):
         color_report = ITEKeyboardReport()
         flush_report = ITEFlushReport()
 
-        color_report.color(self.red, self.green, self.blue)
+        color_report.color((self.red, self.green, self.blue))
 
         device.write_interrupt(color_report)
         device.write_interrupt(color_report)
@@ -61,7 +61,7 @@ class ITERunnableEffect(RunnableEffect):
         color_report = ITEKeyboardReport()
         flush_report = ITEFlushReport()
 
-        color_report.color(self.red, self.green, self.blue)
+        color_report.color((self.red, self.green, self.blue))
         self.device.write_interrupt(color_report)
         self.device.write_interrupt(color_report)
         self.device.write_interrupt(flush_report)
@@ -77,7 +77,7 @@ class StrobeEffectITE(ITERunnableEffect):
     """
     def _preamble(self):
         report = ITEKeyboardReport()
-        report.color(self.red, self.green, self.blue)
+        report.color((self.red, self.green, self.blue))
         # report,byte_04(0x0a)
         self.device.write_interrupt(report)
 
@@ -110,12 +110,12 @@ class CycleEffectITE(ITERunnableEffect):
         color_report = ITEKeyboardReport()
         flush_report = ITEFlushReport()
 
-        color_report.color(0xff, 0, 0)
+        color_report.color((0xff, 0, 0))
         color_report.effect(ITEKeyboardReport.EFFECT_CYCLE)     # This is what makes the effect work.
         color_report.byte_7(0xeb)
         self.device.write_interrupt(color_report)
 
-        color_report.color(0xff, 0xff, 0xff)
+        color_report.color((0xff, 0xff, 0xff))
         color_report.byte_7(0xe1)
         self.device.write_interrupt(color_report)
 
@@ -148,7 +148,7 @@ class RainbowEffectITE(ITERunnableEffect):
     """
     def _preamble(self):
         report = ITEKeyboardReport()
-        report.color(0, 0, 0)
+        report.color((0, 0, 0))
         # report,byte_04(0x0a)
         self.device.write_interrupt(report)
 

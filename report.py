@@ -163,10 +163,15 @@ class ITEKeyboardReport(Report):
         self.report[Report.REPORT_ID] = Report.TYPE_ITE
         self.report[1] = 0xb3
 
-    def color(self, red, green, blue):
-        self.report[4] = red
-        self.report[5] = green
-        self.report[6] = blue
+    def color(self, color_rgb):
+        """
+        Set the color to be sent to the device.
+        :param color_rgb: 3-tuple with red/green/blue color components. Integer, range 0 - 255.
+        :return:
+        """
+        self.report[4] = color_rgb[0]
+        self.report[5] = color_rgb[1]
+        self.report[6] = color_rgb[2]
 
     def effect(self, effect):
         """
