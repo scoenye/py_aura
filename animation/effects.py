@@ -25,9 +25,9 @@ class Effect:
     Base class for lighting effects
     """
     def __init__(self):
-        self.red = None
-        self.green = None
-        self.blue = None
+        self.red = 0
+        self.green = 0
+        self.blue = 0
 
     def color(self, red, green, blue):
         """
