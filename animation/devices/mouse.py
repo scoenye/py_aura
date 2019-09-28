@@ -34,8 +34,7 @@ class StaticEffectGladius(Effect):
         report = GladiusIIReport()
         report.color((self.red, self.green, self.blue))
 
-        if targets is None:
-            targets = [GladiusIIMouse.LED_LOGO, GladiusIIMouse.LED_WHEEL, GladiusIIMouse.LED_BASE]
+        targets = targets or [GladiusIIMouse.LED_ALL]
 
         for target in targets:
             report.target(target)
@@ -53,7 +52,7 @@ class GladiusRunnableEffect(RunnableEffect):
             self.device.write_interrupt(report)
 
     def start(self, device, targets=None):
-        targets = targets or [GladiusIIMouse.LED_LOGO, GladiusIIMouse.LED_WHEEL, GladiusIIMouse.LED_BASE]
+        targets = targets or [GladiusIIMouse.LED_ALL]
         super().start(device, targets)      # Stores device and targets as instance variables
 
 

@@ -87,7 +87,8 @@ class GladiusIIMouse(Device):
     # Selectable LEDs
     LED_LOGO = 0x00     # Selects the logo LED
     LED_WHEEL = 0x01    # Selects the wheel LED
-    LED_BASE = 0x02     # Selects the mouse base LED
+    LED_BASE = 0x02     # Selects the mouse base
+    LED_ALL = 0x03      # Selects all LEDs
 
 
 class ITEKeyboard(Device):
