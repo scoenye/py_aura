@@ -185,6 +185,12 @@ class ITEKeyboardReport(Report):
         self.report[7] = value
 
 
+class ITEKeyboardApplyReport(ITEKeyboardReport):
+    def __init__(self):
+        super().__init__()
+        self.report[1] = 0xb4
+
+
 class ITEKeyboardCycleReport(ITEKeyboardReport):
     def __init__(self):
         super().__init__()

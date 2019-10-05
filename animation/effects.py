@@ -50,6 +50,14 @@ class Effect:
         """
         pass
 
+    def apply(self, device):
+        """
+        Make the effect permanent (if the device supports it.)
+        :param device: Device to apply the effect to.
+        :return:
+        """
+        pass
+
 
 class RunnableEffect(Effect):
     """

@@ -23,7 +23,8 @@ from animation.devices.common import RainbowBlockLine, RainbowCurvedLine, CycleC
 from animation.effects import Effect, RunnableEffect
 from animation.generators import CompositeGeneratorRGB
 from device import ITEKeyboard
-from report import ITEKeyboardReport, ITEFlushReport, ITEKeyboardSegmentReport, ITEKeyboardCycleReport
+from report import ITEKeyboardReport, ITEFlushReport, ITEKeyboardSegmentReport, ITEKeyboardCycleReport, \
+                ITEKeyboardApplyReport
 
 
 class StaticEffectITE(Effect):
@@ -44,6 +45,13 @@ class StaticEffectITE(Effect):
 
         color_report.byte_7(0xe1)
         device.write_interrupt(color_report)
+        device.write_interrupt(flush_report)
+
+    def apply(self, device):
+        apply_report = ITEKeyboardApplyReport()
+        flush_report = ITEFlushReport()
+
+        device.write_interrupt(apply_report)
         device.write_interrupt(flush_report)
 
 
