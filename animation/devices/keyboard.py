@@ -37,9 +37,10 @@ class StaticEffectITE(Effect):
 
         color_report.color((self.red, self.green, self.blue))
 
+        # Minimal required is 1 color report + 1 flush report
         device.write_interrupt(color_report)
         device.write_interrupt(color_report)
-        device.write_interrupt(flush_report)  # Additional observation in strobe effect
+        device.write_interrupt(flush_report)
 
         color_report.byte_7(0xe1)
         device.write_interrupt(color_report)
@@ -77,9 +78,10 @@ class StrobeEffectITE(ITERunnableEffect):
     """
     def _preamble(self):
         report = ITEKeyboardReport()
-        report.color((self.red, self.green, self.blue))
-        # report,byte_04(0x0a)
-        self.device.write_interrupt(report)
+
+        report.color((self.red, self.green, self.blue))     # Enables the hardware strobe effect, but the sequence
+        report.effect(ITEKeyboardReport.EFFECT_STROBE)      # does nothing without a flush. No flush was observed
+        self.device.write_interrupt(report)                 # in the trace.
 
     def _runnable(self):
         report = ITEKeyboardSegmentReport()
@@ -111,15 +113,15 @@ class CycleEffectITE(ITERunnableEffect):
         flush_report = ITEFlushReport()
 
         color_report.color((0xff, 0, 0))
-        color_report.effect(ITEKeyboardReport.EFFECT_CYCLE)     # This is what makes the effect work.
+        color_report.effect(ITEKeyboardReport.EFFECT_CYCLE)     # Stages the hardware cycle effect.
         color_report.byte_7(0xeb)
         self.device.write_interrupt(color_report)
 
         color_report.color((0xff, 0xff, 0xff))
         color_report.byte_7(0xe1)
-        self.device.write_interrupt(color_report)
+        self.device.write_interrupt(color_report)               # Cycle effect still set
 
-        self.device.write_interrupt(flush_report)
+        self.device.write_interrupt(flush_report)               # Enables the hardware cycle effect
 
         self.device.write_interrupt(color_report)
 
