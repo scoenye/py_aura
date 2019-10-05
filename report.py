@@ -149,6 +149,7 @@ class ITEKeyboardReport(Report):
     """
     Report class for the Asus ITE keyboard. This variation address the keyboard as a whole.
     """
+    SELECT_SEGMENT = 2
     SELECT_EFFECT = 3
 
     # Built-in light effects
@@ -157,6 +158,13 @@ class ITEKeyboardReport(Report):
     EFFECT_CYCLE = 0x02
     EFFECT_RAINBOW = 0x03      # Left to right effect. Also 0x0f, 0x11, some higher numbers.
     EFFECT_STROBE = 0x0a
+
+    # Selectable keyboard segments
+    SEGMENT_1 = 1               # Left edge - 1/ALT diagonal
+    SEGMENT_2 = 2               # Wedge below F5 - F9
+    SEGMENT_3 = 3               # Wedge below F9 - F12
+    SEGMENT_4 = 4               # Numpad
+    SEGMENT_ALL = 0
 
     def __init__(self):
         super().__init__()
@@ -180,6 +188,14 @@ class ITEKeyboardReport(Report):
         :return:
         """
         self.report[ITEKeyboardReport.SELECT_EFFECT] = effect
+
+    def target(self, segment):
+        """
+        Select a keyboard segment to address.
+        :param segment: segment selected for color change
+        :return:
+        """
+        self.report[ITEKeyboardReport.SELECT_SEGMENT] = segment
 
     def byte_7(self, value):           # TODO: figure out purpose and improve name
         self.report[7] = value

@@ -38,8 +38,8 @@ mouse_static.color(0xff, 0x00, 0x3f)
 mouse_static.start(mouse)
 
 kbd_static = StaticEffectITE()
-kbd_static.color(0x00, 0x00, 0xff)
-kbd_static.start(keyboard)
+kbd_static.color(0x00, 0, 255)
+kbd_static.start(keyboard, 3)
 kbd_static.apply(keyboard)
 
 # mouse_effect = StrobeEffectGladius()

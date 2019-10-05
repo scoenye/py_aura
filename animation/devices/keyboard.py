@@ -38,6 +38,9 @@ class StaticEffectITE(Effect):
 
         color_report.color((self.red, self.green, self.blue))
 
+        if targets:
+            color_report.target(targets)
+
         # Minimal required is 1 color report + 1 flush report
         device.write_interrupt(color_report)
         device.write_interrupt(color_report)
