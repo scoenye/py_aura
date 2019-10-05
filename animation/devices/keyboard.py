@@ -111,6 +111,12 @@ class StrobeEffectITE(ITERunnableEffect):
 
             time.sleep(0.05)
 
+    def apply(self, device):
+        flush_report = ITEFlushReport()
+
+        self._preamble()
+        device.write_interrupt(flush_report)
+
 
 class CycleEffectITE(ITERunnableEffect):
     """

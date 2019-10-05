@@ -38,7 +38,7 @@ mouse_static.color(0xff, 0x00, 0x3f)
 mouse_static.start(mouse)
 
 kbd_static = StaticEffectITE()
-kbd_static.color(0xff, 0x00, 0xff)
+kbd_static.color(0x00, 0x00, 0xff)
 kbd_static.start(keyboard)
 kbd_static.apply(keyboard)
 
@@ -46,7 +46,7 @@ kbd_static.apply(keyboard)
 # keyboard_effect = StrobeEffectITE()
 #
 # mouse_effect.color(0xff, 0x00, 0xff)
-# keyboard_effect.color(0xff, 0x00, 0x00)
+# keyboard_effect.color(0xff, 0xff, 0x00)
 #
 # mouse_effect.start(mouse, [GladiusIIMouse.LED_LOGO])
 # keyboard_effect.start(keyboard)
@@ -67,9 +67,11 @@ kbd_static.apply(keyboard)
 # keyboard_effect.start(keyboard)
 
 # time.sleep(10)
-#
+
 # mouse_effect.stop()
 # keyboard_effect.stop()
+#
+# keyboard_effect.apply(keyboard)
 
 mouse.close()
 keyboard.close()
