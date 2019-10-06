@@ -63,12 +63,6 @@ class ITERunnableEffect(RunnableEffect):
     """
     Keyboard specific RunnableEffect
     """
-    def start(self, device, targets=None):
-        targets = targets or [ITEKeyboard.LED_SEGMENT1, ITEKeyboard.LED_SEGMENT2, ITEKeyboard.LED_SEGMENT3,
-                              ITEKeyboard.LED_SEGMENT4, ITEKeyboard.LED_SEGMENT5, ITEKeyboard.LED_SEGMENT6,
-                              ITEKeyboard.LED_SEGMENT7]
-        super().start(device, targets)  # Stores device and targets as instance variables
-
     def _wind_down(self):
         # Really just a change back to a single color
         color_report = ITEKeyboardReport()
@@ -104,6 +98,11 @@ class StrobeEffectITE(ITERunnableEffect):
             StrobeCurve(0, self.blue))
 
         colors = generator.color()
+
+        self.targets = self.targets or \
+                       [ITEKeyboard.LED_SEGMENT1, ITEKeyboard.LED_SEGMENT2, ITEKeyboard.LED_SEGMENT3,
+                        ITEKeyboard.LED_SEGMENT4, ITEKeyboard.LED_SEGMENT5, ITEKeyboard.LED_SEGMENT6,
+                        ITEKeyboard.LED_SEGMENT7]
 
         self._preamble()
 
@@ -178,6 +177,11 @@ class RainbowEffectITE(ITERunnableEffect):
         self._preamble()
 
         clear_targets = [ITEKeyboard.LED_SEGMENT5, ITEKeyboard.LED_SEGMENT6, ITEKeyboard.LED_SEGMENT7]
+
+        self.targets = self.targets or \
+                       [ITEKeyboard.LED_SEGMENT1, ITEKeyboard.LED_SEGMENT2, ITEKeyboard.LED_SEGMENT3,
+                        ITEKeyboard.LED_SEGMENT4, ITEKeyboard.LED_SEGMENT5, ITEKeyboard.LED_SEGMENT6,
+                        ITEKeyboard.LED_SEGMENT7]
 
         segment1 = CompositeGeneratorRGB(RainbowBlockLine(112), RainbowCurvedLine(112), RainbowCurvedLine(432))
         segment2 = CompositeGeneratorRGB(RainbowBlockLine(75), RainbowCurvedLine(75), RainbowCurvedLine(395))
