@@ -97,11 +97,12 @@ class ITEKeyboard(Device):
     """
     PRODUCT_ID = 0x1869
 
-    # Selectable segments - value is the offset of the red byte
-    LED_SEGMENT1 = 0
-    LED_SEGMENT2 = 1
-    LED_SEGMENT3 = 2
-    LED_SEGMENT4 = 3
-    LED_SEGMENT5 = 4
-    LED_SEGMENT6 = 5
-    LED_SEGMENT7 = 6
+    # Selectable segments
+    LED_SEGEMENT_ALL = 0
+    LED_SEGMENT1 = 1
+    LED_SEGMENT2 = 2
+    LED_SEGMENT3 = 3
+    LED_SEGMENT4 = 4
+    LED_SEGMENT5 = 5
+    LED_SEGMENT6 = 6
+    LED_SEGMENT7 = 7

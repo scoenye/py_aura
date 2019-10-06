@@ -157,14 +157,7 @@ class ITEKeyboardReport(Report):
     EFFECT_IN_OUT = 0x01
     EFFECT_CYCLE = 0x02
     EFFECT_RAINBOW = 0x03      # Left to right effect. Also 0x0f, 0x11, some higher numbers.
-    EFFECT_STROBE = 0x0a
-
-    # Selectable keyboard segments
-    SEGMENT_1 = 1               # Left edge - 1/ALT diagonal
-    SEGMENT_2 = 2               # Wedge below F5 - F9
-    SEGMENT_3 = 3               # Wedge below F9 - F12
-    SEGMENT_4 = 4               # Numpad
-    SEGMENT_ALL = 0
+    EFFECT_STROBE = 0x0ad
 
     def __init__(self):
         super().__init__()
@@ -240,8 +233,8 @@ class ITEKeyboardSegmentReport(Report):
         :return:
         """
         for target in targets:
-            self.report[ITEKeyboardSegmentReport.SEGMENT_OFFSETS[target]:
-                        ITEKeyboardSegmentReport.SEGMENT_OFFSETS[target] + 2] = color_rgb   # tuple is an iterable
+            self.report[ITEKeyboardSegmentReport.SEGMENT_OFFSETS[target - 1]:
+                        ITEKeyboardSegmentReport.SEGMENT_OFFSETS[target - 1] + 2] = color_rgb   # tuple is an iterable
 
 
 class ITEFlushReport(ITEKeyboardReport):
