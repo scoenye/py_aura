@@ -38,17 +38,18 @@ class StaticEffectITE(Effect):
 
         color_report.color((self.red, self.green, self.blue))
 
-        if targets:
-            color_report.target(targets)
+        targets = targets or [ITEKeyboard.LED_ALL]
 
-        # Minimal required is 1 color report + 1 flush report
-        device.write_interrupt(color_report)
-        device.write_interrupt(color_report)
-        device.write_interrupt(flush_report)
+        for target in targets:
+            # Minimal required is 1 color report + 1 flush report
+            color_report.target(target)
+            device.write_interrupt(color_report)
+            device.write_interrupt(color_report)
+            device.write_interrupt(flush_report)
 
-        color_report.byte_7(0xe1)
-        device.write_interrupt(color_report)
-        device.write_interrupt(flush_report)
+            color_report.byte_7(0xe1)
+            device.write_interrupt(color_report)
+            device.write_interrupt(flush_report)
 
     def apply(self, device):
         apply_report = ITEKeyboardApplyReport()

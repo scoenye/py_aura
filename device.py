@@ -98,7 +98,7 @@ class ITEKeyboard(Device):
     PRODUCT_ID = 0x1869
 
     # Selectable segments
-    LED_SEGEMENT_ALL = 0
+    LED_ALL = 0
     LED_SEGMENT1 = 1
     LED_SEGMENT2 = 2
     LED_SEGMENT3 = 3

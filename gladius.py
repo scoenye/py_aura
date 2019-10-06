@@ -38,8 +38,8 @@ mouse_static.color(0xff, 0x00, 0x3f)
 mouse_static.start(mouse)
 
 kbd_static = StaticEffectITE()
-kbd_static.color(0x00, 0, 255)
-kbd_static.start(keyboard)
+kbd_static.color(255, 0, 255)
+kbd_static.start(keyboard, [ITEKeyboard.LED_ALL])
 # kbd_static.apply(keyboard)
 
 # mouse_effect = StrobeEffectGladius()
@@ -60,16 +60,16 @@ kbd_static.start(keyboard)
 # mouse_effect.start(mouse)
 # keyboard_effect.start(keyboard)
 
-mouse_effect = RainbowEffectGladius()
-mouse_effect.start(mouse, [GladiusIIMouse.LED_BASE])
-
-keyboard_effect = RainbowEffectITE()
-keyboard_effect.start(keyboard)
-
-time.sleep(10)
-
-mouse_effect.stop()
-keyboard_effect.stop()
+# mouse_effect = RainbowEffectGladius()
+# mouse_effect.start(mouse, [GladiusIIMouse.LED_BASE])
+#
+# keyboard_effect = RainbowEffectITE()
+# keyboard_effect.start(keyboard)
+#
+# time.sleep(10)
+#
+# mouse_effect.stop()
+# keyboard_effect.stop()
 
 # keyboard_effect.apply(keyboard)
 
