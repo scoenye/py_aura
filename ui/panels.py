@@ -1,5 +1,5 @@
 """
-    Aura USB
+    Nimbus USB
     A tool to change the LED colors on Asus USB HID peripherals
 
     Copyright (C) 2019  Sven Coenye
@@ -17,39 +17,34 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-
-import sys
-
 from PySide2 import QtWidgets
 
-from device import GladiusIIMouse, ITEKeyboard
-from ui import panels
+from ui import models
 
 
-class Nimbus(QtWidgets.QMainWindow):
-    DEVICES = {
-        '0x0b05': {
-            '0x1845': GladiusIIMouse,
-            '0x1869': ITEKeyboard
-        }
-    }
-
+class DeviceListView(QtWidgets.QListView):
     """
-    GUI class for the Asus LED control
+    List of supported devices attached to the computer
     """
     def __init__(self):
         super().__init__()
-
-        self.setGeometry(10, 10, 300, 300)
-        self.setWindowTitle('Nimbus')
-        self.statusBar().showMessage('Ready')
-        self.setCentralWidget(panels.CenterPanel())
+        model = models.DeviceListModel(['mouse', 'keyboard'])
+        self.setModel(model)
 
 
-if __name__ == '__main__':
-    application = QtWidgets.QApplication(sys.argv)
-    nimbus = Nimbus()
+class EffectListView(QtWidgets.QListView):
+    """
+    List of available effects
+    """
 
-    nimbus.show()
 
-    sys.exit(application.exec_())
+class CenterPanel(QtWidgets.QWidget):
+    """
+    Main window central widget
+    """
+
+    def __init__(self):
+        super().__init__()
+        self.main_layout = QtWidgets.QGridLayout(self)
+        self.main_layout.addWidget(DeviceListView(), 0, 0)
+        self.setLayout(self.main_layout)

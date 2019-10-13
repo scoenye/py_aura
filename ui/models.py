@@ -1,5 +1,5 @@
 """
-    Aura USB
+    Nimbus USB
     A tool to change the LED colors on Asus USB HID peripherals
 
     Copyright (C) 2019  Sven Coenye
@@ -17,39 +17,27 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-
-import sys
-
-from PySide2 import QtWidgets
-
-from device import GladiusIIMouse, ITEKeyboard
-from ui import panels
+from PySide2 import QtCore
+from PySide2.QtCore import Qt
 
 
-class Nimbus(QtWidgets.QMainWindow):
-    DEVICES = {
-        '0x0b05': {
-            '0x1845': GladiusIIMouse,
-            '0x1869': ITEKeyboard
-        }
-    }
-
+class DeviceListModel(QtCore.QAbstractListModel):
     """
-    GUI class for the Asus LED control
+    Model for the DeviceListView
     """
-    def __init__(self):
+    def __init__(self, devices=None):
         super().__init__()
+        self.devices = devices
 
-        self.setGeometry(10, 10, 300, 300)
-        self.setWindowTitle('Nimbus')
-        self.statusBar().showMessage('Ready')
-        self.setCentralWidget(panels.CenterPanel())
+    def rowCount(self, parent=QtCore.QModelIndex()):
+        return len(self.devices)
 
+    def data(self, index, role: int = ...):
+        if not index.isValid():
+            return ''
 
-if __name__ == '__main__':
-    application = QtWidgets.QApplication(sys.argv)
-    nimbus = Nimbus()
+        # Crucial as data() is called with almost every role in the book.
+        if role != Qt.DisplayRole:
+            return None
 
-    nimbus.show()
-
-    sys.exit(application.exec_())
+        return self.devices[index.row()]
