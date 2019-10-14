@@ -34,8 +34,12 @@ class DeviceListView(QtWidgets.QListView):
 
 class EffectListView(QtWidgets.QListView):
     """
-    List of available effects
+    List of available effects. Not all devices may support all effects natively.
     """
+    def __init__(self):
+        super().__init__()
+        model = models.EffectListModel(['static', 'strobe', 'cycle', 'rainbow'])
+        self.setModel(model)
 
 
 class CenterPanel(QtWidgets.QWidget):
@@ -47,4 +51,5 @@ class CenterPanel(QtWidgets.QWidget):
         super().__init__()
         self.main_layout = QtWidgets.QGridLayout(self)
         self.main_layout.addWidget(DeviceListView(), 0, 0)
+        self.main_layout.addWidget(EffectListView(), 0, 1)
         self.setLayout(self.main_layout)

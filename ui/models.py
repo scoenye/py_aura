@@ -41,3 +41,25 @@ class DeviceListModel(QtCore.QAbstractListModel):
             return None
 
         return self.devices[index.row()]
+
+
+class EffectListModel(QtCore.QAbstractListModel):
+    """
+    Model for the EffectListView
+    """
+    def __init__(self, effects=None):
+        super().__init__()
+        self.effects = effects
+
+    def rowCount(self, parent=QtCore.QModelIndex()):
+        return len(self.effects)
+
+    def data(self, index, role: int = ...):
+        if not index.isValid():
+            return ''
+
+        # Crucial as data() is called with almost every role in the book.
+        if role != Qt.DisplayRole:
+            return None
+
+        return self.effects[index.row()]
