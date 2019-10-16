@@ -19,13 +19,14 @@
 """
 import pyudev
 
-from abc import ABC
+from abc import ABC, abstractmethod
 
 
 class USBEventListener(ABC):
     """
     USBMonitor event listener interface
     """
+    @abstractmethod
     def added(self, vendor_id, product_id, model):
         """
         Signal a USB device was connected to the computer
@@ -35,6 +36,7 @@ class USBEventListener(ABC):
         :return:
         """
 
+    @abstractmethod
     def removed(self, vendor_id, product_id):
         """
         Signal a USB device was disconnected from the computer
@@ -56,9 +58,9 @@ class USBEnumerator:
         devices = pyudev.Enumerator(self.context).match_subsystem(subsystem='usb') \
                                                  .match_property('DEVTYPE', 'usb_device')
         for device in devices:
-            self._send_add(device.properties.asint('ID_VENDOR_ID'),
-                           device.properties.asint('ID_MODEL_ID'),
-                           device.properties.asstring('ID_MODEL'))
+            self._send_add(device.properties['ID_VENDOR_ID'],
+                           device.properties['ID_MODEL_ID'],
+                           device.properties['ID_MODEL'])
 
     def _send_add(self, vendor_id, product_id, model):
         # Send 'add' signal to all listeners
@@ -109,12 +111,12 @@ class USBMonitor:
         # there are no pyudev dependencies outside this module. Events are triggered for each interface on
         # a USB device. Pass them all on so we don't need to remember anything here.
         if action == 'add':
-            self._send_add(device.properties.asint('ID_VENDOR_ID'),
-                           device.properties.asint('ID_MODEL_ID'),
-                           device.properties.asstring('ID_MODEL'))
+            self._send_add(device.properties['ID_VENDOR_ID'],
+                           device.properties['ID_MODEL_ID'],
+                           device.properties['ID_MODEL'])
         elif action == 'remove':
-            self._send_remove(device.properties.asint('ID_VENDOR_ID'),
-                              device.properties.asint('ID_MODEL_ID'))
+            self._send_remove(device.properties['ID_VENDOR_ID'],
+                              device.properties['ID_MODEL_ID'])
 
     def _send_add(self, vendor_id, product_id, model):
         # Send 'add' signal to all listeners
