@@ -20,6 +20,7 @@
 import hid
 
 from abc import ABC
+from udev import USBEventListener
 
 
 class Device(ABC):
@@ -106,3 +107,32 @@ class ITEKeyboard(Device):
     LED_SEGMENT5 = 5
     LED_SEGMENT6 = 6
     LED_SEGMENT7 = 7
+
+
+# Supported devices
+DEVICES = {
+    '0b05': {
+        '1845': GladiusIIMouse,
+        '1869': ITEKeyboard
+    }
+}
+
+
+class DeviceList(USBEventListener):
+    """
+    List of supported devices currently connected to the computer
+    """
+    def __init__(self):
+        self.devices = {}
+
+    def added(self, vendor_id, product_id, model):
+        vendor_list = DEVICES.get(vendor_id)
+        if vendor_list:
+            if product_id in vendor_list:
+                if vendor_id not in self.devices:
+                    self.devices[vendor_id] = {}
+                self.devices[vendor_id][product_id] = DEVICES[vendor_id][product_id]()
+
+    def removed(self, vendor_id, product_id):
+        print(vendor_id, product_id)
+
