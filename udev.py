@@ -24,7 +24,7 @@ from abc import ABC
 
 class USBEventListener(ABC):
     """
-    USBMonitor ebent listener interface
+    USBMonitor event listener interface
     """
     def added(self, vendor_id, product_id, model):
         """
@@ -42,6 +42,45 @@ class USBEventListener(ABC):
         :param product_id: product ID of the device
         :return:
         """
+
+
+class USBEnumerator:
+    """
+    Report the currently plugged in USB devices
+    """
+    def __init__(self):
+        self.context = pyudev.Context()
+        self.listeners = set()
+
+    def enumerate(self):
+        devices = pyudev.Enumerator(self.context).match_subsystem(subsystem='usb') \
+                                                 .match_property('DEVTYPE', 'usb_device')
+        for device in devices:
+            self._send_add(device.properties.asint('ID_VENDOR_ID'),
+                           device.properties.asint('ID_MODEL_ID'),
+                           device.properties.asstring('ID_MODEL'))
+
+    def _send_add(self, vendor_id, product_id, model):
+        # Send 'add' signal to all listeners
+        for listener in self.listeners:
+            listener.added(vendor_id, product_id, model)
+
+    def add_listener(self, listener):
+        """
+        Add a listener to the collection who will be notified when a USB event occurs.
+        :param listener: listener instance to add to the collection
+        :return:
+        """
+        self.listeners.add(listener)
+
+    def remove_listener(self, listener):
+        """
+        Remove a listener to the collection who will be notified when a USB event occurs.
+        :param listener: listener instance to remove from the collection
+        :return:
+        """
+        if listener in self.listeners:
+            self.listeners.remove(listener)
 
 
 class USBMonitor:
