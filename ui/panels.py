@@ -22,16 +22,6 @@ from PySide2 import QtWidgets
 from ui import models
 
 
-class DeviceListView(QtWidgets.QListView):
-    """
-    List of supported devices attached to the computer
-    """
-    def __init__(self):
-        super().__init__()
-        model = models.DeviceListModel(['mouse', 'keyboard'])
-        self.setModel(model)
-
-
 class EffectListView(QtWidgets.QListView):
     """
     List of available effects. Not all devices may support all effects natively.
@@ -50,6 +40,18 @@ class CenterPanel(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
         self.main_layout = QtWidgets.QGridLayout(self)
-        self.main_layout.addWidget(DeviceListView(), 0, 0)
-        self.main_layout.addWidget(EffectListView(), 0, 1)
+        self.device_widget = QtWidgets.QListView()
+        self.main_layout.addWidget(EffectListView(), 0, 1)      # TODO: move to _assemble_panel
+        self._assemble_panel()
         self.setLayout(self.main_layout)
+
+    def _assemble_panel(self):
+        self.main_layout.addWidget(self.device_widget, 0, 0)
+
+    def set_device_list(self, device_list):
+        """
+        Attach the model for the device list panel
+        :param device_list:
+        :return:
+        """
+        self.device_widget.setModel(device_list)

@@ -22,28 +22,32 @@ import sys
 
 from PySide2 import QtWidgets
 
-from device import GladiusIIMouse, ITEKeyboard
+from device import GladiusIIMouse, ITEKeyboard, DeviceList
+from udev import USBEnumerator
 from ui import panels
 
 
 class Nimbus(QtWidgets.QMainWindow):
-    DEVICES = {
-        '0x0b05': {
-            '0x1845': GladiusIIMouse,
-            '0x1869': ITEKeyboard
-        }
-    }
-
     """
     GUI class for the Asus LED control
     """
     def __init__(self):
         super().__init__()
 
+        self.device_list = DeviceList()
+        self._populate_devices()
+
         self.setGeometry(10, 10, 300, 300)
         self.setWindowTitle('Nimbus')
         self.statusBar().showMessage('Ready')
         self.setCentralWidget(panels.CenterPanel())
+
+    def _populate_devices(self):
+        # Grab the currently connected USB devices
+        enum = USBEnumerator()
+
+        enum.add_listener(self.device_list)
+        enum.enumerate()
 
 
 if __name__ == '__main__':
