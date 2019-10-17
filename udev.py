@@ -40,12 +40,10 @@ class USBEventListener(ABC):
         """
 
     @abstractmethod
-    def removed(self, vendor_id, product_id, bus_num, dev_num):
+    def removed(self, bus_num, dev_num):
         """
         Signal a USB device was disconnected from the computer. The USB bus and device numbers are included to
         disambiguate multiple devices with the same vendor/device IDs.
-        :param vendor_id: vendor ID of the device
-        :param product_id: product ID of the device
         :param bus_num: USB bus the device is connected to
         :param dev_num: Device numnber on the USB bus
         :return:
@@ -125,9 +123,7 @@ class USBMonitor:
                            device.properties.asint('DEVNUM'),
                            device.properties['ID_MODEL'])
         elif action == 'remove':
-            self._send_remove(device.properties['ID_VENDOR_ID'],
-                              device.properties['ID_MODEL_ID'],
-                              device.properties.asint('BUSNUM'),
+            self._send_remove(device.properties.asint('BUSNUM'),
                               device.properties.asint('DEVNUM'))
 
     def _send_add(self, vendor_id, product_id, bus_num, dev_num, model):
@@ -135,10 +131,10 @@ class USBMonitor:
         for listener in self.listeners:
             listener.added(vendor_id, product_id, bus_num, dev_num, model)
 
-    def _send_remove(self, vendor_id, product_id, bus_num, dev_num):
+    def _send_remove(self, bus_num, dev_num):
         # Send 'remove' signal to all listeners
         for listener in self.listeners:
-            listener.removed(vendor_id, product_id, bus_num, dev_num)
+            listener.removed(bus_num, dev_num)
 
     def start(self):
         """

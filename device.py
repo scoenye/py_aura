@@ -133,5 +133,6 @@ class DeviceList(USBEventListener):
                 self.devices[(bus_num, dev_num)] = {'name': model,
                                                     'instance': SUPPORTED_DEVICES[vendor_id][product_id]()}
 
-    def removed(self, vendor_id, product_id, bus_num, dev_num):
-        print(vendor_id, product_id)
+    def removed(self, bus_num, dev_num):
+        if (bus_num, dev_num) in self.devices:
+            del(self.devices[(bus_num, dev_num)])

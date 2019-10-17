@@ -23,7 +23,7 @@ from device import GladiusIIMouse, ITEKeyboard
 from animation.devices.keyboard import StaticEffectITE, RainbowEffectITE, CycleEffectITE, StrobeEffectITE
 from animation.devices.mouse import StaticEffectGladius, RainbowEffectGladius, CycleEffectGladius, StrobeEffectGladius
 
-from udev import USBEnumerator
+from udev import USBEnumerator, USBMonitor
 from device import DeviceList
 
 enum = USBEnumerator()
@@ -33,6 +33,15 @@ enum.add_listener(list)
 enum.enumerate()
 
 print(list.devices)
+
+monitor = USBMonitor()
+monitor.add_listener(list)
+monitor.start()
+
+time.sleep(10)
+
+monitor.stop()
+
 
 # find our device
 # mouse = GladiusIIMouse()
