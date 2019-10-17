@@ -27,21 +27,27 @@ class USBEventListener(ABC):
     USBMonitor event listener interface
     """
     @abstractmethod
-    def added(self, vendor_id, product_id, model):
+    def added(self, vendor_id, product_id, bus_num, dev_num, model):
         """
-        Signal a USB device was connected to the computer
+        Signal a USB device was connected to the computer. The USB bus and device numbers are included to disambiguate
+        multiple devices with the same vendor/device IDs.
         :param vendor_id: vendor ID of the device
         :param product_id: product ID of the device
+        :param bus_num: USB bus the device is connected to
+        :param dev_num: Device numnber on the USB bus
         :param model: description of the device
         :return:
         """
 
     @abstractmethod
-    def removed(self, vendor_id, product_id):
+    def removed(self, vendor_id, product_id, bus_num, dev_num):
         """
-        Signal a USB device was disconnected from the computer
+        Signal a USB device was disconnected from the computer. The USB bus and device numbers are included to
+        disambiguate multiple devices with the same vendor/device IDs.
         :param vendor_id: vendor ID of the device
         :param product_id: product ID of the device
+        :param bus_num: USB bus the device is connected to
+        :param dev_num: Device numnber on the USB bus
         :return:
         """
 
@@ -60,12 +66,14 @@ class USBEnumerator:
         for device in devices:
             self._send_add(device.properties['ID_VENDOR_ID'],
                            device.properties['ID_MODEL_ID'],
+                           device.properties.asint('BUSNUM'),
+                           device.properties.asint('DEVNUM'),
                            device.properties['ID_MODEL'])
 
-    def _send_add(self, vendor_id, product_id, model):
+    def _send_add(self, vendor_id, product_id, bus_num, dev_num, model):
         # Send 'add' signal to all listeners
         for listener in self.listeners:
-            listener.added(vendor_id, product_id, model)
+            listener.added(vendor_id, product_id, bus_num, dev_num, model)
 
     def add_listener(self, listener):
         """
@@ -113,20 +121,24 @@ class USBMonitor:
         if action == 'add':
             self._send_add(device.properties['ID_VENDOR_ID'],
                            device.properties['ID_MODEL_ID'],
+                           device.properties.asint('BUSNUM'),
+                           device.properties.asint('DEVNUM'),
                            device.properties['ID_MODEL'])
         elif action == 'remove':
             self._send_remove(device.properties['ID_VENDOR_ID'],
-                              device.properties['ID_MODEL_ID'])
+                              device.properties['ID_MODEL_ID'],
+                              device.properties.asint('BUSNUM'),
+                              device.properties.asint('DEVNUM'))
 
-    def _send_add(self, vendor_id, product_id, model):
+    def _send_add(self, vendor_id, product_id, bus_num, dev_num, model):
         # Send 'add' signal to all listeners
         for listener in self.listeners:
-            listener.added(vendor_id, product_id, model)
+            listener.added(vendor_id, product_id, bus_num, dev_num, model)
 
-    def _send_remove(self, vendor_id, product_id):
+    def _send_remove(self, vendor_id, product_id, bus_num, dev_num):
         # Send 'remove' signal to all listeners
         for listener in self.listeners:
-            listener.removed(vendor_id, product_id)
+            listener.removed(vendor_id, product_id, bus_num, dev_num)
 
     def start(self):
         """

@@ -110,7 +110,7 @@ class ITEKeyboard(Device):
 
 
 # Supported devices
-DEVICES = {
+SUPPORTED_DEVICES = {
     '0b05': {
         '1845': GladiusIIMouse,
         '1869': ITEKeyboard
@@ -125,14 +125,13 @@ class DeviceList(USBEventListener):
     def __init__(self):
         self.devices = {}
 
-    def added(self, vendor_id, product_id, model):
-        vendor_list = DEVICES.get(vendor_id)
-        if vendor_list:
-            if product_id in vendor_list:
-                if vendor_id not in self.devices:
-                    self.devices[vendor_id] = {}
-                self.devices[vendor_id][product_id] = DEVICES[vendor_id][product_id]()
+    def added(self, vendor_id, product_id, bus_num, dev_num, model):
+        # vendor_id/product_id are used to figure out if the device is supported
+        # bus_num/dev_num will be the key in the device list.
+        if vendor_id in SUPPORTED_DEVICES:
+            if product_id in SUPPORTED_DEVICES[vendor_id]:
+                self.devices[(bus_num, dev_num)] = {'name': model,
+                                                    'instance': SUPPORTED_DEVICES[vendor_id][product_id]()}
 
-    def removed(self, vendor_id, product_id):
+    def removed(self, vendor_id, product_id, bus_num, dev_num):
         print(vendor_id, product_id)
-
