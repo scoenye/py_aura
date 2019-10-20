@@ -124,15 +124,26 @@ class DeviceList(USBEventListener):
     """
     def __init__(self):
         self.devices = {}
+        self.model_list = []    # dict does not fit in Qt's model concept
+
+    def __len__(self):
+        return len(self.model_list)
+
+    def __getitem__(self, item):
+        return self.devices[self.model_list[item]]['name']
 
     def added(self, vendor_id, product_id, bus_num, dev_num, model):
         # vendor_id/product_id are used to figure out if the device is supported
         # bus_num/dev_num will be the key in the device list.
         if vendor_id in SUPPORTED_DEVICES:
             if product_id in SUPPORTED_DEVICES[vendor_id]:
-                self.devices[(bus_num, dev_num)] = {'name': model,
-                                                    'instance': SUPPORTED_DEVICES[vendor_id][product_id]()}
+                key = (bus_num, dev_num)
+                self.devices[key] = {'name': model,
+                                     'instance': SUPPORTED_DEVICES[vendor_id][product_id]()}
+                self.model_list.append(key)     # Get around Qt model limitations
 
     def removed(self, bus_num, dev_num):
         if (bus_num, dev_num) in self.devices:
-            del(self.devices[(bus_num, dev_num)])
+            key = (bus_num, dev_num)
+            del self.devices[key]
+            self.model_list.remove(key)

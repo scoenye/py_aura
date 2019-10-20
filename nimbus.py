@@ -24,7 +24,7 @@ from PySide2 import QtWidgets
 
 from device import GladiusIIMouse, ITEKeyboard, DeviceList
 from udev import USBEnumerator
-from ui import panels
+from ui import panels, models
 
 
 class Nimbus(QtWidgets.QMainWindow):
@@ -37,10 +37,15 @@ class Nimbus(QtWidgets.QMainWindow):
         self.device_list = DeviceList()
         self._populate_devices()
 
+        self.device_model = models.DeviceListModel(self.device_list)
+
+        self.center_panel = panels.CenterPanel()
+        self.center_panel.set_device_list(self.device_model)
+
         self.setGeometry(10, 10, 300, 300)
         self.setWindowTitle('Nimbus')
         self.statusBar().showMessage('Ready')
-        self.setCentralWidget(panels.CenterPanel())
+        self.setCentralWidget(self.center_panel)
 
     def _populate_devices(self):
         # Grab the currently connected USB devices
