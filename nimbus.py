@@ -22,7 +22,7 @@ import sys
 
 from PySide2 import QtWidgets
 
-from device import GladiusIIMouse, ITEKeyboard, DeviceList
+from device import DeviceList
 from udev import USBEnumerator
 from ui import panels, models
 
@@ -37,10 +37,15 @@ class Nimbus(QtWidgets.QMainWindow):
         self.device_list = DeviceList()
         self._populate_devices()
 
+        self.effect_list = ['static', 'strobe', 'cycle', 'rainbow']
+
         self.device_model = models.DeviceListModel(self.device_list)
+        self.effect_model = models.EffectListModel(self.effect_list)
 
         self.center_panel = panels.CenterPanel()
+
         self.center_panel.set_device_list(self.device_model)
+        self.center_panel.set_effect_list(self.effect_model)
 
         self.setGeometry(10, 10, 300, 300)
         self.setWindowTitle('Nimbus')

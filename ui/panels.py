@@ -19,34 +19,22 @@
 """
 from PySide2 import QtWidgets
 
-from ui import models
-
-
-class EffectListView(QtWidgets.QListView):
-    """
-    List of available effects. Not all devices may support all effects natively.
-    """
-    def __init__(self):
-        super().__init__()
-        model = models.EffectListModel(['static', 'strobe', 'cycle', 'rainbow'])
-        self.setModel(model)
-
 
 class CenterPanel(QtWidgets.QWidget):
     """
     Main window central widget
     """
-
     def __init__(self):
         super().__init__()
         self.main_layout = QtWidgets.QGridLayout(self)
         self.device_widget = QtWidgets.QListView()
-        self.main_layout.addWidget(EffectListView(), 0, 1)      # TODO: move to _assemble_panel
+        self.effect_widget = QtWidgets.QListView()
         self._assemble_panel()
         self.setLayout(self.main_layout)
 
     def _assemble_panel(self):
         self.main_layout.addWidget(self.device_widget, 0, 0)
+        self.main_layout.addWidget(self.effect_widget, 0, 1)
 
     def set_device_list(self, device_list):
         """
@@ -55,3 +43,10 @@ class CenterPanel(QtWidgets.QWidget):
         :return:
         """
         self.device_widget.setModel(device_list)
+
+    def set_effect_list(self, effect_list):
+        """
+        Attach the model for the effect list panel
+        :return: effect_list
+        """
+        self.effect_widget.setModel(effect_list)
