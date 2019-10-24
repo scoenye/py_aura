@@ -133,6 +133,15 @@ class DeviceList(USBEventListener):
         return self.devices[self.model_list[item]]['name']
 
     def added(self, vendor_id, product_id, bus_num, dev_num, model):
+        """
+        Handle addition of a new device to the computer
+        :param vendor_id: USB vendor ID
+        :param product_id: USB product ID
+        :param bus_num: bus number the device is connected to
+        :param dev_num: device number on the bus
+        :param model: human readable (YMMV) description of the device
+        :return:
+        """
         # vendor_id/product_id are used to figure out if the device is supported
         # bus_num/dev_num will be the key in the device list.
         if vendor_id in SUPPORTED_DEVICES:
@@ -143,6 +152,12 @@ class DeviceList(USBEventListener):
                 self.model_list.append(key)     # Get around Qt model limitations
 
     def removed(self, bus_num, dev_num):
+        """
+        Hamdle unplugging of a device
+        :param bus_num: bus number the device was connected to
+        :param dev_num: device number on the bus
+        :return:
+        """
         if (bus_num, dev_num) in self.devices:
             key = (bus_num, dev_num)
             del self.devices[key]

@@ -47,6 +47,8 @@ class Nimbus(QtWidgets.QMainWindow):
         self.center_panel.set_device_list(self.device_model)
         self.center_panel.set_effect_list(self.effect_model)
 
+        self.center_panel.add_try_listener(self.try_clicked)
+
         self.setGeometry(10, 10, 300, 300)
         self.setWindowTitle('Nimbus')
         self.statusBar().showMessage('Ready')
@@ -58,6 +60,16 @@ class Nimbus(QtWidgets.QMainWindow):
 
         enum.add_listener(self.device_list)
         enum.enumerate()
+
+    def try_clicked(self, selected_devices, selected_effect):
+        """
+        Handle a click on the try button
+        :param selected_devices: List of QModelIndex instances representing the selected devices
+        :param selected_effect: List with the QModelIndex of the selected effect.
+        :return:
+        """
+        device_keys = [index.row() for index in selected_devices]
+        effect_keys = [index.row() for index in selected_effect]
 
 
 if __name__ == '__main__':

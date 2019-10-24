@@ -18,9 +18,12 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 from PySide2 import QtWidgets
+from PySide2.QtCore import Signal
 
 
 class CenterPanel(QtWidgets.QWidget):
+    try_clicked = Signal(list, list)
+
     """
     Main window central widget
     """
@@ -29,12 +32,25 @@ class CenterPanel(QtWidgets.QWidget):
         self.main_layout = QtWidgets.QGridLayout(self)
         self.device_widget = QtWidgets.QListView()
         self.effect_widget = QtWidgets.QListView()
+        self.try_button = QtWidgets.QPushButton('&Try')
+
+        # Allow selection of multiple devices
+        self.device_widget.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
+
         self._assemble_panel()
         self.setLayout(self.main_layout)
+
+        self.try_button.clicked.connect(self._try_clicked)
 
     def _assemble_panel(self):
         self.main_layout.addWidget(self.device_widget, 0, 0)
         self.main_layout.addWidget(self.effect_widget, 0, 1)
+        self.main_layout.addWidget(self.try_button, 1, 0)
+
+    def _try_clicked(self):
+        # Relay Try button click with all selected items
+        self.try_clicked.emit(self.device_widget.selectedIndexes(),
+                              self.effect_widget.selectedIndexes())
 
     def set_device_list(self, device_list):
         """
@@ -43,6 +59,7 @@ class CenterPanel(QtWidgets.QWidget):
         :return:
         """
         self.device_widget.setModel(device_list)
+        self.device_widget.setCurrentIndex(device_list.index(0, 0))
 
     def set_effect_list(self, effect_list):
         """
@@ -50,3 +67,13 @@ class CenterPanel(QtWidgets.QWidget):
         :return: effect_list
         """
         self.effect_widget.setModel(effect_list)
+        self.effect_widget.setCurrentIndex(effect_list.index(0, 0))
+
+    def add_try_listener(self, listener):
+        """
+        Add a listener interested in clicks on the Try button
+        :param listener:
+        :return:
+        """
+        # As long as the receiver is inside the Qt portion, use slot/signal.
+        self.try_clicked.connect(listener)
