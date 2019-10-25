@@ -74,6 +74,8 @@ class Nimbus(QtWidgets.QMainWindow):
         effect_keys = [index.row() for index in selected_effect]
 
         devices = self.device_list.instances(device_keys)
+        effect = self.effect_list.instance(effect_keys)
+
 
 
 if __name__ == '__main__':

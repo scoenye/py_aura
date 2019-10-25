@@ -120,3 +120,12 @@ class EffectList:
 
     def __getitem__(self, item):
         return EFFECTS[item]['name']
+
+    def instance(self, selection):
+        """
+        Convert the user selection into an effect descriptor
+        :param selection: list with the selected effect index
+        :return: effect descriptor
+        """
+        # Rather simplistic but we may not be done yet with the definition of the effect list itself.
+        return EFFECTS[selection[0]]['effect']

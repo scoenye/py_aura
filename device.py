@@ -166,7 +166,7 @@ class DeviceList(USBEventListener):
     def instances(self, selection):
         """
         Convert model selection into device instances
-        :param selection: itemData list of selected devices
+        :param selection: list of selected device indices
         :return: list of device instances corresponding to selection
         """
         device_list = []
