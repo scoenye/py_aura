@@ -19,6 +19,23 @@
 """
 import threading
 
+from enum import Enum
+
+
+class Effects(Enum):
+    STATIC = 0
+    STROBE = 1
+    CYCLE = 2
+    RAINBOW = 3
+
+
+EFFECTS = [
+    {'effect': Effects.STATIC, 'name': 'Static'},
+    {'effect': Effects.STROBE, 'name': 'Strobe'},
+    {'effect': Effects.CYCLE, 'name': 'Cycle'},
+    {'effect': Effects.RAINBOW, 'name': 'Rainbow'}
+]
+
 
 class Effect:
     """
@@ -92,3 +109,14 @@ class RunnableEffect(Effect):
         """
         self.keep_running = False
         self.thread.join()
+
+
+class EffectList:
+    """
+    List of available effects
+    """
+    def __len__(self):
+        return len(EFFECTS)
+
+    def __getitem__(self, item):
+        return EFFECTS[item]['name']
