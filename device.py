@@ -148,7 +148,7 @@ class DeviceList(USBEventListener):
             if product_id in SUPPORTED_DEVICES[vendor_id]:
                 key = (bus_num, dev_num)
                 self.devices[key] = {'name': model,
-                                     'instance': SUPPORTED_DEVICES[vendor_id][product_id]()}
+                                     'class': SUPPORTED_DEVICES[vendor_id][product_id]}
                 self.model_list.append(key)     # Get around Qt model limitations
 
     def removed(self, bus_num, dev_num):
@@ -162,3 +162,17 @@ class DeviceList(USBEventListener):
             key = (bus_num, dev_num)
             del self.devices[key]
             self.model_list.remove(key)
+
+    def instances(self, selection):
+        """
+        Convert model selection into device instances
+        :param selection: itemData list of selected devices
+        :return: list of device instances corresponding to selection
+        """
+        device_list = []
+
+        for item in selection:      # Index into model_list
+            real_key = self.model_list[item]
+            device_list.append(self.devices[real_key]['class']())
+
+        return device_list
