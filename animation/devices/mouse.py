@@ -19,10 +19,11 @@
 """
 import time
 
+import device as device_module
+
 from animation.devices.common import RainbowBlockLine, RainbowCurvedLine, CycleCurve, StrobeCurve
 from animation.effects import Effect, RunnableEffect
 from animation.generators import CompositeGeneratorRGB
-from device import GladiusIIMouse
 from report import GladiusIIReport, GladiusIICCReport
 
 
@@ -34,7 +35,7 @@ class StaticEffectGladius(Effect):
         report = GladiusIIReport()
         report.color((self.red, self.green, self.blue))
 
-        targets = targets or [GladiusIIMouse.LED_ALL]
+        targets = targets or [device_module.GladiusIIMouse.LED_ALL]
 
         for target in targets:
             report.target(target)
@@ -52,7 +53,7 @@ class GladiusRunnableEffect(RunnableEffect):
             self.device.write_interrupt(report)
 
     def start(self, device, targets=None):
-        targets = targets or [GladiusIIMouse.LED_ALL]
+        targets = targets or [device_module.GladiusIIMouse.LED_ALL]
         super().start(device, targets)      # Stores device and targets as instance variables
 
 

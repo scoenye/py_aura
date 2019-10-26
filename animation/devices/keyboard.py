@@ -19,10 +19,11 @@
 """
 import time
 
+import device as device_module
+
 from animation.devices.common import RainbowBlockLine, RainbowCurvedLine, CycleCurve, StrobeCurve
 from animation.effects import Effect, RunnableEffect
 from animation.generators import CompositeGeneratorRGB
-from device import ITEKeyboard
 from report import ITEKeyboardReport, ITEFlushReport, ITEKeyboardSegmentReport, ITEKeyboardCycleReport, \
                 ITEKeyboardApplyReport
 
@@ -38,7 +39,7 @@ class StaticEffectITE(Effect):
 
         color_report.color((self.red, self.green, self.blue))
 
-        targets = targets or [ITEKeyboard.LED_ALL]
+        targets = targets or [device_module.ITEKeyboard.LED_ALL]
 
         for target in targets:
             # Minimal required is 1 color report + 1 flush report
@@ -100,9 +101,10 @@ class StrobeEffectITE(ITERunnableEffect):
         colors = generator.color()
 
         self.targets = self.targets or \
-                       [ITEKeyboard.LED_SEGMENT1, ITEKeyboard.LED_SEGMENT2, ITEKeyboard.LED_SEGMENT3,
-                        ITEKeyboard.LED_SEGMENT4, ITEKeyboard.LED_SEGMENT5, ITEKeyboard.LED_SEGMENT6,
-                        ITEKeyboard.LED_SEGMENT7]
+                       [device_module.ITEKeyboard.LED_SEGMENT1, device_module.ITEKeyboard.LED_SEGMENT2,
+                        device_module.ITEKeyboard.LED_SEGMENT3, device_module.ITEKeyboard.LED_SEGMENT4,
+                        device_module.ITEKeyboard.LED_SEGMENT5, device_module.ITEKeyboard.LED_SEGMENT6,
+                        device_module.ITEKeyboard.LED_SEGMENT7]
 
         self._preamble()
 
@@ -176,12 +178,14 @@ class RainbowEffectITE(ITERunnableEffect):
 
         self._preamble()
 
-        clear_targets = [ITEKeyboard.LED_SEGMENT5, ITEKeyboard.LED_SEGMENT6, ITEKeyboard.LED_SEGMENT7]
+        clear_targets = [device_module.ITEKeyboard.LED_SEGMENT5, device_module.ITEKeyboard.LED_SEGMENT6,
+                         device_module.ITEKeyboard.LED_SEGMENT7]
 
         self.targets = self.targets or \
-                       [ITEKeyboard.LED_SEGMENT1, ITEKeyboard.LED_SEGMENT2, ITEKeyboard.LED_SEGMENT3,
-                        ITEKeyboard.LED_SEGMENT4, ITEKeyboard.LED_SEGMENT5, ITEKeyboard.LED_SEGMENT6,
-                        ITEKeyboard.LED_SEGMENT7]
+                       [device_module.ITEKeyboard.LED_SEGMENT1, device_module.ITEKeyboard.LED_SEGMENT2,
+                        device_module.ITEKeyboard.LED_SEGMENT3, device_module.ITEKeyboard.LED_SEGMENT4,
+                        device_module.ITEKeyboard.LED_SEGMENT5, device_module.ITEKeyboard.LED_SEGMENT6,
+                        device_module.ITEKeyboard.LED_SEGMENT7]
 
         segment1 = CompositeGeneratorRGB(RainbowBlockLine(112), RainbowCurvedLine(112), RainbowCurvedLine(432))
         segment2 = CompositeGeneratorRGB(RainbowBlockLine(75), RainbowCurvedLine(75), RainbowCurvedLine(395))
@@ -195,16 +199,16 @@ class RainbowEffectITE(ITERunnableEffect):
 
         while self.keep_running:
             color = next(colors1)
-            report.color(color, [ITEKeyboard.LED_SEGMENT1, ITEKeyboard.LED_SEGMENT6])
+            report.color(color, [device_module.ITEKeyboard.LED_SEGMENT1, device_module.ITEKeyboard.LED_SEGMENT6])
 
             color = next(colors2)
-            report.color(color, [ITEKeyboard.LED_SEGMENT2])
+            report.color(color, [device_module.ITEKeyboard.LED_SEGMENT2])
 
             color = next(colors3)
-            report.color(color, [ITEKeyboard.LED_SEGMENT3, ITEKeyboard.LED_SEGMENT7])
+            report.color(color, [device_module.ITEKeyboard.LED_SEGMENT3, device_module.ITEKeyboard.LED_SEGMENT7])
 
             color = next(colors4)
-            report.color(color, [ITEKeyboard.LED_SEGMENT4, ITEKeyboard.LED_SEGMENT5])
+            report.color(color, [device_module.ITEKeyboard.LED_SEGMENT4, device_module.ITEKeyboard.LED_SEGMENT5])
             self.device.write_interrupt(report)
 
             report.color((0, 0, 0), clear_targets)

@@ -19,7 +19,12 @@
 """
 import hid
 
-from abc import ABC
+from abc import ABC, abstractmethod
+
+import animation.devices.mouse as mouse
+import animation.devices.keyboard as keyboard
+
+from animation.effects import Effects
 from udev import USBEventListener
 
 
@@ -30,6 +35,7 @@ class Device(ABC):
     VENDOR_ID = 0x0b05
     PRODUCT_ID = 0x0000
     INTERFACE = 0
+    EFFECT_MAP = {}
 
     def __init__(self):
         self.handle = None
@@ -77,6 +83,14 @@ class Device(ABC):
         """
         return self.handle.read(size, timeout)
 
+    @abstractmethod
+    def effect(self, descriptor):
+        """
+        Obtain a device specific instance of an effect
+        :param descriptor: which effect to create
+        :return:
+        """
+
 
 class GladiusIIMouse(Device):
     """
@@ -85,11 +99,21 @@ class GladiusIIMouse(Device):
     PRODUCT_ID = 0x1845
     INTERFACE = 2
 
+    EFFECT_MAP = {
+        Effects.STATIC: mouse.StaticEffectGladius,
+        Effects.STROBE: mouse.StrobeEffectGladius,
+        Effects.CYCLE: mouse.CycleEffectGladius,
+        Effects.RAINBOW: mouse.RainbowEffectGladius
+    }
+
     # Selectable LEDs
     LED_LOGO = 0x00     # Selects the logo LED
     LED_WHEEL = 0x01    # Selects the wheel LED
     LED_BASE = 0x02     # Selects the mouse base
     LED_ALL = 0x03      # Selects all LEDs
+
+    def effect(self, descriptor):
+        return GladiusIIMouse.EFFECT_MAP.get(descriptor)
 
 
 class ITEKeyboard(Device):
@@ -97,6 +121,13 @@ class ITEKeyboard(Device):
     Asus ITE keyboard (8910)
     """
     PRODUCT_ID = 0x1869
+
+    EFFECT_MAP = {
+        Effects.STATIC: keyboard.StaticEffectITE,
+        Effects.STROBE: keyboard.StrobeEffectITE,
+        Effects.CYCLE: keyboard.CycleEffectITE,
+        Effects.RAINBOW: keyboard.RainbowEffectITE
+    }
 
     # Selectable segments
     LED_ALL = 0
@@ -107,6 +138,9 @@ class ITEKeyboard(Device):
     LED_SEGMENT5 = 5
     LED_SEGMENT6 = 6
     LED_SEGMENT7 = 7
+
+    def effect(self, descriptor):
+        return ITEKeyboard.EFFECT_MAP.get(descriptor)
 
 
 # Supported devices
