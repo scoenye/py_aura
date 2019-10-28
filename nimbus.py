@@ -22,7 +22,7 @@ import sys
 
 from PySide2 import QtWidgets
 
-from device import DeviceList
+from device import DeviceList, MetaDevice
 
 from animation.effects import EffectList
 from udev import USBEnumerator
@@ -76,6 +76,8 @@ class Nimbus(QtWidgets.QMainWindow):
         devices = self.device_list.instances(device_keys)
         effect = self.effect_list.instance(effect_keys)
 
+        meta_device = MetaDevice(devices, effect)
+        meta_device.try_out()
 
 
 if __name__ == '__main__':

@@ -211,3 +211,23 @@ class DeviceList(USBEventListener):
             device_list.append(self.devices[real_key]['class'](real_key))
 
         return device_list
+
+
+class MetaDevice:
+    """
+    Apply an effect to multiple devices
+    """
+    def __init__(self, devices, effect):
+        """
+        :param devices: list of device instances to apply the effect to
+        :param effect: effect to apply to the devices
+        """
+        self.devices = devices
+        self.effect = effect
+
+    def try_out(self):
+        """
+        Execute the effect but do not issue an "apply" command
+        :return:
+        """
+        active_effects = [device.effect(self.effect) for device in self.devices]
