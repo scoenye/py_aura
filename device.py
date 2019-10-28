@@ -37,8 +37,9 @@ class Device(ABC):
     INTERFACE = 0
     EFFECT_MAP = {}
 
-    def __init__(self):
+    def __init__(self, bus_location):
         self.handle = None
+        self.bus_location = bus_location
 
     def _find_path(self):
         device_list = hid.enumerate(self.VENDOR_ID, self.PRODUCT_ID)
@@ -207,6 +208,6 @@ class DeviceList(USBEventListener):
 
         for item in selection:      # Index into model_list
             real_key = self.model_list[item]
-            device_list.append(self.devices[real_key]['class']())
+            device_list.append(self.devices[real_key]['class'](real_key))
 
         return device_list
