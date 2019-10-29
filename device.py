@@ -61,7 +61,7 @@ class Device(ABC):
         try:
             self.handle = hid.Device(path=path)
         except Exception:
-            raise ValueError('Device not found')
+            raise ValueError('Device not found:', self.VENDOR_ID, self.PRODUCT_ID, self.bus_location)
 
     def close(self):
         """
@@ -228,9 +228,29 @@ class MetaDevice:
         self.devices = devices
         self.effect = effect
 
+    def open(self):
+        """
+        Open all individual devices
+        :return:
+        """
+        for device in self.devices:
+            device.open()
+
+    def close(self):
+        """
+        Close all individual devices
+        :return:
+        """
+        for device in self.devices:
+            device.close()
+
     def try_out(self):
         """
         Execute the effect but do not issue an "apply" command
         :return:
         """
         active_effects = [device.effect(self.effect) for device in self.devices]
+
+        for effect in active_effects:
+            effect.color(0x00, 0xff, 0x00)      # TODO: add a color picker!
+            effect.start()

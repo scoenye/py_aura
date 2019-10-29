@@ -77,7 +77,9 @@ class Nimbus(QtWidgets.QMainWindow):
         effect = self.effect_list.instance(effect_keys)
 
         meta_device = MetaDevice(devices, effect)
+        meta_device.open()
         meta_device.try_out()
+        meta_device.close()
 
 
 if __name__ == '__main__':
