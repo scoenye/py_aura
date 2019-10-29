@@ -117,7 +117,7 @@ class GladiusIIMouse(Device):
     LED_ALL = 0x03      # Selects all LEDs
 
     def effect(self, descriptor):
-        return GladiusIIMouse.EFFECT_MAP.get(descriptor)
+        return GladiusIIMouse.EFFECT_MAP.get(descriptor)(self)
 
 
 class ITEKeyboard(Device):
@@ -144,7 +144,7 @@ class ITEKeyboard(Device):
     LED_SEGMENT7 = 7
 
     def effect(self, descriptor):
-        return ITEKeyboard.EFFECT_MAP.get(descriptor)
+        return ITEKeyboard.EFFECT_MAP.get(descriptor)(self)
 
 
 # Supported devices

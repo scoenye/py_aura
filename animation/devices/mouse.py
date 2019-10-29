@@ -31,7 +31,7 @@ class StaticEffectGladius(Effect):
     """
     Single color change for mouse
     """
-    def start(self, device, targets=None):
+    def start(self, targets=None):
         report = GladiusIIReport()
         report.color((self.red, self.green, self.blue))
 
@@ -39,7 +39,7 @@ class StaticEffectGladius(Effect):
 
         for target in targets:
             report.target(target)
-            device.write_interrupt(report)
+            self.device.write_interrupt(report)
 
 
 class GladiusRunnableEffect(RunnableEffect):
@@ -52,9 +52,9 @@ class GladiusRunnableEffect(RunnableEffect):
             report.target(target)
             self.device.write_interrupt(report)
 
-    def start(self, device, targets=None):
+    def start(self, targets=None):
         targets = targets or [device_module.GladiusIIMouse.LED_ALL]
-        super().start(device, targets)      # Stores device and targets as instance variables
+        super().start(targets)  # Stores device and targets as instance variables
 
 
 class StrobeEffectGladius(GladiusRunnableEffect):

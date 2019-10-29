@@ -33,7 +33,7 @@ class StaticEffectITE(Effect):
     Single color change effect for ITE keyboard
     """
 
-    def start(self, device, targets=None):
+    def start(self, targets=None):
         color_report = ITEKeyboardReport()
         flush_report = ITEFlushReport()
 
@@ -44,20 +44,20 @@ class StaticEffectITE(Effect):
         for target in targets:
             # Minimal required is 1 color report + 1 flush report
             color_report.target(target)
-            device.write_interrupt(color_report)
-            device.write_interrupt(color_report)
-            device.write_interrupt(flush_report)
+            self.device.write_interrupt(color_report)
+            self.device.write_interrupt(color_report)
+            self.device.write_interrupt(flush_report)
 
             color_report.byte_7(0xe1)
-            device.write_interrupt(color_report)
-            device.write_interrupt(flush_report)
+            self.device.write_interrupt(color_report)
+            self.device.write_interrupt(flush_report)
 
-    def apply(self, device):
+    def apply(self):
         apply_report = ITEKeyboardApplyReport()
         flush_report = ITEFlushReport()
 
-        device.write_interrupt(apply_report)
-        device.write_interrupt(flush_report)
+        self.device.write_interrupt(apply_report)
+        self.device.write_interrupt(flush_report)
 
 
 class ITERunnableEffect(RunnableEffect):
@@ -116,11 +116,11 @@ class StrobeEffectITE(ITERunnableEffect):
 
             time.sleep(0.05)
 
-    def apply(self, device):
+    def apply(self):
         flush_report = ITEFlushReport()
 
         self._preamble()
-        device.write_interrupt(flush_report)
+        self.device.write_interrupt(flush_report)
 
 
 class CycleEffectITE(ITERunnableEffect):

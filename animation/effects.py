@@ -41,10 +41,14 @@ class Effect:
     """
     Base class for lighting effects
     """
-    def __init__(self):
+    def __init__(self, device):
+        """
+        :param device: hardware device to which this effect instance applies to.
+        """
         self.red = 0
         self.green = 0
         self.blue = 0
+        self.device = device
 
     def color(self, red, green, blue):
         """
@@ -58,19 +62,17 @@ class Effect:
         self.green = green
         self.blue = blue
 
-    def start(self, device, targets=None):
+    def start(self, targets=None):
         """
         Start execution of the effect
-        :param device: Device to apply the effect to.
         :param targets: list of LEDs to change color of, None to change all LEDs
         :return:
         """
         pass
 
-    def apply(self, device):
+    def apply(self):
         """
         Make the effect permanent (if the device supports it.)
-        :param device: Device to apply the effect to.
         :return:
         """
         pass
@@ -80,9 +82,8 @@ class RunnableEffect(Effect):
     """
     Threaded lighting effect
     """
-    def __init__(self):
-        super().__init__()
-        self.device = None
+    def __init__(self, device):
+        super().__init__(device)
         self.targets = []
         self.thread = threading.Thread(target=self._runnable)
         self.keep_running = True
@@ -91,14 +92,12 @@ class RunnableEffect(Effect):
         # Core of the strobe effect thread
         pass
 
-    def start(self, device, targets=None):
+    def start(self, targets=None):
         """
         Start the execution of the effect as a separate thread.
-        :param device: Device to apply the effect to.
         :param targets: list of LEDs to change color of, None to change all LEDs
         :return:
         """
-        self.device = device
         self.targets = targets
         self.thread.start()
 

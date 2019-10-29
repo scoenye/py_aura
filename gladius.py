@@ -27,7 +27,8 @@ from animation.devices.mouse import StaticEffectGladius, RainbowEffectGladius, C
 from udev import USBEnumerator, USBMonitor
 from device import DeviceList
 
-bus_location = udev.NodeResolver.bus_location('/dev/hidraw2')
+mouse_port = udev.NodeResolver.bus_location('/dev/hidraw2')
+kbd_port = udev.NodeResolver.bus_location('/dev/hidraw4')
 
 # enum = USBEnumerator()
 # list = DeviceList()
@@ -46,23 +47,23 @@ bus_location = udev.NodeResolver.bus_location('/dev/hidraw2')
 # monitor.stop()
 
 # find our device
-mouse = GladiusIIMouse(bus_location)
-# keyboard = ITEKeyboard()
+mouse = GladiusIIMouse(mouse_port)
+keyboard = ITEKeyboard(kbd_port)
 
 mouse.open()
-# keyboard.open()
+keyboard.open()
 
-mouse_static = StaticEffectGladius()
-mouse_static.color(0x00, 0xff, 0x00)
-mouse_static.start(mouse)  # Init the mouse LEDs
+mouse_static = StaticEffectGladius(mouse)
+mouse_static.color(0xff, 0xff, 0x00)
+mouse_static.start()  # Init the mouse LEDs
 
 # mouse_static.color(0xff, 0x00, 0x3f)
 # mouse_static.start(mouse)
 
-# kbd_static = StaticEffectITE()
-# kbd_static.color(255, 0, 255)
-# kbd_static.start(keyboard, [ITEKeyboard.LED_ALL])
-# kbd_static.apply(keyboard)
+kbd_static = StaticEffectITE(keyboard)
+kbd_static.color(255, 0, 255)
+kbd_static.start([ITEKeyboard.LED_ALL])
+kbd_static.apply()
 
 # mouse_effect = StrobeEffectGladius()
 # keyboard_effect = StrobeEffectITE()
@@ -96,5 +97,5 @@ mouse_static.start(mouse)  # Init the mouse LEDs
 # keyboard_effect.apply(keyboard)
 
 mouse.close()
-# keyboard.close()
+keyboard.close()
 
