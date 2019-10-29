@@ -25,7 +25,7 @@ import animation.devices.mouse as mouse
 import animation.devices.keyboard as keyboard
 
 from animation.effects import Effects
-from udev import USBEventListener
+from udev import USBEventListener, NodeResolver
 
 
 class Device(ABC):
@@ -42,11 +42,14 @@ class Device(ABC):
         self.bus_location = bus_location
 
     def _find_path(self):
+        # Start of with the list of matching hardware
         device_list = hid.enumerate(self.VENDOR_ID, self.PRODUCT_ID)
 
         for device in device_list:
-            if device['interface_number'] == self.INTERFACE:
-                return device['path']
+            # See if the device is plugged in to the correct port
+            if NodeResolver.bus_location(device['path']) == self.bus_location:
+                if device['interface_number'] == self.INTERFACE:
+                    return device['path']
 
     def open(self):
         """

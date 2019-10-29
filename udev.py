@@ -166,3 +166,29 @@ class USBMonitor:
         """
         if listener in self.listeners:
             self.listeners.remove(listener)
+
+
+class NodeResolver:
+    """
+    The only attribute in common between the hid and pyudev modules is the device serial number, which is
+    not reliably present on hardware. This class serves to link both and maintain the ability to distinguish
+    multiple identical devices.
+    """
+    @staticmethod
+    def bus_location(device_node):
+        """
+        Return the USB bus and device numbers corresponding to a device node. If the device node does not have its
+        own bus & device numbers, the device chain is climbed until the first parent is found which does.
+        :param device_node: device node path
+        :return: (bus number, device number); None if no device in the chain has a bus & device number.
+        """
+        context = pyudev.Context()
+        device = pyudev.Devices.from_device_file(context, device_node)
+
+        while device:
+            if device.properties.get('BUSNUM'):
+                return device.properties.get('BUSNUM'), device.properties.get('DEVNUM')
+            else:
+                device = device.parent
+
+        return None

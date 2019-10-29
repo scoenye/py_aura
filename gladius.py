@@ -18,6 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 import time
+import udev
 
 from device import GladiusIIMouse, ITEKeyboard
 from animation.devices.keyboard import StaticEffectITE, RainbowEffectITE, CycleEffectITE, StrobeEffectITE
@@ -26,33 +27,34 @@ from animation.devices.mouse import StaticEffectGladius, RainbowEffectGladius, C
 from udev import USBEnumerator, USBMonitor
 from device import DeviceList
 
-enum = USBEnumerator()
-list = DeviceList()
+bus_location = udev.NodeResolver.bus_location('/dev/hidraw2')
 
-enum.add_listener(list)
-enum.enumerate()
-
-print(list.devices)
-
-monitor = USBMonitor()
-monitor.add_listener(list)
-monitor.start()
-
-time.sleep(10)
-
-monitor.stop()
-
+# enum = USBEnumerator()
+# list = DeviceList()
+#
+# enum.add_listener(list)
+# enum.enumerate()
+#
+# print(list.devices)
+#
+# monitor = USBMonitor()
+# monitor.add_listener(list)
+# monitor.start()
+#
+# time.sleep(10)
+#
+# monitor.stop()
 
 # find our device
-# mouse = GladiusIIMouse()
+mouse = GladiusIIMouse(bus_location)
 # keyboard = ITEKeyboard()
 
-# mouse.open()
+mouse.open()
 # keyboard.open()
 
-# mouse_static = StaticEffectGladius()
-# mouse_static.color(0x00, 0xff, 0x00)
-# mouse_static.start(mouse)  # Init the mouse LEDs
+mouse_static = StaticEffectGladius()
+mouse_static.color(0x00, 0xff, 0x00)
+mouse_static.start(mouse)  # Init the mouse LEDs
 
 # mouse_static.color(0xff, 0x00, 0x3f)
 # mouse_static.start(mouse)
@@ -93,6 +95,6 @@ monitor.stop()
 
 # keyboard_effect.apply(keyboard)
 
-# mouse.close()
+mouse.close()
 # keyboard.close()
 
