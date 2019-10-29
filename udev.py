@@ -187,7 +187,7 @@ class NodeResolver:
 
         while device:
             if device.properties.get('BUSNUM'):
-                return device.properties.get('BUSNUM'), device.properties.get('DEVNUM')
+                return device.properties.asint('BUSNUM'), device.properties.asint('DEVNUM')
             else:
                 device = device.parent
 
