@@ -254,5 +254,5 @@ class MetaDevice:
         active_effects = [device.effect(self.effect) for device in self.devices]
 
         for effect in active_effects:
-            effect.color(0x00, 0xff, 0x00)      # TODO: add a color picker!
+            effect.color(self.color[0], self.color[1], self.color[2])
             effect.start()

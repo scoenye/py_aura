@@ -77,7 +77,7 @@ class Nimbus(QtWidgets.QMainWindow):
         devices = self.device_list.instances(device_keys)
         effect = self.effect_list.instance(effect_keys)
 
-        meta_device = MetaDevice(devices, effect, color.rgb())
+        meta_device = MetaDevice(devices, effect, (color.red(), color.green(), color.blue()))
         meta_device.open()
         meta_device.try_out()
         meta_device.close()

@@ -63,7 +63,7 @@ mouse_static.start()  # Init the mouse LEDs
 kbd_static = StaticEffectITE(keyboard)
 kbd_static.color(255, 0, 255)
 kbd_static.start([ITEKeyboard.LED_ALL])
-kbd_static.apply()
+# kbd_static.apply()
 
 # mouse_effect = StrobeEffectGladius()
 # keyboard_effect = StrobeEffectITE()
