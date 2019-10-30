@@ -63,11 +63,12 @@ class Nimbus(QtWidgets.QMainWindow):
         enum.add_listener(self.device_list)
         enum.enumerate()
 
-    def try_clicked(self, selected_devices, selected_effect):
+    def try_clicked(self, selected_devices, selected_effect, color):
         """
         Handle a click on the try button
         :param selected_devices: List of QModelIndex instances representing the selected devices
         :param selected_effect: List with the QModelIndex of the selected effect.
+        :param color: selected QColor for the effect
         :return:
         """
         device_keys = [index.row() for index in selected_devices]
@@ -76,7 +77,7 @@ class Nimbus(QtWidgets.QMainWindow):
         devices = self.device_list.instances(device_keys)
         effect = self.effect_list.instance(effect_keys)
 
-        meta_device = MetaDevice(devices, effect)
+        meta_device = MetaDevice(devices, effect, color.rgb())
         meta_device.open()
         meta_device.try_out()
         meta_device.close()
