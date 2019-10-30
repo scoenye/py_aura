@@ -51,7 +51,7 @@ class Nimbus(QtWidgets.QMainWindow):
 
         self.center_panel.add_try_listener(self.try_clicked)
 
-        self.setGeometry(10, 10, 300, 300)
+        self.setGeometry(10, 10, 1000, 300)
         self.setWindowTitle('Nimbus')
         self.statusBar().showMessage('Ready')
         self.setCentralWidget(self.center_panel)
@@ -80,6 +80,14 @@ class Nimbus(QtWidgets.QMainWindow):
         meta_device.open()
         meta_device.try_out()
         meta_device.close()
+
+    def color_changed(self, color):
+        """
+        Handle a change in color requested by the user
+        :param color: QColor instance with the color to change to
+        :return:
+        """
+        self.effect_model.change_color(color)
 
 
 if __name__ == '__main__':

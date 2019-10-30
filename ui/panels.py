@@ -32,10 +32,14 @@ class CenterPanel(QtWidgets.QWidget):
         self.main_layout = QtWidgets.QGridLayout(self)
         self.device_widget = QtWidgets.QListView()
         self.effect_widget = QtWidgets.QListView()
+        self.color_widget = QtWidgets.QColorDialog()
         self.try_button = QtWidgets.QPushButton('&Try')
 
         # Allow selection of multiple devices
         self.device_widget.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
+
+        # Hide OK/Cancel buttons on color picker
+        self.color_widget.setOption(QtWidgets.QColorDialog.NoButtons, True)
 
         self._assemble_panel()
         self.setLayout(self.main_layout)
@@ -45,6 +49,7 @@ class CenterPanel(QtWidgets.QWidget):
     def _assemble_panel(self):
         self.main_layout.addWidget(self.device_widget, 0, 0)
         self.main_layout.addWidget(self.effect_widget, 0, 1)
+        self.main_layout.addWidget(self.color_widget, 0, 2)
         self.main_layout.addWidget(self.try_button, 1, 0)
 
     def _try_clicked(self):
