@@ -31,6 +31,7 @@ class CenterPanel(QtWidgets.QWidget):
         super().__init__()
         self.main_layout = QtWidgets.QGridLayout(self)
         self.device_widget = QtWidgets.QListView()
+        self.target_widget = QtWidgets.QListView()
         self.effect_widget = QtWidgets.QListView()
         self.color_widget = QtWidgets.QColorDialog()
         self.try_button = QtWidgets.QPushButton('&Try')
@@ -48,9 +49,10 @@ class CenterPanel(QtWidgets.QWidget):
 
     def _assemble_panel(self):
         self.main_layout.addWidget(self.device_widget, 0, 0)
+        self.main_layout.addWidget(self.target_widget, 1, 0)
         self.main_layout.addWidget(self.effect_widget, 0, 1)
         self.main_layout.addWidget(self.color_widget, 0, 2)
-        self.main_layout.addWidget(self.try_button, 1, 0)
+        self.main_layout.addWidget(self.try_button, 2, 0)
 
     def _try_clicked(self):
         # Relay Try button click with all selected items
