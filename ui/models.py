@@ -63,3 +63,25 @@ class EffectListModel(QtCore.QAbstractListModel):
             return None
 
         return self.effects[index.row()]
+
+
+class TargetListModel(QtCore.QAbstractListModel):
+    """
+    Model for the LED target color assignment
+    """
+    def __init__(self, targets=None):
+        super().__init__()
+        self.targets = targets
+
+    def rowCount(self, parent=QtCore.QModelIndex()):
+        return len(self.targets)
+
+    def data(self, index, role: int = ...):
+        if not index.isValid():
+            return ''
+
+        # Crucial as data() is called with almost every role in the book.
+        if role != Qt.DisplayRole:
+            return None
+
+        return self.targets[index.row()]

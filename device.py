@@ -96,6 +96,30 @@ class Device(ABC):
         """
 
 
+class LEDTarget:
+    """
+    A targetable LED on a device
+    """
+    def __init__(self, device, target):
+        self.device = device
+        self.target = target            # Target LED identifier
+        self.color = (0, 0, 0)
+
+    def change_color(self, rgb):
+        """
+        Set the color for the LED
+        :param rgb:
+        :return:
+        """
+        self.color = rgb
+
+    def color(self):
+        """
+        Return the current color of the target
+        :return:
+        """
+
+
 class GladiusIIMouse(Device):
     """
     Asus RoG Gladius II mouse
