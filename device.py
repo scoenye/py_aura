@@ -38,8 +38,9 @@ class Device(ABC):
     EFFECT_MAP = {}
 
     def __init__(self, bus_location):
-        self.handle = None
         self.bus_location = bus_location
+        self.handle = None                  # HID device handle
+        self.targets = None
 
     def _find_path(self):
         # Start of with the list of matching hardware
@@ -140,6 +141,15 @@ class GladiusIIMouse(Device):
     LED_BASE = 0x02     # Selects the mouse base
     LED_ALL = 0x03      # Selects all LEDs
 
+    def __init__(self, bus_location):
+        super().__init__(bus_location)
+        self.targets = [
+            LEDTarget(self, GladiusIIMouse.LED_ALL),
+            LEDTarget(self, GladiusIIMouse.LED_LOGO),
+            LEDTarget(self, GladiusIIMouse.LED_WHEEL),
+            LEDTarget(self, GladiusIIMouse.LED_BASE)
+        ]
+
     def effect(self, descriptor):
         return GladiusIIMouse.EFFECT_MAP.get(descriptor)(self)
 
@@ -166,6 +176,16 @@ class ITEKeyboard(Device):
     LED_SEGMENT5 = 5
     LED_SEGMENT6 = 6
     LED_SEGMENT7 = 7
+
+    def __init__(self, bus_location):
+        super().__init__(bus_location)
+        self.targets = [
+            LEDTarget(self, ITEKeyboard.LED_ALL),
+            LEDTarget(self, ITEKeyboard.LED_SEGMENT1),      # The 4 hardware segments
+            LEDTarget(self, ITEKeyboard.LED_SEGMENT2),
+            LEDTarget(self, ITEKeyboard.LED_SEGMENT3),
+            LEDTarget(self, ITEKeyboard.LED_SEGMENT4)
+        ]
 
     def effect(self, descriptor):
         return ITEKeyboard.EFFECT_MAP.get(descriptor)(self)
