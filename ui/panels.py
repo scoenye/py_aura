@@ -36,6 +36,17 @@ class DeviceListView(QtWidgets.QListView):
         super().selectionChanged(selected, deselected)
 
 
+class TargetTableView(QtWidgets.QTableView):
+    """
+    Show the targetable LEDs for all devices. Targets on selected devices are enabled, targets on deselected devices
+    are disabled.
+    """
+    def __init__(self, parent):
+        super().__init__(parent)
+        # Allow selection of multiple targets
+        self.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
+
+
 class CenterPanel(QtWidgets.QWidget):
     try_clicked = Signal(list, list, object)
 
@@ -46,7 +57,7 @@ class CenterPanel(QtWidgets.QWidget):
         super().__init__()
         self.main_layout = QtWidgets.QGridLayout(self)
         self.device_widget = DeviceListView(self)
-        self.target_widget = QtWidgets.QListView()
+        self.target_widget = TargetTableView(self)
         self.effect_widget = QtWidgets.QListView()
         self.color_widget = QtWidgets.QColorDialog()
         self.try_button = QtWidgets.QPushButton('&Try')
