@@ -21,6 +21,21 @@ from PySide2 import QtWidgets
 from PySide2.QtCore import Signal
 
 
+class DeviceListView(QtWidgets.QListView):
+    """
+    ListView to show the devices and control the target view
+    """
+    def __init__(self, parent):
+        super().__init__(parent)
+        # Allow selection of multiple devices
+        self.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
+
+    def selectionChanged(self, selected, deselected):
+        # selected and deselected are deltas. Whatever comes in selected needs to be enabled in the target list,
+        # whatever is in deselected needs to be disabled,
+        super().selectionChanged(selected, deselected)
+
+
 class CenterPanel(QtWidgets.QWidget):
     try_clicked = Signal(list, list, object)
 
@@ -30,14 +45,11 @@ class CenterPanel(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
         self.main_layout = QtWidgets.QGridLayout(self)
-        self.device_widget = QtWidgets.QListView()
+        self.device_widget = DeviceListView(self)
         self.target_widget = QtWidgets.QListView()
         self.effect_widget = QtWidgets.QListView()
         self.color_widget = QtWidgets.QColorDialog()
         self.try_button = QtWidgets.QPushButton('&Try')
-
-        # Allow selection of multiple devices
-        self.device_widget.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
 
         # Hide OK/Cancel buttons on color picker
         self.color_widget.setOption(QtWidgets.QColorDialog.NoButtons, True)
