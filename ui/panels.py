@@ -56,6 +56,8 @@ class CenterPanel(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
         self.main_layout = QtWidgets.QGridLayout(self)
+        # self.setLayout(self.main_layout)
+
         self.device_widget = DeviceListView(self)
         self.target_widget = TargetTableView(self)
         self.effect_widget = QtWidgets.QListView()
@@ -66,15 +68,14 @@ class CenterPanel(QtWidgets.QWidget):
         self.color_widget.setOption(QtWidgets.QColorDialog.NoButtons, True)
 
         self._assemble_panel()
-        self.setLayout(self.main_layout)
 
         self.try_button.clicked.connect(self._try_clicked)
 
     def _assemble_panel(self):
         self.main_layout.addWidget(self.device_widget, 0, 0)
-        self.main_layout.addWidget(self.target_widget, 1, 0)
+        self.main_layout.addWidget(self.target_widget, 1, 0, 1, 2)
         self.main_layout.addWidget(self.effect_widget, 0, 1)
-        self.main_layout.addWidget(self.color_widget, 0, 2)
+        self.main_layout.addWidget(self.color_widget, 0, 2, 2, 2)
         self.main_layout.addWidget(self.try_button, 2, 0)
 
     def _try_clicked(self):
@@ -91,6 +92,14 @@ class CenterPanel(QtWidgets.QWidget):
         """
         self.device_widget.setModel(device_list)
         self.device_widget.setCurrentIndex(device_list.index(0, 0))
+
+    def set_target_table(self, target_table):
+        """
+        Attach the model for the target table panel
+        :param target_table:
+        :return:
+        """
+        self.target_widget.setModel(target_table)
 
     def set_effect_list(self, effect_list):
         """

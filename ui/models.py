@@ -65,16 +65,33 @@ class EffectListModel(QtCore.QAbstractListModel):
         return self.effects[index.row()]
 
 
-class TargetListModel(QtCore.QAbstractListModel):
+class TargetTableModel(QtCore.QAbstractTableModel):
     """
     Model for the LED target color assignment
     """
     def __init__(self, targets=None):
         super().__init__()
-        self.targets = targets
+        self.headers = ['Mouse', 'Keyboard']
+        self.row_count = 4
+        self.targets = [
+            ['TOP', 'LOGO', 'BOTTOM', ''],
+            ['Segment1', 'Segment2', 'Segment3', 'Segment4']
+        ]
 
     def rowCount(self, parent=QtCore.QModelIndex()):
-        return len(self.targets)
+        return self.row_count
+
+    def columnCount(self, parent=QtCore.QModelIndex()):
+        return len(self.headers)
+
+    def headerData(self, section, orientation, role: int = ...):
+        if role != Qt.DisplayRole:
+            return None
+
+        if orientation != Qt.Orientation.Horizontal:
+            return None
+
+        return self.headers[section]
 
     def data(self, index, role: int = ...):
         if not index.isValid():
@@ -84,4 +101,5 @@ class TargetListModel(QtCore.QAbstractListModel):
         if role != Qt.DisplayRole:
             return None
 
-        return self.targets[index.row()]
+        return self.targets[index.column()][index.row()]
+

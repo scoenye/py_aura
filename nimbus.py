@@ -42,11 +42,13 @@ class Nimbus(QtWidgets.QMainWindow):
         self.effect_list = EffectList()
 
         self.device_model = models.DeviceListModel(self.device_list)
+        self.target_model = models.TargetTableModel()
         self.effect_model = models.EffectListModel(self.effect_list)
 
         self.center_panel = panels.CenterPanel()
 
         self.center_panel.set_device_list(self.device_model)
+        self.center_panel.set_target_table(self.target_model)
         self.center_panel.set_effect_list(self.effect_model)
 
         self.center_panel.add_try_listener(self.try_clicked)
