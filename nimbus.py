@@ -22,7 +22,7 @@ import sys
 
 from PySide2 import QtWidgets
 
-from device import DeviceList, MetaDevice
+from device import DeviceList, TargetLEDTable, MetaDevice
 
 from animation.effects import EffectList
 from udev import USBEnumerator
@@ -39,10 +39,11 @@ class Nimbus(QtWidgets.QMainWindow):
         self.device_list = DeviceList()
         self._populate_devices()
 
+        self.target_table = TargetLEDTable()
         self.effect_list = EffectList()
 
         self.device_model = models.DeviceListModel(self.device_list)
-        self.target_model = models.TargetTableModel()
+        self.target_model = models.TargetTableModel(self.target_table)
         self.effect_model = models.EffectListModel(self.effect_list)
 
         self.center_panel = panels.CenterPanel()

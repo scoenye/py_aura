@@ -260,6 +260,21 @@ class DeviceList(USBEventListener):
         return device_list
 
 
+class TargetLEDTable:
+    """
+    Aggregates all LEDs on all devices
+    :return:
+    """
+    def __init__(self):
+        self.targets = [
+            ['TOP', 'LOGO', 'BOTTOM', ''],
+            ['Segment1', 'Segment2', 'Segment3', 'Segment4']
+        ]
+
+    def __getitem__(self, item):
+        return self.targets[item]
+
+
 class MetaDevice:
     """
     Apply an effect to multiple devices

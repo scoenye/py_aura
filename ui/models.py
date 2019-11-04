@@ -73,10 +73,7 @@ class TargetTableModel(QtCore.QAbstractTableModel):
         super().__init__()
         self.headers = ['Mouse', 'Keyboard']
         self.row_count = 4
-        self.targets = [
-            ['TOP', 'LOGO', 'BOTTOM', ''],
-            ['Segment1', 'Segment2', 'Segment3', 'Segment4']
-        ]
+        self.targets = targets
 
     def rowCount(self, parent=QtCore.QModelIndex()):
         return self.row_count
