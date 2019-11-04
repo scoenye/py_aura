@@ -17,7 +17,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-from PySide2 import QtCore
+from PySide2 import QtCore, QtGui
 from PySide2.QtCore import Qt
 
 
@@ -37,10 +37,10 @@ class DeviceListModel(QtCore.QAbstractListModel):
             return ''
 
         # Crucial as data() is called with almost every role in the book.
-        if role != Qt.DisplayRole:
-            return None
+        if role == Qt.DisplayRole:
+            return self.devices[index.row()]
 
-        return self.devices[index.row()]
+        return None
 
 
 class EffectListModel(QtCore.QAbstractListModel):
@@ -59,10 +59,10 @@ class EffectListModel(QtCore.QAbstractListModel):
             return ''
 
         # Crucial as data() is called with almost every role in the book.
-        if role != Qt.DisplayRole:
-            return None
+        if role == Qt.DisplayRole:
+            return self.effects[index.row()]
 
-        return self.effects[index.row()]
+        return None
 
 
 class TargetTableModel(QtCore.QAbstractTableModel):
@@ -88,18 +88,19 @@ class TargetTableModel(QtCore.QAbstractTableModel):
         if role != Qt.DisplayRole:
             return None
 
-        if orientation != Qt.Orientation.Horizontal:
-            return None
+        if orientation == Qt.Orientation.Horizontal:
+            return self.headers[section]
 
-        return self.headers[section]
+        return None
 
     def data(self, index, role: int = ...):
         if not index.isValid():
             return ''
 
-        # Crucial as data() is called with almost every role in the book.
-        if role != Qt.DisplayRole:
-            return None
+        if role == Qt.DecorationRole:
+            return QtGui.QColor(255, 0, 0)
 
-        return self.targets[index.column()][index.row()]
+        if role == Qt.DisplayRole:
+            return self.targets[index.column()][index.row()]
 
+        return None
