@@ -101,10 +101,24 @@ class LEDTarget:
     """
     A targetable LED on a device
     """
-    def __init__(self, device, target):
+    def __init__(self, device, target, name):
         self.device = device
-        self.target = target            # Target LED identifier
-        self.color = (0, 0, 0)
+        self.target = target            # Target LED USB report identifier
+        self.display_name = name
+        self.color_rgb = (0, 0, 0)
+
+    def name(self):
+        """
+        :return: The display name of the target LED
+        """
+        return self.display_name
+
+    def color(self):
+        """
+        Return the current color of the target
+        :return:
+        """
+        return self.color_rgb
 
     def change_color(self, rgb):
         """
@@ -112,13 +126,7 @@ class LEDTarget:
         :param rgb:
         :return:
         """
-        self.color = rgb
-
-    def color(self):
-        """
-        Return the current color of the target
-        :return:
-        """
+        self.color_rgb = rgb
 
 
 class GladiusIIMouse(Device):
@@ -144,10 +152,10 @@ class GladiusIIMouse(Device):
     def __init__(self, bus_location):
         super().__init__(bus_location)
         self.targets = [
-            LEDTarget(self, GladiusIIMouse.LED_ALL),
-            LEDTarget(self, GladiusIIMouse.LED_LOGO),
-            LEDTarget(self, GladiusIIMouse.LED_WHEEL),
-            LEDTarget(self, GladiusIIMouse.LED_BASE)
+            LEDTarget(self, GladiusIIMouse.LED_ALL, 'ALL'),
+            LEDTarget(self, GladiusIIMouse.LED_LOGO, 'Logo'),
+            LEDTarget(self, GladiusIIMouse.LED_WHEEL, 'Wheel'),
+            LEDTarget(self, GladiusIIMouse.LED_BASE, 'Base')
         ]
 
     def effect(self, descriptor):
@@ -180,11 +188,11 @@ class ITEKeyboard(Device):
     def __init__(self, bus_location):
         super().__init__(bus_location)
         self.targets = [
-            LEDTarget(self, ITEKeyboard.LED_ALL),
-            LEDTarget(self, ITEKeyboard.LED_SEGMENT1),      # The 4 hardware segments
-            LEDTarget(self, ITEKeyboard.LED_SEGMENT2),
-            LEDTarget(self, ITEKeyboard.LED_SEGMENT3),
-            LEDTarget(self, ITEKeyboard.LED_SEGMENT4)
+            LEDTarget(self, ITEKeyboard.LED_ALL, 'ALL'),
+            LEDTarget(self, ITEKeyboard.LED_SEGMENT1, 'Segment 1'),      # The 4 hardware segments
+            LEDTarget(self, ITEKeyboard.LED_SEGMENT2, 'Segment 2'),
+            LEDTarget(self, ITEKeyboard.LED_SEGMENT3, 'Segment 3'),
+            LEDTarget(self, ITEKeyboard.LED_SEGMENT4, 'Segment 4')
         ]
 
     def effect(self, descriptor):
@@ -267,8 +275,17 @@ class TargetLEDTable:
     """
     def __init__(self):
         self.targets = [
-            ['TOP', 'LOGO', 'BOTTOM'],
-            ['Segment1', 'Segment2', 'Segment3', 'Segment4']
+            [
+                LEDTarget(self, GladiusIIMouse.LED_ALL, 'ALL'),
+                LEDTarget(self, GladiusIIMouse.LED_LOGO, 'Logo'),
+                LEDTarget(self, GladiusIIMouse.LED_WHEEL, 'Wheel'),
+                LEDTarget(self, GladiusIIMouse.LED_BASE, 'Base')],
+            [
+                LEDTarget(self, ITEKeyboard.LED_ALL, 'ALL'),
+                LEDTarget(self, ITEKeyboard.LED_SEGMENT1, 'Segment 1'),  # The 4 hardware segments
+                LEDTarget(self, ITEKeyboard.LED_SEGMENT2, 'Segment 2'),
+                LEDTarget(self, ITEKeyboard.LED_SEGMENT3, 'Segment 3'),
+                LEDTarget(self, ITEKeyboard.LED_SEGMENT4, 'Segment 4')]
         ]
 
     def __len__(self):
@@ -281,7 +298,7 @@ class TargetLEDTable:
     def __getitem__(self, item):
         """
         Produces the regular data items for the Qt view
-        :param item:
+        :param item: index of the
         :return:
         """
         return self.targets[item]

@@ -94,11 +94,18 @@ class TargetTableModel(QtCore.QAbstractTableModel):
             return ''
 
         if role == Qt.DecorationRole:
-            return QtGui.QColor(255, 0, 0)      # TODO: use the real target's color
+            try:
+                # Ugly, but we aim to keep Qt dependencies out of the domain objects
+                color_rgb = self.targets[index.column()][index.row()].color()
+                color = QtGui.QColor(color_rgb[0], color_rgb[1], color_rgb[2])
+            except IndexError:
+                color = None
+
+            return color
 
         if role == Qt.DisplayRole:
             try:
-                element = self.targets[index.column()][index.row()]
+                element = self.targets[index.column()][index.row()].name()
             except IndexError:
                 element = None
 
