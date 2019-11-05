@@ -113,3 +113,9 @@ class TargetTableModel(QtCore.QAbstractTableModel):
 
         # For sll other roles
         return None
+
+    def setData(self, index, value, role=Qt.EditRole):
+        if role == Qt.EditRole:
+            print('changing', index, 'to', value)
+        else:
+            return False

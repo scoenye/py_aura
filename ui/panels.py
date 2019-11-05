@@ -46,6 +46,14 @@ class TargetTableView(QtWidgets.QTableView):
         # Allow selection of multiple targets
         self.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
 
+    def color_change(self, color):
+        """
+        Pass color changes on to the selected cells
+        :return:
+        """
+        for index in self.selectedIndexes():
+            self.model().setData(index, color, )
+
 
 class CenterPanel(QtWidgets.QWidget):
     try_clicked = Signal(list, list, object)
@@ -66,6 +74,7 @@ class CenterPanel(QtWidgets.QWidget):
 
         # Hide OK/Cancel buttons on color picker
         self.color_widget.setOption(QtWidgets.QColorDialog.NoButtons, True)
+        self.color_widget.currentColorChanged.connect(self.target_widget.color_change)
 
         self._assemble_panel()
 
