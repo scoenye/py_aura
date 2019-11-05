@@ -71,12 +71,11 @@ class TargetTableModel(QtCore.QAbstractTableModel):
     """
     def __init__(self, targets=None, headers=None):
         super().__init__()
-        self.row_count = 4
         self.targets = targets
         self.headers = headers
 
     def rowCount(self, parent=QtCore.QModelIndex()):
-        return self.row_count
+        return len(self.targets)
 
     def columnCount(self, parent=QtCore.QModelIndex()):
         return len(self.headers)

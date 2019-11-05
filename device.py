@@ -271,6 +271,13 @@ class TargetLEDTable:
             ['Segment1', 'Segment2', 'Segment3', 'Segment4']
         ]
 
+    def __len__(self):
+        """
+        Return the length of the longest list of targets
+        :return:
+        """
+        return max([len(target_list) for target_list in self.targets])
+
     def __getitem__(self, item):
         """
         Produces the regular data items for the Qt view
