@@ -272,6 +272,11 @@ class TargetLEDTable:
         ]
 
     def __getitem__(self, item):
+        """
+        Produces the regular data items for the Qt view
+        :param item:
+        :return:
+        """
         return self.targets[item]
 
 
