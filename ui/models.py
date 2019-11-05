@@ -116,6 +116,15 @@ class TargetTableModel(QtCore.QAbstractTableModel):
 
     def setData(self, index, value, role=Qt.EditRole):
         if role == Qt.EditRole:
-            print('changing', index, 'to', value)
+            try:
+                element = self.targets[index.column()][index.row()]
+                result = element.change_color((value.red(), value.green(), value.blue()))
+            except IndexError:
+                result = False
         else:
-            return False
+            result = False
+
+        if result:
+            self.dataChanged.emit(index, index, role)
+
+        return result

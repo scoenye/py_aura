@@ -127,6 +127,7 @@ class LEDTarget:
         :return:
         """
         self.color_rgb = rgb
+        return True
 
 
 class GladiusIIMouse(Device):
