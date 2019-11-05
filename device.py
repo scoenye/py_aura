@@ -267,7 +267,7 @@ class TargetLEDTable:
     """
     def __init__(self):
         self.targets = [
-            ['TOP', 'LOGO', 'BOTTOM', ''],
+            ['TOP', 'LOGO', 'BOTTOM'],
             ['Segment1', 'Segment2', 'Segment3', 'Segment4']
         ]
 
