@@ -284,6 +284,13 @@ class DeviceList(USBEventListener):
         device = self.devices[self.model_list[device_index]]['instance']
         return device.show_targets()
 
+    def target_len(self):
+        """
+        Return the length of the longest list of targets among all devices
+        :return:
+        """
+        return max([len(device['instance'].show_targets()) for device in self.devices.values()])
+
 
 class TargetLEDTable:
     """

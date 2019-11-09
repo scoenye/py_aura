@@ -75,7 +75,7 @@ class TargetTableModel(QtCore.QAbstractTableModel):
         self.devices = devices
 
     def rowCount(self, parent=QtCore.QModelIndex()):
-        return len(self.targets)
+        return self.devices.target_len()
 
     def columnCount(self, parent=QtCore.QModelIndex()):
         return len(self.devices)
