@@ -38,7 +38,7 @@ class DeviceListModel(QtCore.QAbstractListModel):
 
         # Crucial as data() is called with almost every role in the book.
         if role == Qt.DisplayRole:
-            return self.devices[index.row()]
+            return str(self.devices[index.row()])
 
         return None
 

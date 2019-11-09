@@ -43,6 +43,9 @@ class Device(ABC):
         self.handle = None                  # HID device handle
         self.targets = None
 
+    def __repr__(self):
+        return self.model
+
     def _find_path(self):
         # Start of with the list of matching hardware
         device_list = hid.enumerate(self.VENDOR_ID, self.PRODUCT_ID)
@@ -229,7 +232,7 @@ class DeviceList(USBEventListener):
         return len(self.model_list)
 
     def __getitem__(self, item):
-        return self.devices[self.model_list[item]]['name']
+        return self.devices[self.model_list[item]]['instance']
 
     def added(self, vendor_id, product_id, bus_num, dev_num, model):
         """
@@ -246,8 +249,7 @@ class DeviceList(USBEventListener):
         if vendor_id in SUPPORTED_DEVICES:
             if product_id in SUPPORTED_DEVICES[vendor_id]:
                 key = (bus_num, dev_num)
-                self.devices[key] = {'name': model,
-                                     'instance': SUPPORTED_DEVICES[vendor_id][product_id](key, model)}
+                self.devices[key] = {'instance': SUPPORTED_DEVICES[vendor_id][product_id](key, model)}
                 self.model_list.append(key)     # Get around Qt model limitations
 
     def removed(self, bus_num, dev_num):
@@ -288,7 +290,7 @@ class DeviceList(USBEventListener):
     def target_len(self):
         """
         Return the length of the longest list of targets among all devices
-        :return:
+        :return: length of the longest list of targets among all devices
         """
         return max([len(device['instance'].show_targets()) for device in self.devices.values()])
 
@@ -298,7 +300,7 @@ class TargetLEDTable:
     Aggregates all LEDs on all devices
     :return:
     """
-    def __init__(self):
+    def __init__(self,):
         self.targets = [
             [
                 LEDTarget(self, GladiusIIMouse.LED_ALL, 'ALL'),
