@@ -42,6 +42,19 @@ class DeviceListModel(QtCore.QAbstractListModel):
 
         return None
 
+    def selection_changed(self, selected, deselected):
+        """
+        Handle changes in the selection of devices
+        :param selected: QItemSelection of devices newly selected
+        :param deselected: QItemSelection of devices newly deselected
+        :return:
+        """
+        for index in selected.indexes():
+            self.devices.select(index.row())
+
+        for index in deselected.indexes():
+            self.devices.deselect(index.row())
+
 
 class EffectListModel(QtCore.QAbstractListModel):
     """

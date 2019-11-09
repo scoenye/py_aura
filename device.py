@@ -42,6 +42,7 @@ class Device(ABC):
         self.model = model
         self.handle = None                  # HID device handle
         self.targets = None
+        self.selected = False
 
     def __repr__(self):
         return self.model
@@ -91,6 +92,20 @@ class Device(ABC):
         :return: data transmitted by the device
         """
         return self.handle.read(size, timeout)
+
+    def select(self):
+        """
+        Mark the device as selected
+        :return:
+        """
+        self.selected = True
+
+    def deselect(self):
+        """
+        Forget the device was selected
+        :return:
+        """
+        self.selected = False
 
     def show_targets(self):
         """
@@ -264,6 +279,22 @@ class DeviceList(USBEventListener):
             key = (bus_num, dev_num)
             del self.devices[key]
             self.model_list.remove(key)
+
+    def select(self, index):
+        """
+        Tell a device it has been selected on-screen
+        :param index: selected device index
+        :return:
+        """
+        self[index].select()
+
+    def deselect(self, index):
+        """
+        Tell a device it has been removed from selection
+        :param index: deselected device index
+        :return:
+        """
+        self[index].deselect()
 
     def instances(self, selection):
         """
