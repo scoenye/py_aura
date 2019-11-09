@@ -69,22 +69,22 @@ class TargetTableModel(QtCore.QAbstractTableModel):
     """
     Model for the LED target color assignment
     """
-    def __init__(self, devices=None):
+    def __init__(self, targets=None):
         super().__init__()
-        self.devices = devices
+        self.targets = targets
 
     def rowCount(self, parent=QtCore.QModelIndex()):
-        return self.devices.target_len()
+        return len(self.targets)
 
     def columnCount(self, parent=QtCore.QModelIndex()):
-        return len(self.devices)
+        return self.targets.device_count()
 
     def headerData(self, section, orientation, role: int = ...):
         if role != Qt.DisplayRole:
             return None
 
         if orientation == Qt.Orientation.Horizontal:
-            return self.devices[section]
+            return self.targets.device_name(section)
 
         return None
 
@@ -95,7 +95,7 @@ class TargetTableModel(QtCore.QAbstractTableModel):
         if role == Qt.DecorationRole:
             try:
                 # Ugly, but we aim to keep Qt dependencies out of the domain objects
-                color_rgb = self.devices.targets(index.column())[index.row()].color()
+                color_rgb = self.targets[index.column()][index.row()].color()
                 color = QtGui.QColor(color_rgb[0], color_rgb[1], color_rgb[2])
             except IndexError:
                 color = None
@@ -104,7 +104,7 @@ class TargetTableModel(QtCore.QAbstractTableModel):
 
         if role == Qt.DisplayRole:
             try:
-                element = self.devices.targets(index.column())[index.row()].name()
+                element = self.targets[index.column()][index.row()].name()
             except IndexError:
                 element = None
 
@@ -116,7 +116,7 @@ class TargetTableModel(QtCore.QAbstractTableModel):
     def setData(self, index, value, role=Qt.EditRole):
         if role == Qt.EditRole:
             try:
-                element = self.devices.targets(index.column())[index.row()]
+                element = self.targets[index.column()][index.row()]
                 result = element.change_color((value.red(), value.green(), value.blue()))
             except IndexError:
                 result = False

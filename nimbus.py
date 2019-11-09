@@ -39,11 +39,10 @@ class Nimbus(QtWidgets.QMainWindow):
         self.device_list = DeviceList()
         self._populate_devices()
 
-        self.target_table = TargetLEDTable()
         self.effect_list = EffectList()
 
         self.device_model = models.DeviceListModel(self.device_list)
-        self.target_model = models.TargetTableModel(self.device_list)
+        self.target_model = models.TargetTableModel(self.device_list.target_table())
         self.effect_model = models.EffectListModel(self.effect_list)
 
         self.center_panel = panels.CenterPanel()

@@ -227,6 +227,7 @@ class DeviceList(USBEventListener):
     def __init__(self):
         self.devices = {}
         self.model_list = []    # dict does not fit in Qt's model concept
+        self.device_targets = TargetLEDTable(self)
 
     def __len__(self):
         return len(self.model_list)
@@ -294,13 +295,22 @@ class DeviceList(USBEventListener):
         """
         return max([len(device.show_targets()) for device in self.devices.values()])
 
+    def target_table(self):
+        """
+        Return the TargetLEFTable instance responsible for communication about the targets available on the devices
+        in this DevjceList.
+        :return: TargetLEDTable instance
+        """
+        return self.device_targets
+
 
 class TargetLEDTable:
     """
     Aggregates all LEDs on all devices
     :return:
     """
-    def __init__(self):
+    def __init__(self, device_list):
+        self.device_list = device_list
         self.targets = [
             [
                 LEDTarget(self, GladiusIIMouse.LED_ALL, 'ALL'),
@@ -330,13 +340,19 @@ class TargetLEDTable:
         """
         return self.targets[item]
 
-    def add_device(self, device):
+    def device_count(self):
         """
-        Add the targets for the device to the table
-        :param device:
+        Return how many devices this container holds
         :return:
         """
-        self.targets.append(device.show_targets())
+        return len(self.device_list)
+
+    def device_name(self, section):
+        """
+        Return the device name for a set of targets
+        :return:
+        """
+        return str(self.device_list[section])
 
 
 class MetaDevice:
