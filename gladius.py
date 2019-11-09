@@ -47,8 +47,8 @@ kbd_port = udev.NodeResolver.bus_location('/dev/hidraw4')
 # monitor.stop()
 
 # find our device
-mouse = GladiusIIMouse(mouse_port)
-keyboard = ITEKeyboard(kbd_port)
+mouse = GladiusIIMouse(mouse_port, 'GladiusII')
+keyboard = ITEKeyboard(kbd_port, 'ITEKeyboard')
 
 mouse.open()
 keyboard.open()

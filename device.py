@@ -37,8 +37,9 @@ class Device(ABC):
     INTERFACE = 0
     EFFECT_MAP = {}
 
-    def __init__(self, bus_location):
-        self.bus_location = bus_location
+    def __init__(self, bus_location, model):
+        self.bus_location = bus_location    # To link USB HID and udev world views
+        self.model = model
         self.handle = None                  # HID device handle
         self.targets = None
 
@@ -157,8 +158,8 @@ class GladiusIIMouse(Device):
     LED_BASE = 0x02     # Selects the mouse base
     LED_ALL = 0x03      # Selects all LEDs
 
-    def __init__(self, bus_location):
-        super().__init__(bus_location)
+    def __init__(self, bus_location, model):
+        super().__init__(bus_location, model)
         self.targets = [
             LEDTarget(self, GladiusIIMouse.LED_ALL, 'ALL'),
             LEDTarget(self, GladiusIIMouse.LED_LOGO, 'Logo'),
@@ -193,8 +194,8 @@ class ITEKeyboard(Device):
     LED_SEGMENT6 = 6
     LED_SEGMENT7 = 7
 
-    def __init__(self, bus_location):
-        super().__init__(bus_location)
+    def __init__(self, bus_location, model):
+        super().__init__(bus_location, model)
         self.targets = [
             LEDTarget(self, ITEKeyboard.LED_ALL, 'ALL'),
             LEDTarget(self, ITEKeyboard.LED_SEGMENT1, 'Segment 1'),      # The 4 hardware segments
@@ -246,7 +247,7 @@ class DeviceList(USBEventListener):
             if product_id in SUPPORTED_DEVICES[vendor_id]:
                 key = (bus_num, dev_num)
                 self.devices[key] = {'name': model,
-                                     'instance': SUPPORTED_DEVICES[vendor_id][product_id](key)}
+                                     'instance': SUPPORTED_DEVICES[vendor_id][product_id](key, model)}
                 self.model_list.append(key)     # Get around Qt model limitations
 
     def removed(self, bus_num, dev_num):
