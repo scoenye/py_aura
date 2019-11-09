@@ -279,25 +279,9 @@ class DeviceList(USBEventListener):
 
         return device_list
 
-    def targets(self, device_index):
-        """
-        Return the targets for a device
-        :param device_index:
-        :return:
-        """
-        device = self.devices[self.model_list[device_index]]
-        return device.show_targets()
-
-    def target_len(self):
-        """
-        Return the length of the longest list of targets among all devices
-        :return: length of the longest list of targets among all devices
-        """
-        return max([len(device.show_targets()) for device in self.devices.values()])
-
     def target_table(self):
         """
-        Return the TargetLEFTable instance responsible for communication about the targets available on the devices
+        Return the TargetLEDTable instance responsible for communication about the targets available on the devices
         in this DevjceList.
         :return: TargetLEDTable instance
         """
@@ -311,26 +295,13 @@ class TargetLEDTable:
     """
     def __init__(self, device_list):
         self.device_list = device_list
-        self.targets = [
-            [
-                LEDTarget(self, GladiusIIMouse.LED_ALL, 'ALL'),
-                LEDTarget(self, GladiusIIMouse.LED_LOGO, 'Logo'),
-                LEDTarget(self, GladiusIIMouse.LED_WHEEL, 'Wheel'),
-                LEDTarget(self, GladiusIIMouse.LED_BASE, 'Base')],
-            [
-                LEDTarget(self, ITEKeyboard.LED_ALL, 'ALL'),
-                LEDTarget(self, ITEKeyboard.LED_SEGMENT1, 'Segment 1'),  # The 4 hardware segments
-                LEDTarget(self, ITEKeyboard.LED_SEGMENT2, 'Segment 2'),
-                LEDTarget(self, ITEKeyboard.LED_SEGMENT3, 'Segment 3'),
-                LEDTarget(self, ITEKeyboard.LED_SEGMENT4, 'Segment 4')]
-        ]
 
     def __len__(self):
         """
         Return the length of the longest list of targets
         :return:
         """
-        return max([len(target_list) for target_list in self.targets])
+        return max([len(device.show_targets()) for device in self.device_list])
 
     def __getitem__(self, item):
         """
@@ -338,7 +309,7 @@ class TargetLEDTable:
         :param item: index of the
         :return:
         """
-        return self.targets[item]
+        return self.device_list[item].show_targets()
 
     def device_count(self):
         """
