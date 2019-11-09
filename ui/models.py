@@ -69,9 +69,8 @@ class TargetTableModel(QtCore.QAbstractTableModel):
     """
     Model for the LED target color assignment
     """
-    def __init__(self, targets=None, devices=None):
+    def __init__(self, devices=None):
         super().__init__()
-        self.targets = targets
         self.devices = devices
 
     def rowCount(self, parent=QtCore.QModelIndex()):
