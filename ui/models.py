@@ -96,7 +96,7 @@ class TargetTableModel(QtCore.QAbstractTableModel):
         if role == Qt.DecorationRole:
             try:
                 # Ugly, but we aim to keep Qt dependencies out of the domain objects
-                color_rgb = self.targets[index.column()][index.row()].color()
+                color_rgb = self.devices.targets(index.column())[index.row()].color()
                 color = QtGui.QColor(color_rgb[0], color_rgb[1], color_rgb[2])
             except IndexError:
                 color = None
@@ -117,7 +117,7 @@ class TargetTableModel(QtCore.QAbstractTableModel):
     def setData(self, index, value, role=Qt.EditRole):
         if role == Qt.EditRole:
             try:
-                element = self.targets[index.column()][index.row()]
+                element = self.devices.targets(index.column())[index.row()]
                 result = element.change_color((value.red(), value.green(), value.blue()))
             except IndexError:
                 result = False
