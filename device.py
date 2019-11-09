@@ -232,7 +232,7 @@ class DeviceList(USBEventListener):
         return len(self.model_list)
 
     def __getitem__(self, item):
-        return self.devices[self.model_list[item]]['instance']
+        return self.devices[self.model_list[item]]
 
     def added(self, vendor_id, product_id, bus_num, dev_num, model):
         """
@@ -249,7 +249,7 @@ class DeviceList(USBEventListener):
         if vendor_id in SUPPORTED_DEVICES:
             if product_id in SUPPORTED_DEVICES[vendor_id]:
                 key = (bus_num, dev_num)
-                self.devices[key] = {'instance': SUPPORTED_DEVICES[vendor_id][product_id](key, model)}
+                self.devices[key] = SUPPORTED_DEVICES[vendor_id][product_id](key, model)
                 self.model_list.append(key)     # Get around Qt model limitations
 
     def removed(self, bus_num, dev_num):
@@ -274,7 +274,7 @@ class DeviceList(USBEventListener):
 
         for item in selection:      # Index into model_list
             real_key = self.model_list[item]
-            device_list.append(self.devices[real_key]['instance'])
+            device_list.append(self.devices[real_key])
 
         return device_list
 
@@ -284,7 +284,7 @@ class DeviceList(USBEventListener):
         :param device_index:
         :return:
         """
-        device = self.devices[self.model_list[device_index]]['instance']
+        device = self.devices[self.model_list[device_index]]
         return device.show_targets()
 
     def target_len(self):
@@ -292,7 +292,7 @@ class DeviceList(USBEventListener):
         Return the length of the longest list of targets among all devices
         :return: length of the longest list of targets among all devices
         """
-        return max([len(device['instance'].show_targets()) for device in self.devices.values()])
+        return max([len(device.show_targets()) for device in self.devices.values()])
 
 
 class TargetLEDTable:
@@ -300,7 +300,7 @@ class TargetLEDTable:
     Aggregates all LEDs on all devices
     :return:
     """
-    def __init__(self,):
+    def __init__(self):
         self.targets = [
             [
                 LEDTarget(self, GladiusIIMouse.LED_ALL, 'ALL'),
