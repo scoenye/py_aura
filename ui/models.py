@@ -69,23 +69,23 @@ class TargetTableModel(QtCore.QAbstractTableModel):
     """
     Model for the LED target color assignment
     """
-    def __init__(self, targets=None, headers=None):
+    def __init__(self, targets=None, devices=None):
         super().__init__()
         self.targets = targets
-        self.headers = headers
+        self.devices = devices
 
     def rowCount(self, parent=QtCore.QModelIndex()):
         return len(self.targets)
 
     def columnCount(self, parent=QtCore.QModelIndex()):
-        return len(self.headers)
+        return len(self.devices)
 
     def headerData(self, section, orientation, role: int = ...):
         if role != Qt.DisplayRole:
             return None
 
         if orientation == Qt.Orientation.Horizontal:
-            return self.headers[section]
+            return self.devices[section]
 
         return None
 
@@ -105,7 +105,7 @@ class TargetTableModel(QtCore.QAbstractTableModel):
 
         if role == Qt.DisplayRole:
             try:
-                element = self.targets[index.column()][index.row()].name()
+                element = self.devices.targets(index.column())[index.row()].name()
             except IndexError:
                 element = None
 

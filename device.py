@@ -88,6 +88,13 @@ class Device(ABC):
         """
         return self.handle.read(size, timeout)
 
+    def show_targets(self):
+        """
+        Return the collection of the device's targets for display
+        :return: list of LEDTarget objects
+        """
+        return self.targets
+
     @abstractmethod
     def effect(self, descriptor):
         """
@@ -268,6 +275,15 @@ class DeviceList(USBEventListener):
 
         return device_list
 
+    def targets(self, device_index):
+        """
+        Return the targets for a device
+        :param device_index:
+        :return:
+        """
+        device = self.devices[self.model_list[device_index]]['instance']
+        return device.show_targets()
+
 
 class TargetLEDTable:
     """
@@ -303,6 +319,14 @@ class TargetLEDTable:
         :return:
         """
         return self.targets[item]
+
+    def add_device(self, device):
+        """
+        Add the targets for the device to the table
+        :param device:
+        :return:
+        """
+        self.targets.append(device.show_targets())
 
 
 class MetaDevice:
