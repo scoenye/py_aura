@@ -42,7 +42,7 @@ class Device(ABC):
         self.model = model
         self.handle = None                  # HID device handle
         self.targets = None
-        self.selected = False
+        self.is_selected = False
 
     def __repr__(self):
         return self.model
@@ -98,14 +98,20 @@ class Device(ABC):
         Mark the device as selected
         :return:
         """
-        self.selected = True
+        self.is_selected = True
 
     def deselect(self):
         """
         Forget the device was selected
         :return:
         """
-        self.selected = False
+        self.is_selected = False
+
+    def selected(self):
+        """
+        :return: device selection status
+        """
+        return self.is_selected
 
     def show_targets(self):
         """
@@ -322,6 +328,19 @@ class DeviceList(USBEventListener):
         for item in selection:      # Index into model_list
             real_key = self.model_list[item]
             device_list.append(self.devices[real_key])
+
+        return device_list
+
+    def selected(self):
+        """
+        Generate a list of the currently selected devices
+        :return: list of selected devices
+        """
+        device_list = []
+
+        for device in self.devices.values():  # Index into model_list
+            if device.selected():
+                device_list.append(device)
 
         return device_list
 
