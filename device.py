@@ -317,20 +317,6 @@ class DeviceList(USBEventListener):
         """
         self[index].deselect()
 
-    def instances(self, selection):
-        """
-        Convert model selection into device instances
-        :param selection: list of selected device indices
-        :return: list of device instances corresponding to selection
-        """
-        device_list = []
-
-        for item in selection:      # Index into model_list
-            real_key = self.model_list[item]
-            device_list.append(self.devices[real_key])
-
-        return device_list
-
     def selected(self):
         """
         Generate a list of the currently selected devices
