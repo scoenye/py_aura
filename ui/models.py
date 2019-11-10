@@ -140,3 +140,16 @@ class TargetTableModel(QtCore.QAbstractTableModel):
             self.dataChanged.emit(index, index, role)
 
         return result
+
+    def selection_changed(self, selected, deselected):
+        """
+        Handle changes in the selection of targets
+        :param selected: QItemSelection of targets newly selected
+        :param deselected: QItemSelection of targets newly deselected
+        :return:
+        """
+        for index in selected.indexes():
+            self.targets.select(index.column(), index.row())
+
+        for index in deselected.indexes():
+            self.targets.deselect(index.column(), index.row())

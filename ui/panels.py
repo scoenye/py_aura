@@ -55,6 +55,12 @@ class TargetTableView(QtWidgets.QTableView):
         for index in self.selectedIndexes():
             self.model().setData(index, color, )
 
+    def selectionChanged(self, selected, deselected):
+        # selected and deselected are deltas. Whatever comes in selected needs to be enabled in the target list,
+        # whatever is in deselected needs to be disabled,
+        super().selectionChanged(selected, deselected)
+        self.model().selection_changed(selected, deselected)
+
 
 class CenterPanel(QtWidgets.QWidget):
     try_clicked = Signal(list, list, object)

@@ -132,6 +132,7 @@ class LEDTarget:
         self.target = target            # Target LED USB report identifier
         self.display_name = name
         self.color_rgb = (0, 0, 0)
+        self.selected = False
 
     def name(self):
         """
@@ -154,6 +155,20 @@ class LEDTarget:
         """
         self.color_rgb = rgb
         return True
+
+    def select(self):
+        """
+        Mark the device as selected
+        :return:
+        """
+        self.selected = True
+
+    def deselect(self):
+        """
+        Forget the device was selected
+        :return:
+        """
+        self.selected = False
 
 
 class GladiusIIMouse(Device):
@@ -341,6 +356,30 @@ class TargetLEDTable:
         :return:
         """
         return self.device_list[item].show_targets()
+
+    def select(self, device_index, target_index):
+        """
+        Tell a target it has been selected on-screen
+        :param device_index: device index of the selected target
+        :param target_index: selected target index
+        :return:
+        """
+        try:
+            self[device_index][target_index].select()
+        except IndexError:          # Non-existing target selected
+            pass
+
+    def deselect(self, device, target):
+        """
+        Tell a target it has been removed from selection
+        :param device: device index of the deselected target
+        :param target: deselected target index
+        :return:
+        """
+        try:
+            self[device][target].deselect()
+        except IndexError:          # Non-existing target selected
+            pass
 
     def device_count(self):
         """
