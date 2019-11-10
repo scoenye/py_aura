@@ -35,7 +35,7 @@ class StaticEffectGladius(Effect):
         report = GladiusIIReport()
         report.color((self.red, self.green, self.blue))
 
-        targets = targets or [device_module.GladiusIIMouse.LED_ALL]
+        targets = self.device.selected_targets()
 
         for target in targets:
             report.target(target)

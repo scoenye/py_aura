@@ -120,6 +120,13 @@ class Device(ABC):
         """
         return self.targets
 
+    def selected_targets(self):
+        """
+        Return the list of selected targets for the device.
+        :return: list of selected targets
+        """
+        return [target.target_segment() for target in self.targets if target.selected()]
+
     @abstractmethod
     def effect(self, descriptor):
         """
@@ -138,7 +145,7 @@ class LEDTarget:
         self.target = target            # Target LED USB report identifier
         self.display_name = name
         self.color_rgb = (0, 0, 0)
-        self.selected = False
+        self.is_selected = False
 
     def name(self):
         """
@@ -167,14 +174,26 @@ class LEDTarget:
         Mark the device as selected
         :return:
         """
-        self.selected = True
+        self.is_selected = True
 
     def deselect(self):
         """
         Forget the device was selected
         :return:
         """
-        self.selected = False
+        self.is_selected = False
+
+    def selected(self):
+        """
+        :return: target selection status
+        """
+        return self.is_selected
+
+    def target_segment(self):
+        """
+        :return: the USB report identifier of the target
+        """
+        return self.target
 
 
 class GladiusIIMouse(Device):
@@ -208,6 +227,14 @@ class GladiusIIMouse(Device):
 
     def effect(self, descriptor):
         return GladiusIIMouse.EFFECT_MAP.get(descriptor)(self)
+
+    def selected_targets(self):
+        """
+        Return the list of selected targets for the device. Return the ALL target if no selection was made.
+        :return:
+        """
+        base_list = super().selected_targets()          # The list of actually selected targets, if any.
+        return base_list or [GladiusIIMouse.LED_ALL]
 
 
 class ITEKeyboard(Device):
@@ -245,6 +272,14 @@ class ITEKeyboard(Device):
 
     def effect(self, descriptor):
         return ITEKeyboard.EFFECT_MAP.get(descriptor)(self)
+
+    def selected_targets(self):
+        """
+        Return the list of selected targets for the device. Return the ALL target if no selection was made.
+        :return:
+        """
+        base_list = super().selected_targets()          # The list of actually selected targets, if any.
+        return base_list or [self.targets[ITEKeyboard.LED_ALL]]
 
 
 # Supported devices
@@ -408,7 +443,7 @@ class MetaDevice:
     def __init__(self, devices, effect, color):
         """
         :param devices: list of device instances to apply the effect to
-        :param effect: effect to apply to the devices
+        :param effect: descriptor of the effect to apply to the devices
         :param color: initial color selection for the effect
         """
         self.devices = devices

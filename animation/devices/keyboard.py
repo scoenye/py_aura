@@ -39,7 +39,7 @@ class StaticEffectITE(Effect):
 
         color_report.color((self.red, self.green, self.blue))
 
-        targets = targets or [device_module.ITEKeyboard.LED_ALL]
+        targets = self.device.selected_targets()
 
         for target in targets:
             # Minimal required is 1 color report + 1 flush report
