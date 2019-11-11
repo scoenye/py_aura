@@ -19,8 +19,6 @@
 """
 import time
 
-import device as device_module
-
 from animation.devices.common import RainbowBlockLine, RainbowCurvedLine, CycleCurve, StrobeCurve
 from animation.effects import Effect, RunnableEffect
 from animation.generators import CompositeGeneratorRGB
@@ -46,10 +44,11 @@ class GladiusRunnableEffect(RunnableEffect):
     """
     Mouse specific RunnableEffect
     """
-    def _send_all_targets(self, report):
+    def _send_all_targets(self, report, colors):
         # Send the report to all active targets
-        for target in self.targets:
+        for target, color in zip(self.targets, colors):
             report.target(target.target_segment())
+            report.color(next(color))
             self.device.write_interrupt(report)
 
 
@@ -59,19 +58,20 @@ class StrobeEffectGladius(GladiusRunnableEffect):
     """
     def _runnable(self):
         report = GladiusIIReport()
+        generators = []
 
-        generator = CompositeGeneratorRGB(
-            StrobeCurve(0, self.red),
-            StrobeCurve(0, self.green),
-            StrobeCurve(0, self.blue))
+        # Create a set of color generators for each selected target
+        for target in self.device.selected_targets():
+            generators.append(CompositeGeneratorRGB(
+                StrobeCurve(0, target.color()[0]),      # TODO: rework hardcoded indices
+                StrobeCurve(0, target.color()[1]),
+                StrobeCurve(0, target.color()[2])))
 
-        colors = generator.color()
+        colors = [generator.color() for generator in generators]
 
+        # End of preamble - start effect
         while self.keep_running:
-            color = next(colors)
-
-            report.color(color)
-            self._send_all_targets(report)
+            self._send_all_targets(report, colors)
 
             time.sleep(0.05)
 
@@ -86,14 +86,14 @@ class CycleEffectGladius(GladiusRunnableEffect):
         report.color((0x4d, 0x00, 0x6f))                      # From observation
         report.effect(GladiusIIReport.EFFECT_CYCLE)         # Pick hardware cycle effect
 
-        self._send_all_targets(report)
+        self._send_all_targets(report, [])
 
         time.sleep(0.45)
 
         report.color((0xff, 0xff, 0xff))
         report.effect(GladiusIIReport.EFFECT_NONE)
 
-        self._send_all_targets(report)
+        self._send_all_targets(report, [])
 
     def _runnable(self):
         hw_report = GladiusIIReport()
@@ -107,7 +107,7 @@ class CycleEffectGladius(GladiusRunnableEffect):
         hw_report.color((self.red, self.green, self.blue))
         hw_report.effect(GladiusIIReport.EFFECT_CYCLE)
 
-        self._send_all_targets(hw_report)
+        self._send_all_targets(hw_report, [])
 
         time.sleep(1)
 
@@ -121,7 +121,7 @@ class CycleEffectGladius(GladiusRunnableEffect):
             time.sleep(1)
 
         hw_report.effect(GladiusIIReport.EFFECT_NONE)   # Cancel the hardware cycle effect.
-        self._send_all_targets(hw_report)
+        self._send_all_targets(hw_report, [])
 
 
 class RainbowEffectGladius(GladiusRunnableEffect):
@@ -137,6 +137,6 @@ class RainbowEffectGladius(GladiusRunnableEffect):
             color = next(colors)
             report.color(color)
 
-            self._send_all_targets(report)
+            self._send_all_targets(report, [])
 
             time.sleep(0.01)
