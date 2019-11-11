@@ -70,6 +70,13 @@ class Effect:
         """
         pass
 
+    def stop(self):
+        """
+        Halt execution of the effect
+        :return:
+        """
+        pass
+
     def apply(self):
         """
         Make the effect permanent (if the device supports it.)

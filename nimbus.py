@@ -82,6 +82,7 @@ class Nimbus(QtWidgets.QMainWindow):
         meta_device.open()
         meta_device.try_out()
         time.sleep(10)
+        meta_device.stop()
         meta_device.close()
 
     def color_changed(self, color):

@@ -449,6 +449,7 @@ class MetaDevice:
         self.devices = devices
         self.effect = effect
         self.color = color
+        self.active_effects = None
 
     def open(self):
         """
@@ -471,8 +472,16 @@ class MetaDevice:
         Execute the effect but do not issue an "apply" command
         :return:
         """
-        active_effects = [device.effect(self.effect) for device in self.devices]
+        self.active_effects = [device.effect(self.effect) for device in self.devices]
 
-        for effect in active_effects:
+        for effect in self.active_effects:
             effect.color(self.color[0], self.color[1], self.color[2])
             effect.start()
+
+    def stop(self):
+        """
+        Signal all running effects it is time to stop
+        :return:
+        """
+        for effect in self.active_effects:
+            effect.stop()
