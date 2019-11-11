@@ -37,13 +37,12 @@ class StaticEffectITE(Effect):
         color_report = ITEKeyboardReport()
         flush_report = ITEFlushReport()
 
-        color_report.color((self.red, self.green, self.blue))
-
         targets = self.device.selected_targets()
 
         for target in targets:
             # Minimal required is 1 color report + 1 flush report
-            color_report.target(target)
+            color_report.target(target.target_segment())
+            color_report.color(target.color())
             self.device.write_interrupt(color_report)
             self.device.write_interrupt(color_report)
             self.device.write_interrupt(flush_report)
