@@ -84,45 +84,45 @@ class CycleEffectGladius(GladiusRunnableEffect):
     def _preamble(self):
         report = GladiusIIReport()
 
-        report.color((0x4d, 0x00, 0x6f))                      # From observation
+        colors = [target.color() for target in self.targets]
         report.effect(GladiusIIReport.EFFECT_CYCLE)         # Pick hardware cycle effect
 
-        self._send_all_targets(report, [])
+        self._send_all_targets(report, colors)
 
         time.sleep(0.45)
 
-        report.color((0xff, 0xff, 0xff))
+        colors = [(0xff, 0xff, 0xff) for target in self.targets]
         report.effect(GladiusIIReport.EFFECT_NONE)
 
-        self._send_all_targets(report, [])
+        self._send_all_targets(report, colors)
 
     def _runnable(self):
         hw_report = GladiusIIReport()
         sw_report = GladiusIICCReport()
 
-        cycle_generator = CycleCurve(0)
-        colors = cycle_generator.color()
+        cycle_generator = CycleCurve(0)     # Only used by the software report
+        sw_colors = cycle_generator.color()
 
         self._preamble()
 
-        hw_report.color((self.red, self.green, self.blue))
+        hw_colors = [target.color() for target in self.targets]
         hw_report.effect(GladiusIIReport.EFFECT_CYCLE)
 
-        self._send_all_targets(hw_report, [])
+        self._send_all_targets(hw_report, hw_colors)
 
         time.sleep(1)
 
         while self.keep_running:                        # 0x60 report does not seem to have any influence
             self.device.write_interrupt(sw_report)      # No targets in this thing...
 
-            sw_byte_04 = next(colors)                    # Value may not be color related at all
+            sw_byte_04 = next(sw_colors)                    # Value may not be color related at all
 
             sw_report.color(sw_byte_04, 0, 0)
 
             time.sleep(1)
 
         hw_report.effect(GladiusIIReport.EFFECT_NONE)   # Cancel the hardware cycle effect.
-        self._send_all_targets(hw_report, [])
+        self._send_all_targets(hw_report, hw_colors)    # Reset to colors chosen by the user
 
 
 class RainbowEffectGladius(GladiusRunnableEffect):
