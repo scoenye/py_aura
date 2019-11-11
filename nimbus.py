@@ -19,6 +19,7 @@
 """
 
 import sys
+import time
 
 from PySide2 import QtWidgets
 
@@ -80,6 +81,7 @@ class Nimbus(QtWidgets.QMainWindow):
         meta_device = MetaDevice(devices, effect, (color.red(), color.green(), color.blue()))
         meta_device.open()
         meta_device.try_out()
+        time.sleep(10)
         meta_device.close()
 
     def color_changed(self, color):

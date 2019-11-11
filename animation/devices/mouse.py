@@ -49,12 +49,8 @@ class GladiusRunnableEffect(RunnableEffect):
     def _send_all_targets(self, report):
         # Send the report to all active targets
         for target in self.targets:
-            report.target(target)
+            report.target(target.target_segment())
             self.device.write_interrupt(report)
-
-    def start(self, targets=None):
-        targets = targets or [device_module.GladiusIIMouse.LED_ALL]
-        super().start(targets)  # Stores device and targets as instance variables
 
 
 class StrobeEffectGladius(GladiusRunnableEffect):

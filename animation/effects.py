@@ -98,7 +98,7 @@ class RunnableEffect(Effect):
         :param targets: list of LEDs to change color of, None to change all LEDs
         :return:
         """
-        self.targets = targets
+        self.targets = self.device.selected_targets()
         self.thread.start()
 
     def stop(self):
