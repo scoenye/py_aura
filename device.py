@@ -125,7 +125,7 @@ class Device(ABC):
         Return the list of selected targets for the device.
         :return: list of selected targets
         """
-        return [target.target_segment() for target in self.targets if target.selected()]
+        return [target for target in self.targets if target.selected()]
 
     @abstractmethod
     def effect(self, descriptor):
@@ -234,7 +234,7 @@ class GladiusIIMouse(Device):
         :return:
         """
         base_list = super().selected_targets()          # The list of actually selected targets, if any.
-        return base_list or [GladiusIIMouse.LED_ALL]
+        return base_list or [self.targets[GladiusIIMouse.LED_ALL]]
 
 
 class ITEKeyboard(Device):

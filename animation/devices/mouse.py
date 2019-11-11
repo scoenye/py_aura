@@ -33,12 +33,12 @@ class StaticEffectGladius(Effect):
     """
     def start(self, targets=None):
         report = GladiusIIReport()
-        report.color((self.red, self.green, self.blue))
 
         targets = self.device.selected_targets()
 
         for target in targets:
-            report.target(target)
+            report.target(target.target_segment())
+            report.color(target.color())
             self.device.write_interrupt(report)
 
 
