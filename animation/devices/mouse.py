@@ -48,7 +48,7 @@ class GladiusRunnableEffect(RunnableEffect):
         # Send the report to all active targets
         for target, color in zip(self.targets, colors):
             report.target(target.target_segment())
-            report.color(next(color))
+            report.color(color)
             self.device.write_interrupt(report)
 
 
@@ -71,7 +71,8 @@ class StrobeEffectGladius(GladiusRunnableEffect):
 
         # End of preamble - start effect
         while self.keep_running:
-            self._send_all_targets(report, colors)
+            step_colors = [next(color) for color in colors]
+            self._send_all_targets(report, step_colors)
 
             time.sleep(0.05)
 
@@ -142,6 +143,7 @@ class RainbowEffectGladius(GladiusRunnableEffect):
         colors = [generator.color() for generator in generators]
 
         while self.keep_running:
-            self._send_all_targets(report, colors)
+            step_colors = [next(color) for color in colors]
+            self._send_all_targets(report, step_colors)
 
             time.sleep(0.01)
