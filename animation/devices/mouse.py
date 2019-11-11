@@ -130,13 +130,18 @@ class RainbowEffectGladius(GladiusRunnableEffect):
     """
     def _runnable(self):
         report = GladiusIIReport()
-        generator = CompositeGeneratorRGB(RainbowBlockLine(112), RainbowCurvedLine(112), RainbowCurvedLine(432))
-        colors = generator.color()
+        generators = []
+
+        # TODO: work out a way to start the effect with the selected colors
+        for target in self.device.selected_targets():
+            generators.append(CompositeGeneratorRGB(
+                RainbowBlockLine(112),          # Red component
+                RainbowCurvedLine(112),         # Green component
+                RainbowCurvedLine(432)))        # Blue component
+
+        colors = [generator.color() for generator in generators]
 
         while self.keep_running:
-            color = next(colors)
-            report.color(color)
-
-            self._send_all_targets(report, [])
+            self._send_all_targets(report, colors)
 
             time.sleep(0.01)
