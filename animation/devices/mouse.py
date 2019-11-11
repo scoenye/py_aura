@@ -61,7 +61,7 @@ class StrobeEffectGladius(GladiusRunnableEffect):
         generators = []
 
         # Create a set of color generators for each selected target
-        for target in self.device.selected_targets():
+        for target in self.targets:
             generators.append(CompositeGeneratorRGB(
                 StrobeCurve(0, target.color()[0]),      # TODO: rework hardcoded indices
                 StrobeCurve(0, target.color()[1]),
@@ -134,7 +134,7 @@ class RainbowEffectGladius(GladiusRunnableEffect):
         generators = []
 
         # TODO: work out a way to start the effect with the selected colors
-        for target in self.device.selected_targets():
+        for target in self.targets:
             generators.append(CompositeGeneratorRGB(
                 RainbowBlockLine(112),          # Red component
                 RainbowCurvedLine(112),         # Green component
