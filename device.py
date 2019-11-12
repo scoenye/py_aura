@@ -231,7 +231,7 @@ class GladiusIIMouse(Device):
     def selected_targets(self):
         """
         Return the list of selected targets for the device. Return the ALL target if no selection was made.
-        :return:
+        :return: list of selected targets
         """
         base_list = super().selected_targets()          # The list of actually selected targets, if any.
         return base_list or [self.targets[GladiusIIMouse.LED_ALL]]
@@ -268,6 +268,9 @@ class ITEKeyboard(Device):
             LEDTarget(self, ITEKeyboard.LED_SEGMENT2, 'Segment 2'),
             LEDTarget(self, ITEKeyboard.LED_SEGMENT3, 'Segment 3'),
             LEDTarget(self, ITEKeyboard.LED_SEGMENT4, 'Segment 4')
+            # LEDTarget(self, ITEKeyboard.LED_SEGMENT5, 'SW Segment 5'),      # The extra undefined segments
+            # LEDTarget(self, ITEKeyboard.LED_SEGMENT6, 'SW Segment 6'),      # used by the parallel report
+            # LEDTarget(self, ITEKeyboard.LED_SEGMENT7, 'SW Segment 7')
         ]
 
     def effect(self, descriptor):
@@ -276,10 +279,31 @@ class ITEKeyboard(Device):
     def selected_targets(self):
         """
         Return the list of selected targets for the device. Return the ALL target if no selection was made.
-        :return:
+        :return: list of selected targets
         """
         base_list = super().selected_targets()          # The list of actually selected targets, if any.
         return base_list or [self.targets[ITEKeyboard.LED_ALL]]
+
+    def parallel_targets(self):
+        """
+        Return the list of selected targets suitable for use by the parallel report(s). All targets are returned
+        if no selection was made.
+        :return: list of selected targets
+        """
+        base_list = super().selected_targets()
+
+        if not base_list:       # No selection: use the colors as defined for the synthetic all target components
+            base_list = [self.targets[ITEKeyboard.LED_SEGMENT1], self.targets[ITEKeyboard.LED_SEGMENT2],
+                         self.targets[ITEKeyboard.LED_SEGMENT3], self.targets[ITEKeyboard.LED_SEGMENT4]]
+        elif base_list == [self.targets[ITEKeyboard.LED_ALL]]:
+            base_list = [self.targets[ITEKeyboard.LED_SEGMENT1], self.targets[ITEKeyboard.LED_SEGMENT2],
+                         self.targets[ITEKeyboard.LED_SEGMENT3], self.targets[ITEKeyboard.LED_SEGMENT4]]
+
+            # As there is no real ALL target (?), copy its color to the components
+            for target in base_list:
+                target.change_color(self.targets[ITEKeyboard.LED_ALL].color())  # TODO: tell the view?
+
+        return base_list
 
 
 # Supported devices

@@ -87,6 +87,7 @@ class StrobeEffectITE(ITERunnableEffect):
     def _preamble(self):
         report = ITEKeyboardReport()
 
+        # TODO: pick the first target or eliminate this?
         report.color((self.red, self.green, self.blue))     # Enables the hardware strobe effect, but the sequence
         report.effect(ITEKeyboardReport.EFFECT_STROBE)      # does nothing without a flush. No flush was observed
         self.device.write_interrupt(report)                 # in the trace.
@@ -94,6 +95,8 @@ class StrobeEffectITE(ITERunnableEffect):
     def _runnable(self):
         report = ITEKeyboardSegmentReport()
         generators = []
+
+        self.targets = self.device.parallel_targets()
 
         # Create a set of color generators for each selected target
         for target in self.targets:
@@ -103,12 +106,6 @@ class StrobeEffectITE(ITERunnableEffect):
                 StrobeCurve(0, target.color()[2])))
 
         colors = [generator.color() for generator in generators]
-
-        self.targets = self.targets or \
-                       [device_module.ITEKeyboard.LED_SEGMENT1, device_module.ITEKeyboard.LED_SEGMENT2,
-                        device_module.ITEKeyboard.LED_SEGMENT3, device_module.ITEKeyboard.LED_SEGMENT4,
-                        device_module.ITEKeyboard.LED_SEGMENT5, device_module.ITEKeyboard.LED_SEGMENT6,
-                        device_module.ITEKeyboard.LED_SEGMENT7]
 
         self._preamble()
 
