@@ -37,9 +37,7 @@ class StaticEffectITE(Effect):
         color_report = ITEKeyboardReport()
         flush_report = ITEFlushReport()
 
-        targets = self.device.selected_targets()
-
-        for target in targets:
+        for target in self.device.selected_targets():
             # Minimal required is 1 color report + 1 flush report
             color_report.target(target.target_segment())
             color_report.color(target.color())
@@ -68,14 +66,18 @@ class ITERunnableEffect(RunnableEffect):
         color_report = ITEKeyboardReport()
         flush_report = ITEFlushReport()
 
-        color_report.color((self.red, self.green, self.blue))
-        self.device.write_interrupt(color_report)
-        self.device.write_interrupt(color_report)
-        self.device.write_interrupt(flush_report)
+        for target in self.targets:
+            # Minimal required is 1 color report + 1 flush report
+            color_report.target(target.target_segment())
+            color_report.color(target.color())
+            color_report.color((self.red, self.green, self.blue))
+            self.device.write_interrupt(color_report)
+            self.device.write_interrupt(color_report)
+            self.device.write_interrupt(flush_report)
 
-        color_report.byte_7(0xe1)
-        self.device.write_interrupt(color_report)
-        self.device.write_interrupt(flush_report)
+            color_report.byte_7(0xe1)
+            self.device.write_interrupt(color_report)
+            self.device.write_interrupt(flush_report)
 
 
 class StrobeEffectITE(ITERunnableEffect):
@@ -91,13 +93,16 @@ class StrobeEffectITE(ITERunnableEffect):
 
     def _runnable(self):
         report = ITEKeyboardSegmentReport()
+        generators = []
 
-        generator = CompositeGeneratorRGB(
-            StrobeCurve(0, self.red),
-            StrobeCurve(0, self.green),
-            StrobeCurve(0, self.blue))
+        # Create a set of color generators for each selected target
+        for target in self.targets:
+            generators.append(CompositeGeneratorRGB(
+                StrobeCurve(0, target.color()[0]),  # TODO: rework hardcoded indices
+                StrobeCurve(0, target.color()[1]),
+                StrobeCurve(0, target.color()[2])))
 
-        colors = generator.color()
+        colors = [generator.color() for generator in generators]
 
         self.targets = self.targets or \
                        [device_module.ITEKeyboard.LED_SEGMENT1, device_module.ITEKeyboard.LED_SEGMENT2,
@@ -108,9 +113,9 @@ class StrobeEffectITE(ITERunnableEffect):
         self._preamble()
 
         while self.keep_running:
-            color = next(colors)
+            step_colors = [next(color) for color in colors]
 
-            report.color(color, self.targets)
+            report.color(step_colors, self.targets)
             self.device.write_interrupt(report)
 
             time.sleep(0.05)

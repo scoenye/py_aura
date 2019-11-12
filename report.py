@@ -225,16 +225,17 @@ class ITEKeyboardSegmentReport(Report):
         self.report[2] = 0x01
         self.report[3] = 0x01  # 0x00 in "setup" report
 
-    def color(self, color_rgb, targets=None):
+    def color(self, colors, targets=None):
         """
         Set the color to be sent to the device
-        :param color_rgb: 3-tuple with red/green/blue color components. Integer, range 0 - 255.
+        :param colors: 3-tuple with red/green/blue color components. Integer, range 0 - 255.
         :param targets: segments affected by the color change
         :return:
         """
-        for target in targets:
-            self.report[ITEKeyboardSegmentReport.SEGMENT_OFFSETS[target - 1]:
-                        ITEKeyboardSegmentReport.SEGMENT_OFFSETS[target - 1] + 2] = color_rgb   # tuple is an iterable
+        # color is a tuple, which is iterable and so can be assigned to an array slice
+        for target, color in zip(targets, colors):
+            self.report[ITEKeyboardSegmentReport.SEGMENT_OFFSETS[target.target_segment() - 1]:
+                        ITEKeyboardSegmentReport.SEGMENT_OFFSETS[target.target_segment() - 1] + 2] = color
 
 
 class ITEFlushReport(ITEKeyboardReport):
