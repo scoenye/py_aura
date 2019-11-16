@@ -66,7 +66,7 @@ class GladiusIIReport(Report):
 
     # Built-in light effects
     EFFECT_STATIC = 0x00
-    EFFECT_IN_OUT = 0x01
+    EFFECT_BREATHE = 0x01
     EFFECT_CYCLE = 0x02
     EFFECT_RAINBOW = 0x03      # All LEDs
     EFFECT_BTN_PULSE = 0x04

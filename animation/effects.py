@@ -24,13 +24,15 @@ from enum import Enum
 
 class Effects(Enum):
     STATIC = 0
-    STROBE = 1
-    CYCLE = 2
-    RAINBOW = 3
+    BREATHE = 1
+    STROBE = 2
+    CYCLE = 3
+    RAINBOW = 4
 
 
 EFFECTS = [
     {'effect': Effects.STATIC, 'name': 'Static'},
+    {'effect': Effects.BREATHE, 'name': 'Breathe'},
     {'effect': Effects.STROBE, 'name': 'Strobe'},
     {'effect': Effects.CYCLE, 'name': 'Cycle'},
     {'effect': Effects.RAINBOW, 'name': 'Rainbow'}
