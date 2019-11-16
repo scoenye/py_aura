@@ -29,6 +29,7 @@ class Effects(Enum):
     CYCLE = 3
     RAINBOW = 4
     PULSE = 5
+    RUNNING = 6
 
 
 EFFECTS = [
@@ -37,7 +38,8 @@ EFFECTS = [
     {'effect': Effects.STROBE, 'name': 'Strobe'},
     {'effect': Effects.CYCLE, 'name': 'Cycle'},
     {'effect': Effects.RAINBOW, 'name': 'Rainbow'},
-    {'effect': Effects.PULSE, 'name': 'Pulse'}
+    {'effect': Effects.PULSE, 'name': 'Pulse'},
+    {'effect': Effects.RUNNING, 'name': 'Running'}
 ]
 
 

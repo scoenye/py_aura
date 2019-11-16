@@ -70,7 +70,7 @@ class GladiusIIReport(Report):
     EFFECT_CYCLE = 0x02
     EFFECT_RAINBOW = 0x03      # All LEDs
     EFFECT_PULSE = 0x04
-    EFFECT_RUNNING = 0x05
+    EFFECT_RUNNING = 0x05      # All LEDs
 
     # Intensity
     LEVEL_OFF = 0x00           # All LEDs off

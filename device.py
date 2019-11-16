@@ -209,7 +209,8 @@ class GladiusIIMouse(Device):
         Effects.STROBE: mouse.StrobeEffectGladius,
         Effects.CYCLE: mouse.CycleEffectHW,
         Effects.PULSE: mouse.PulseEffectHW,
-        Effects.RAINBOW: mouse.RainbowEffectHW
+        Effects.RAINBOW: mouse.RainbowEffectHW,
+        Effects.RUNNING: mouse.RunningEffectHW
     }
 
     # Selectable LEDs
