@@ -69,7 +69,7 @@ class GladiusIIReport(Report):
     EFFECT_BREATHE = 0x01
     EFFECT_CYCLE = 0x02
     EFFECT_RAINBOW = 0x03      # All LEDs
-    EFFECT_BTN_PULSE = 0x04
+    EFFECT_PULSE = 0x04
     EFFECT_RUNNING = 0x05
 
     # Intensity
