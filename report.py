@@ -153,7 +153,7 @@ class ITEKeyboardReport(Report):
     SELECT_EFFECT = 3
 
     # Built-in light effects
-    EFFECT_NONE = 0x00
+    EFFECT_STATIC = 0x00
     EFFECT_IN_OUT = 0x01
     EFFECT_CYCLE = 0x02
     EFFECT_RAINBOW = 0x03      # Left to right effect. Also 0x0f, 0x11, some higher numbers.

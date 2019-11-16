@@ -247,7 +247,7 @@ class ITEKeyboard(Device):
     PRODUCT_ID = 0x1869
 
     EFFECT_MAP = {
-        Effects.STATIC: keyboard.StaticEffectITE,
+        Effects.STATIC: keyboard.StaticEffectHW,
         Effects.STROBE: keyboard.StrobeEffectITE,
         Effects.CYCLE: keyboard.CycleEffectITE,
         Effects.RAINBOW: keyboard.RainbowEffectITE
