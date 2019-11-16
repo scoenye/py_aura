@@ -250,7 +250,7 @@ class ITEKeyboard(Device):
         Effects.STATIC: keyboard.StaticEffectHW,
         Effects.BREATHE: keyboard.BreatheEffectHW,
         Effects.STROBE: keyboard.StrobeEffectITE,
-        Effects.CYCLE: keyboard.CycleEffectITE,
+        Effects.CYCLE: keyboard.CycleEffectHW,
         Effects.RAINBOW: keyboard.RainbowEffectITE
     }
 
