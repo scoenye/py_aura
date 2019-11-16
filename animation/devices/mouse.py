@@ -69,6 +69,20 @@ class CycleEffectHW(Effect):
             self.device.write_interrupt(report)
 
 
+class RainbowEffectHW(Effect):
+    """
+    Static color change for mouse
+     """
+    def start(self, targets=None):
+        report = GladiusIIReport()
+        report.effect(GladiusIIReport.EFFECT_RAINBOW)
+
+        for target in self.device.selected_targets():
+            report.target(target.target_segment())
+            report.color(target.color())
+            self.device.write_interrupt(report)
+
+
 # Software based effects
 
 class GladiusRunnableEffect(RunnableEffect):
