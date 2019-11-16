@@ -65,7 +65,7 @@ class GladiusIIReport(Report):
     SELECT_LEVEL = 5
 
     # Built-in light effects
-    EFFECT_NONE = 0x00
+    EFFECT_STATIC = 0x00
     EFFECT_IN_OUT = 0x01
     EFFECT_CYCLE = 0x02
     EFFECT_RAINBOW = 0x03      # All LEDs
@@ -84,7 +84,7 @@ class GladiusIIReport(Report):
         super().__init__()
         self.report[Report.REPORT_ID] = Report.TYPE_GLADIUS
         self.report[1] = 0x28
-        self.report[GladiusIIReport.SELECT_EFFECT] = GladiusIIReport.EFFECT_NONE
+        self.report[GladiusIIReport.SELECT_EFFECT] = GladiusIIReport.EFFECT_STATIC
         self.report[GladiusIIReport.SELECT_LEVEL] = GladiusIIReport.LEVEL_100
 
     def color(self, color_rgb):

@@ -25,20 +25,23 @@ from animation.generators import CompositeGeneratorRGB
 from report import GladiusIIReport, GladiusIICCReport
 
 
-class StaticEffectGladius(Effect):
+# Hardware backed effects
+
+class StaticEffectHW(Effect):
     """
-    Single color change for mouse
+    Static color change for mouse
     """
     def start(self, targets=None):
         report = GladiusIIReport()
+        report.effect(GladiusIIReport.EFFECT_STATIC)
 
-        targets = self.device.selected_targets()
-
-        for target in targets:
+        for target in self.device.selected_targets():
             report.target(target.target_segment())
             report.color(target.color())
             self.device.write_interrupt(report)
 
+
+# Software based effects
 
 class GladiusRunnableEffect(RunnableEffect):
     """
@@ -92,7 +95,7 @@ class CycleEffectGladius(GladiusRunnableEffect):
         time.sleep(0.45)
 
         colors = [(0xff, 0xff, 0xff) for target in self.targets]
-        report.effect(GladiusIIReport.EFFECT_NONE)
+        report.effect(GladiusIIReport.EFFECT_STATIC)
 
         self._send_all_targets(report, colors)
 
@@ -121,7 +124,7 @@ class CycleEffectGladius(GladiusRunnableEffect):
 
             time.sleep(1)
 
-        hw_report.effect(GladiusIIReport.EFFECT_NONE)   # Cancel the hardware cycle effect.
+        hw_report.effect(GladiusIIReport.EFFECT_STATIC)   # Cancel the hardware cycle effect.
         self._send_all_targets(hw_report, hw_colors)    # Reset to colors chosen by the user
 
 

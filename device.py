@@ -204,7 +204,7 @@ class GladiusIIMouse(Device):
     INTERFACE = 2
 
     EFFECT_MAP = {
-        Effects.STATIC: mouse.StaticEffectGladius,
+        Effects.STATIC: mouse.StaticEffectHW,
         Effects.STROBE: mouse.StrobeEffectGladius,
         Effects.CYCLE: mouse.CycleEffectGladius,
         Effects.RAINBOW: mouse.RainbowEffectGladius
