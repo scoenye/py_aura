@@ -156,7 +156,7 @@ class ITEKeyboardReport(Report):
     EFFECT_STATIC = 0x00
     EFFECT_BREATHE = 0x01
     EFFECT_CYCLE = 0x02         # All segments, no color control
-    EFFECT_RAINBOW = 0x03       # Left to right effect. Also 0x0f, 0x11, some higher numbers.
+    EFFECT_RAINBOW = 0x03       # All segments, no color control.
     EFFECT_STROBE = 0x0a
 
     def __init__(self):

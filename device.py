@@ -249,9 +249,9 @@ class ITEKeyboard(Device):
     EFFECT_MAP = {
         Effects.STATIC: keyboard.StaticEffectHW,
         Effects.BREATHE: keyboard.BreatheEffectHW,
-        Effects.STROBE: keyboard.StrobeEffectITE,
+        Effects.STROBE: keyboard.StrobeEffectHW,
         Effects.CYCLE: keyboard.CycleEffectHW,
-        Effects.RAINBOW: keyboard.RainbowEffectITE
+        Effects.RAINBOW: keyboard.RainbowEffectHW
     }
 
     # Selectable segments
