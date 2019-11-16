@@ -154,10 +154,10 @@ class ITEKeyboardReport(Report):
 
     # Built-in light effects
     EFFECT_STATIC = 0x00
-    EFFECT_IN_OUT = 0x01
+    EFFECT_BREATHE = 0x01
     EFFECT_CYCLE = 0x02
     EFFECT_RAINBOW = 0x03      # Left to right effect. Also 0x0f, 0x11, some higher numbers.
-    EFFECT_STROBE = 0x0ad
+    EFFECT_STROBE = 0x0a
 
     def __init__(self):
         super().__init__()

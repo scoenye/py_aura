@@ -248,6 +248,7 @@ class ITEKeyboard(Device):
 
     EFFECT_MAP = {
         Effects.STATIC: keyboard.StaticEffectHW,
+        Effects.BREATHE: keyboard.BreatheEffectHW,
         Effects.STROBE: keyboard.StrobeEffectITE,
         Effects.CYCLE: keyboard.CycleEffectITE,
         Effects.RAINBOW: keyboard.RainbowEffectITE

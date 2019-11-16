@@ -59,6 +59,35 @@ class StaticEffectHW(Effect):
         self.device.write_interrupt(flush_report)
 
 
+class BreatheEffectHW(Effect):
+    """
+    Breathing color change effect for ITE keyboard
+    """
+    def start(self, targets=None):
+        color_report = ITEKeyboardReport()
+        flush_report = ITEFlushReport()
+
+        color_report.effect(color_report.EFFECT_BREATHE)
+
+        for target in self.device.selected_targets():
+            # Minimal required is 1 color report + 1 flush report
+            color_report.target(target.target_segment())
+            color_report.color(target.color())
+            self.device.write_interrupt(color_report)
+            self.device.write_interrupt(flush_report)
+
+            color_report.byte_7(0xe1)
+            self.device.write_interrupt(color_report)
+            self.device.write_interrupt(flush_report)
+
+    def apply(self):
+        apply_report = ITEKeyboardApplyReport()
+        flush_report = ITEFlushReport()
+
+        self.device.write_interrupt(apply_report)
+        self.device.write_interrupt(flush_report)
+
+
 # Software based effects
 
 class ITERunnableEffect(RunnableEffect):
