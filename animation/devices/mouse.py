@@ -27,13 +27,15 @@ from report import GladiusIIReport, GladiusIICCReport
 
 # Hardware backed effects
 
-class StaticEffectHW(Effect):
+class GladiusEffectHW(Effect):
     """
-    Static color change for mouse
+    Base class for the hardware backed effects of the Gladius II mouse
     """
+    EFFECT = None
+
     def start(self, targets=None):
         report = GladiusIIReport()
-        report.effect(GladiusIIReport.EFFECT_STATIC)
+        report.effect(self.EFFECT)
 
         for target in self.device.selected_targets():
             report.target(target.target_segment())
@@ -41,74 +43,46 @@ class StaticEffectHW(Effect):
             self.device.write_interrupt(report)
 
 
-class BreatheEffectHW(Effect):
+class StaticEffectHW(GladiusEffectHW):
     """
     Static color change for mouse
     """
-    def start(self, targets=None):
-        report = GladiusIIReport()
-        report.effect(GladiusIIReport.EFFECT_BREATHE)
-
-        for target in self.device.selected_targets():
-            report.target(target.target_segment())
-            report.color(target.color())
-            self.device.write_interrupt(report)
+    EFFECT = GladiusIIReport.EFFECT_STATIC
 
 
-class CycleEffectHW(Effect):
+class BreatheEffectHW(GladiusEffectHW):
     """
-    Static color change for mouse
-     """
-    def start(self, targets=None):
-        report = GladiusIIReport()
-        report.effect(GladiusIIReport.EFFECT_CYCLE)
-
-        for target in self.device.selected_targets():
-            report.target(target.target_segment())
-            report.color(target.color())
-            self.device.write_interrupt(report)
-
-
-class RainbowEffectHW(Effect):
+    Breathing effect color change for mouse
     """
-    Static color change for mouse
-     """
-    def start(self, targets=None):
-        report = GladiusIIReport()
-        report.effect(GladiusIIReport.EFFECT_RAINBOW)
-
-        for target in self.device.selected_targets():
-            report.target(target.target_segment())
-            report.color(target.color())
-            self.device.write_interrupt(report)
+    EFFECT = GladiusIIReport.EFFECT_BREATHE
 
 
-class PulseEffectHW(Effect):
+class CycleEffectHW(GladiusEffectHW):
     """
-    Static color change for mouse
-     """
-    def start(self, targets=None):
-        report = GladiusIIReport()
-        report.effect(GladiusIIReport.EFFECT_PULSE)
-
-        for target in self.device.selected_targets():
-            report.target(target.target_segment())
-            report.color(target.color())
-            self.device.write_interrupt(report)
-
-
-class RunningEffectHW(Effect):
+    Cycling color change for mouse. LEDs are controllable but color is synced across all LEDs running the cycle effect.
     """
-    Static color change for mouse
-     """
-    def start(self, targets=None):
-        report = GladiusIIReport()
-        report.effect(GladiusIIReport.EFFECT_RUNNING)
+    EFFECT = GladiusIIReport.EFFECT_CYCLE
 
-        for target in self.device.selected_targets():
-            report.target(target.target_segment())
-            report.color(target.color())
-            self.device.write_interrupt(report)
+
+class RainbowEffectHW(GladiusEffectHW):
+    """
+    Rainbow color change for mouse. Applies to all LEDs. No control over color.
+    """
+    EFFECT = GladiusIIReport.EFFECT_RAINBOW
+
+
+class PulseEffectHW(GladiusEffectHW):
+    """
+    Button pulse color change for mouse
+    """
+    EFFECT = GladiusIIReport.EFFECT_PULSE
+
+
+class RunningEffectHW(GladiusEffectHW):
+    """
+    Running color change for mouse. Applies to all LEDs.
+    """
+    EFFECT = GladiusIIReport.EFFECT_RUNNING
 
 
 # Software based effects
