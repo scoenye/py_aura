@@ -207,7 +207,7 @@ class GladiusIIMouse(Device):
         Effects.STATIC: mouse.StaticEffectHW,
         Effects.BREATHE: mouse.BreatheEffectHW,
         Effects.STROBE: mouse.StrobeEffectGladius,
-        Effects.CYCLE: mouse.CycleEffectGladius,
+        Effects.CYCLE: mouse.CycleEffectHW,
         Effects.RAINBOW: mouse.RainbowEffectGladius
     }
 
