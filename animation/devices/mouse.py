@@ -87,7 +87,7 @@ class RunningEffectHW(GladiusEffectHW):
 
 # Software based effects
 
-class GladiusRunnableEffect(RunnableEffect):
+class GladiusEffectSW(RunnableEffect):
     """
     Mouse specific RunnableEffect
     """
@@ -99,7 +99,7 @@ class GladiusRunnableEffect(RunnableEffect):
             self.device.write_interrupt(report)
 
 
-class StrobeEffectGladius(GladiusRunnableEffect):
+class StrobeEffectSW(GladiusEffectSW):
     """
     Strobe effect for the mouse
     """
@@ -124,7 +124,7 @@ class StrobeEffectGladius(GladiusRunnableEffect):
             time.sleep(0.05)
 
 
-class CycleEffectGladius(GladiusRunnableEffect):
+class CycleEffectSW(GladiusEffectSW):
     """
     Cycle effect for the mouse
     """
@@ -172,7 +172,7 @@ class CycleEffectGladius(GladiusRunnableEffect):
         self._send_all_targets(hw_report, hw_colors)    # Reset to colors chosen by the user
 
 
-class RainbowEffectGladius(GladiusRunnableEffect):
+class RainbowEffectSW(GladiusEffectSW):
     """
     Rainbow effect for the mouse
     """

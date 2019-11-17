@@ -26,13 +26,13 @@ from itertools import chain
 
 class ColorGenerator(ABC):
     """
-    Generate color values for effects
+    Generate color values for effects.
     """
     @abstractmethod
     def color(self, start, end=sys.maxsize):
         """
         :param start: starting position for the generator
-        :param end: final position of the generator
+        :param end: final position of the generator.
         :return: a color value between 0 (black) and 255 (white)
         """
 
@@ -116,7 +116,8 @@ class StrobeGenerator(ColorGenerator):
 
 class GeneratorState:
     """
-    Elementary piece of a composite color generation sequence
+    Elementary piece of a composite color generation sequence. A state carries a generator and spans a section of the
+    generator timeline.
     """
     def __init__(self, generator, begin, end=sys.maxsize, **kwargs):
         """

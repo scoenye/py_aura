@@ -98,7 +98,7 @@ class StrobeEffectHW(ITEEffectHW):
 
 # Software based effects
 
-class ITERunnableEffect(RunnableEffect):
+class ITEEffectSW(RunnableEffect):
     """
     Keyboard specific RunnableEffect
     """
@@ -121,7 +121,7 @@ class ITERunnableEffect(RunnableEffect):
             self.device.write_interrupt(flush_report)
 
 
-class StrobeEffectITE(ITERunnableEffect):
+class StrobeEffectSW(ITEEffectSW):
     """
     Strobe effect for the mouse
     """
@@ -165,7 +165,7 @@ class StrobeEffectITE(ITERunnableEffect):
         self.device.write_interrupt(flush_report)
 
 
-class CycleEffectITE(ITERunnableEffect):
+class CycleEffectSW(ITEEffectSW):
     """
     Cycle effect for the keyboard
     """
@@ -205,7 +205,7 @@ class CycleEffectITE(ITERunnableEffect):
         self._wind_down()
 
 
-class RainbowEffectITE(ITERunnableEffect):
+class RainbowEffectSW(ITEEffectSW):
     """
     Rainbow effect for the keyboard
     """

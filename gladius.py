@@ -21,8 +21,8 @@ import time
 import udev
 
 from device import GladiusIIMouse, ITEKeyboard
-from animation.devices.keyboard import StaticEffectITE, RainbowEffectITE, CycleEffectITE, StrobeEffectITE
-from animation.devices.mouse import StaticEffectGladius, RainbowEffectGladius, CycleEffectGladius, StrobeEffectGladius
+from animation.devices.keyboard import StaticEffectHW, RainbowEffectSW, CycleEffectSW, StrobeEffectSW
+from animation.devices.mouse import StaticEffectHW, RainbowEffectSW, CycleEffectSW, StrobeEffectSW
 
 from udev import USBEnumerator, USBMonitor
 from device import DeviceList
@@ -53,14 +53,14 @@ keyboard = ITEKeyboard(kbd_port, 'ITEKeyboard')
 mouse.open()
 keyboard.open()
 
-mouse_static = StaticEffectGladius(mouse)
+mouse_static = StaticEffectHW(mouse)
 mouse_static.color(0xff, 0xff, 0x00)
 mouse_static.start()  # Init the mouse LEDs
 
 # mouse_static.color(0xff, 0x00, 0x3f)
 # mouse_static.start(mouse)
 
-kbd_static = StaticEffectITE(keyboard)
+kbd_static = StaticEffectHW(keyboard)
 kbd_static.color(255, 0, 255)
 kbd_static.start([ITEKeyboard.LED_ALL])
 # kbd_static.apply()
