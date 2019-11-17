@@ -30,15 +30,17 @@ from report import ITEKeyboardReport, ITEFlushReport, ITEKeyboardSegmentReport, 
 
 # Effects with hardware support
 
-class StaticEffectHW(Effect):
+class ITEEffectHW(Effect):
     """
     Static color change effect for ITE keyboard
     """
+    EFFECT = None
+
     def start(self, targets=None):
         color_report = ITEKeyboardReport()
         flush_report = ITEFlushReport()
 
-        color_report.effect(color_report.EFFECT_STATIC)
+        color_report.effect(self.EFFECT)
 
         for target in self.device.selected_targets():
             # Minimal required is 1 color report + 1 flush report
@@ -59,120 +61,39 @@ class StaticEffectHW(Effect):
         self.device.write_interrupt(flush_report)
 
 
-class BreatheEffectHW(Effect):
+class StaticEffectHW(ITEEffectHW):
+    """
+    Static color change effect for ITE keyboard
+    """
+    EFFECT = ITEKeyboardReport.EFFECT_STATIC
+
+
+class BreatheEffectHW(ITEEffectHW):
     """
     Breathing color change effect for ITE keyboard
     """
-    def start(self, targets=None):
-        color_report = ITEKeyboardReport()
-        flush_report = ITEFlushReport()
-
-        color_report.effect(color_report.EFFECT_BREATHE)
-
-        for target in self.device.selected_targets():
-            # Minimal required is 1 color report + 1 flush report
-            color_report.target(target.target_segment())
-            color_report.color(target.color())
-            self.device.write_interrupt(color_report)
-            self.device.write_interrupt(flush_report)
-
-            color_report.byte_7(0xe1)
-            self.device.write_interrupt(color_report)
-            self.device.write_interrupt(flush_report)
-
-    def apply(self):
-        apply_report = ITEKeyboardApplyReport()
-        flush_report = ITEFlushReport()
-
-        self.device.write_interrupt(apply_report)
-        self.device.write_interrupt(flush_report)
+    EFFECT = ITEKeyboardReport.EFFECT_BREATHE
 
 
-class CycleEffectHW(Effect):
+class CycleEffectHW(ITEEffectHW):
     """
-    Cycle color change effect for ITE keyboard
+    Cycle color change effect for ITE keyboard. Applies to all segments, Control over initial color only.
     """
-    def start(self, targets=None):
-        color_report = ITEKeyboardReport()
-        flush_report = ITEFlushReport()
-
-        color_report.effect(color_report.EFFECT_CYCLE)
-
-        for target in self.device.selected_targets():
-            # Minimal required is 1 color report + 1 flush report
-            color_report.target(target.target_segment())
-            color_report.color(target.color())
-            self.device.write_interrupt(color_report)
-            self.device.write_interrupt(flush_report)
-
-            color_report.byte_7(0xe1)
-            self.device.write_interrupt(color_report)
-            self.device.write_interrupt(flush_report)
-
-    def apply(self):
-        apply_report = ITEKeyboardApplyReport()
-        flush_report = ITEFlushReport()
-
-        self.device.write_interrupt(apply_report)
-        self.device.write_interrupt(flush_report)
+    EFFECT = ITEKeyboardReport.EFFECT_CYCLE
 
 
-class RainbowEffectHW(Effect):
+class RainbowEffectHW(ITEEffectHW):
     """
-    Rainbow color change effect for ITE keyboard
+    Rainbow color change effect for ITE keyboard. Applies to all segments, no control over color.
     """
-    def start(self, targets=None):
-        color_report = ITEKeyboardReport()
-        flush_report = ITEFlushReport()
-
-        color_report.effect(color_report.EFFECT_RAINBOW)
-
-        for target in self.device.selected_targets():
-            # Minimal required is 1 color report + 1 flush report
-            color_report.target(target.target_segment())
-            color_report.color(target.color())
-            self.device.write_interrupt(color_report)
-            self.device.write_interrupt(flush_report)
-
-            color_report.byte_7(0xe1)
-            self.device.write_interrupt(color_report)
-            self.device.write_interrupt(flush_report)
-
-    def apply(self):
-        apply_report = ITEKeyboardApplyReport()
-        flush_report = ITEFlushReport()
-
-        self.device.write_interrupt(apply_report)
-        self.device.write_interrupt(flush_report)
+    EFFECT = ITEKeyboardReport.EFFECT_RAINBOW
 
 
-class StrobeEffectHW(Effect):
+class StrobeEffectHW(ITEEffectHW):
     """
-    Rainbow color change effect for ITE keyboard
+    Rainbow color change effect for ITE keyboard, Applies to all segments.
     """
-    def start(self, targets=None):
-        color_report = ITEKeyboardReport()
-        flush_report = ITEFlushReport()
-
-        color_report.effect(color_report.EFFECT_STROBE)
-
-        for target in self.device.selected_targets():
-            # Minimal required is 1 color report + 1 flush report
-            color_report.target(target.target_segment())
-            color_report.color(target.color())
-            self.device.write_interrupt(color_report)
-            self.device.write_interrupt(flush_report)
-
-            color_report.byte_7(0xe1)
-            self.device.write_interrupt(color_report)
-            self.device.write_interrupt(flush_report)
-
-    def apply(self):
-        apply_report = ITEKeyboardApplyReport()
-        flush_report = ITEFlushReport()
-
-        self.device.write_interrupt(apply_report)
-        self.device.write_interrupt(flush_report)
+    EFFECT = ITEKeyboardReport.EFFECT_STROBE
 
 
 # Software based effects
