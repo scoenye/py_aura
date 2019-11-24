@@ -78,6 +78,7 @@ class CenterPanel(QtWidgets.QWidget):
         self.effect_widget = QtWidgets.QListView()
         self.color_widget = QtWidgets.QColorDialog()
         self.try_button = QtWidgets.QPushButton('&Try')
+        self.apply_button = QtWidgets.QPushButton('&Apply')
 
         # Hide OK/Cancel buttons on color picker
         self.color_widget.setOption(QtWidgets.QColorDialog.NoButtons, True)
@@ -93,6 +94,7 @@ class CenterPanel(QtWidgets.QWidget):
         self.main_layout.addWidget(self.effect_widget, 0, 1)
         self.main_layout.addWidget(self.color_widget, 0, 2, 2, 2)
         self.main_layout.addWidget(self.try_button, 2, 0)
+        self.main_layout.addWidget(self.apply_button, 2, 1)
 
     def _try_clicked(self):
         # Relay Try button click with all selected items
