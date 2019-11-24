@@ -64,6 +64,7 @@ class TargetTableView(QtWidgets.QTableView):
 
 class CenterPanel(QtWidgets.QWidget):
     try_clicked = Signal(list, object)
+    apply_clicked = Signal(list)
 
     """
     Main window central widget
@@ -87,6 +88,7 @@ class CenterPanel(QtWidgets.QWidget):
         self._assemble_panel()
 
         self.try_button.clicked.connect(self._try_clicked)
+        self.apply_button.clicked.connect(self._apply_clicked)
 
     def _assemble_panel(self):
         self.main_layout.addWidget(self.device_widget, 0, 0)
@@ -100,6 +102,10 @@ class CenterPanel(QtWidgets.QWidget):
         # Relay Try button click with all selected items
         self.try_clicked.emit(self.effect_widget.selectedIndexes(),
                               self.color_widget.currentColor())
+
+    def _apply_clicked(self):
+        # Relay Apply button click with all selected items
+        self.apply_clicked.emit(self.effect_widget.selectedIndexes())
 
     def set_device_list(self, device_list):
         """
@@ -134,3 +140,12 @@ class CenterPanel(QtWidgets.QWidget):
         """
         # As long as the receiver is inside the Qt portion, use slot/signal.
         self.try_clicked.connect(listener)
+
+    def add_apply_listener(self, listener):
+        """
+        Add a listener interested in clicks on the Apply button
+        :param listener:
+        :return:
+        """
+        # As long as the receiver is inside the Qt portion, use slot/signal.
+        self.apply_clicked.connect(listener)
