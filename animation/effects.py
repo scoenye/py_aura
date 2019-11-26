@@ -68,10 +68,9 @@ class Effect:
         self.green = green
         self.blue = blue
 
-    def start(self, targets=None):
+    def start(self):
         """
         Start execution of the effect
-        :param targets: list of LEDs to change color of, None to change all LEDs
         :return:
         """
         pass
@@ -105,10 +104,9 @@ class RunnableEffect(Effect):
         # Core of the strobe effect thread
         pass
 
-    def start(self, targets=None):
+    def start(self):
         """
         Start the execution of the effect as a separate thread.
-        :param targets: list of LEDs to change color of, None to change all LEDs
         :return:
         """
         self.targets = self.device.selected_targets()

@@ -36,7 +36,7 @@ class ITEEffectHW(Effect):
     """
     EFFECT = None
 
-    def start(self, targets=None):
+    def start(self):
         color_report = ITEKeyboardReport()
         flush_report = ITEFlushReport()
 
@@ -61,7 +61,7 @@ class ITEEffectHW(Effect):
         apply_report = ITEKeyboardApplyReport()
         flush_report = ITEFlushReport()
 
-        self.start()        # Update hardware with whatever the user had selected
+        self.start()    # Update hardware with whatever the user had selected
 
         self.device.write_interrupt(apply_report)
         self.device.write_interrupt(flush_report)

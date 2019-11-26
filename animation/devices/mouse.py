@@ -33,7 +33,7 @@ class GladiusEffectHW(Effect):
     """
     EFFECT = None
 
-    def start(self, targets=None):
+    def start(self):
         report = GladiusIIReport()
         report.effect(self.EFFECT)
 
