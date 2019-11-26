@@ -109,7 +109,8 @@ class ITEEffectSW(RunnableEffect):
     Keyboard specific RunnableEffect
     """
     def _wind_down(self):
-        # Really just a change back to a single color
+        # Really just a change back to a single color. Used by CycleEffectSW and RainbowEffectSw which do not apply to
+        # individual LED segments.
         color_report = ITEKeyboardReport()
         flush_report = ITEFlushReport()
 
@@ -117,8 +118,6 @@ class ITEEffectSW(RunnableEffect):
             # Minimal required is 1 color report + 1 flush report
             color_report.target(target.target_segment())
             color_report.color(target.color())
-            color_report.color((self.red, self.green, self.blue))
-            self.device.write_interrupt(color_report)
             self.device.write_interrupt(color_report)
             self.device.write_interrupt(flush_report)
 
@@ -134,10 +133,15 @@ class StrobeEffectSW(ITEEffectSW):
     def _preamble(self):
         report = ITEKeyboardReport()
 
-        # TODO: pick the first target or eliminate this?
-        report.color((self.red, self.green, self.blue))     # Enables the hardware strobe effect, but the sequence
-        report.effect(ITEKeyboardReport.EFFECT_STROBE)      # does nothing without a flush. No flush was observed
-        self.device.write_interrupt(report)                 # in the trace.
+        report.effect(ITEKeyboardReport.EFFECT_STROBE)
+
+        for target in self.device.selected_targets():
+            # Enables the hardware strobe effect, but the sequence does nothing without a flush. No flush was observed
+            # in the trace.
+            report.target(target.target_segment())
+            report.color(target.color())
+
+            self.device.write_interrupt(report)
 
     def _runnable(self):
         report = ITEKeyboardSegmentReport()
