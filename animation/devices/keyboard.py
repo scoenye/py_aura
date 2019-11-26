@@ -54,8 +54,14 @@ class ITEEffectHW(Effect):
             self.device.write_interrupt(flush_report)
 
     def apply(self):
+        """
+        Make the current effect permanent.
+        :return:
+        """
         apply_report = ITEKeyboardApplyReport()
         flush_report = ITEFlushReport()
+
+        self.start()        # Update hardware with whatever the user had selected
 
         self.device.write_interrupt(apply_report)
         self.device.write_interrupt(flush_report)

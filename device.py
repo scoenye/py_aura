@@ -506,6 +506,16 @@ class MetaDevice:
             effect.color(self.color[0], self.color[1], self.color[2])
             effect.start()
 
+    def apply(self):
+        """
+        Make the current effect permanent if supported by the underlying hardware.
+        :return:
+        """
+        self.active_effects = [device.effect(self.effect) for device in self.devices]
+
+        for effect in self.active_effects:
+            effect.apply()
+
     def stop(self):
         """
         Signal all running effects it is time to stop

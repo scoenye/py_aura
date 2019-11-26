@@ -53,6 +53,7 @@ class Nimbus(QtWidgets.QMainWindow):
         self.center_panel.set_effect_list(self.effect_model)
 
         self.center_panel.add_try_listener(self.try_clicked)
+        self.center_panel.add_apply_listener(self.apply_clicked)
 
         self.setGeometry(10, 10, 1000, 300)
         self.setWindowTitle('Nimbus')
@@ -81,8 +82,23 @@ class Nimbus(QtWidgets.QMainWindow):
         meta_device = MetaDevice(devices, effect, (color.red(), color.green(), color.blue()))
         meta_device.open()
         meta_device.try_out()
-        time.sleep(10)
         meta_device.stop()
+        meta_device.close()
+
+    def apply_clicked(self, selected_effect):
+        """
+        Handle a click on the apply button.
+        :param selected_effect: List with the QModelIndex of the selected effect.
+        :return:
+        """
+        effect_keys = [index.row() for index in selected_effect]
+
+        devices = self.device_list.selected()
+        effect = self.effect_list.instance(effect_keys)
+
+        meta_device = MetaDevice(devices, effect, (0, 0, 0))
+        meta_device.open()
+        meta_device.apply()
         meta_device.close()
 
     def color_changed(self, color):
