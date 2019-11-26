@@ -51,22 +51,7 @@ class Effect:
         """
         :param device: hardware device to which this effect instance applies to.
         """
-        self.red = 0
-        self.green = 0
-        self.blue = 0
         self.device = device
-
-    def color(self, red, green, blue):
-        """
-        Set the color for the effect
-        :param red: Red value, 0 - 255
-        :param green: Green value, 0 - 255
-        :param blue: Blue value, 0 - 255
-        :return:
-        """
-        self.red = red
-        self.green = green
-        self.blue = blue
 
     def start(self):
         """
