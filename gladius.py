@@ -54,31 +54,23 @@ mouse.open()
 keyboard.open()
 
 mouse_static = StaticEffectHW(mouse)
-mouse_static.color(0xff, 0xff, 0x00)
 mouse_static.start()  # Init the mouse LEDs
 
 # mouse_static.color(0xff, 0x00, 0x3f)
 # mouse_static.start(mouse)
 
 kbd_static = StaticEffectHW(keyboard)
-kbd_static.color(255, 0, 255)
 kbd_static.start()
 # kbd_static.apply()
 
 # mouse_effect = StrobeEffectGladius()
 # keyboard_effect = StrobeEffectITE()
 #
-# mouse_effect.color(0xff, 0x00, 0xff)
-# keyboard_effect.color(0xff, 0xff, 0x00)
-#
 # mouse_effect.start(mouse, [GladiusIIMouse.LED_LOGO])
 # keyboard_effect.start(keyboard)
 
 # mouse_effect = CycleEffectGladius()
 # keyboard_effect = CycleEffectITE()
-#
-# mouse_effect.color(0xff, 0x00, 0x00)
-# keyboard_effect.color(0xff, 0x00, 0x00)
 #
 # mouse_effect.start(mouse)
 # keyboard_effect.start(keyboard)
