@@ -53,14 +53,24 @@ keyboard = ITEKeyboard(kbd_port, 'ITEKeyboard')
 mouse.open()
 keyboard.open()
 
+mouse_targets = mouse.show_targets()
+
+# TODO: make addressing the target array friendlier
+mouse_targets[1].select()
+mouse_targets[1].change_color((255, 0, 0))
+mouse_targets[2].select()
+mouse_targets[2].change_color((0, 255, 0))
+mouse_targets[3].select()
+mouse_targets[3].change_color((0, 0, 255))
+
 mouse_static = StaticEffectHW(mouse)
 mouse_static.start()  # Init the mouse LEDs
 
 # mouse_static.color(0xff, 0x00, 0x3f)
 # mouse_static.start(mouse)
 
-kbd_static = StaticEffectHW(keyboard)
-kbd_static.start()
+# kbd_static = StaticEffectHW(keyboard)
+# kbd_static.start()
 # kbd_static.apply()
 
 # mouse_effect = StrobeEffectGladius()
