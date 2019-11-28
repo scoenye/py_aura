@@ -26,13 +26,10 @@ class Report(ABC):
     # All observed traces send 64 bytes, so that is what we start out with
     REPORT_SIZE = 64
 
-    # Interesting offsets in the report structure
-    REPORT_ID = 0
+    REPORT_ID = 0   # Report identifier, specific to the device.
 
-    # Observed values in the data transfers
-    TYPE_GLADIUS = 0x51
-    TYPE_GLADIUS_CC = 0x60
-    TYPE_ITE = 0x5d
+    # Interesting offsets in the report structure
+    OFFSET_ID = 0
 
     """
     Base class for reports to be sent to the USB peripherals
@@ -61,6 +58,8 @@ class GladiusIIReport(Report):
     """
     Report class for the Gladius II mouse
     """
+    REPORT_ID = 0x51
+
     # Feature selector offsets. Defined here as they are not the same for other devices
     SELECT_LED = 2
     SELECT_EFFECT = 4
@@ -85,7 +84,7 @@ class GladiusIIReport(Report):
 
     def __init__(self):
         super().__init__()
-        self.report[Report.REPORT_ID] = Report.TYPE_GLADIUS
+        self.report[Report.OFFSET_ID] = GladiusIIReport.REPORT_ID
         self.report[1] = 0x28
         self.report[GladiusIIReport.SELECT_EFFECT] = GladiusIIReport.EFFECT_STATIC
         self.report[GladiusIIReport.SELECT_LEVEL] = GladiusIIReport.LEVEL_100
@@ -127,9 +126,11 @@ class GladiusIICCReport(Report):
     """
     Gladius report used by the Cycle effect
     """
+    REPORT_ID = 0x60
+
     def __init__(self):
         super().__init__()
-        self.report[Report.REPORT_ID] = Report.TYPE_GLADIUS_CC
+        self.report[Report.OFFSET_ID] = GladiusIICCReport.REPORT_ID
         self.report[1] = 0x01
         self.report[5:63] = b'\xcc' * (63-5)
 
@@ -147,6 +148,8 @@ class GladiusIICCReport(Report):
 
 
 class ITEKeyboardReport(Report):
+    REPORT_ID = 0x5d
+
     """
     Report class for the ASUS ITE keyboard. This variation address the keyboard as a whole.
     """
@@ -163,7 +166,7 @@ class ITEKeyboardReport(Report):
 
     def __init__(self):
         super().__init__()
-        self.report[Report.REPORT_ID] = Report.TYPE_ITE
+        self.report[Report.OFFSET_ID] = ITEKeyboardReport.REPORT_ID
         self.report[1] = 0xb3
 
     def color(self, color_rgb):
@@ -215,12 +218,14 @@ class ITEKeyboardSegmentReport(Report):
     """
     Alternative ITE keyboard report which addresses different segments individually.
     """
+    REPORT_ID = 0x5d  # This is an ITEKeyboardReport but the color method is off.
+
     # Starting as a distinct report. May merge if there are sufficient commonalities.
     SEGMENT_OFFSETS = [9, 12, 15, 18, 21, 24, 28]
 
     def __init__(self):
         super().__init__()
-        self.report[Report.REPORT_ID] = Report.TYPE_ITE
+        self.report[Report.OFFSET_ID] = ITEKeyboardSegmentReport.REPORT_ID
         self.report[1] = 0xbc
         self.report[2] = 0x01
         self.report[3] = 0x01  # 0x00 in "setup" report
@@ -244,5 +249,4 @@ class ITEFlushReport(ITEKeyboardReport):
     """
     def __init__(self):
         super().__init__()
-        self.report[Report.REPORT_ID] = Report.TYPE_ITE
         self.report[1] = 0xb5
