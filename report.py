@@ -63,6 +63,7 @@ class GladiusIIReport(Report):
     SELECT_LED = 2
     SELECT_EFFECT = 4
     SELECT_LEVEL = 5
+    SELECT_COLOR = 6
 
     # Built-in light effects
     EFFECT_STATIC = 0x00
@@ -93,9 +94,7 @@ class GladiusIIReport(Report):
         :param color_rgb: 3-tuple with red/green/blue color components. Integer, range 0 - 255.
         :return:
         """
-        self.report[6] = color_rgb[0]
-        self.report[7] = color_rgb[1]
-        self.report[8] = color_rgb[2]
+        self.report[GladiusIIReport.SELECT_COLOR:GladiusIIReport.SELECT_COLOR + 2] = color_rgb
 
     def target(self, led):
         """
@@ -151,6 +150,7 @@ class ITEKeyboardReport(Report):
     """
     SELECT_SEGMENT = 2
     SELECT_EFFECT = 3
+    SELECT_COLOR = 4
 
     # Built-in light effects
     EFFECT_STATIC = 0x00
@@ -170,9 +170,7 @@ class ITEKeyboardReport(Report):
         :param color_rgb: 3-tuple with red/green/blue color components. Integer, range 0 - 255.
         :return:
         """
-        self.report[4] = color_rgb[0]
-        self.report[5] = color_rgb[1]
-        self.report[6] = color_rgb[2]
+        self.report[ITEKeyboardReport.SELECT_COLOR:ITEKeyboardReport.SELECT_COLOR + 2] = color_rgb
 
     def effect(self, effect):
         """
