@@ -1,6 +1,6 @@
 """
-    Aura USB
-    A tool to change the LED colors on Asus USB HID peripherals
+    pyAura USB
+    A tool to change the LED colors on ASUS Aura USB HID peripherals
 
     Copyright (C) 2019  Sven Coenye
 
@@ -30,9 +30,9 @@ from udev import USBEnumerator
 from ui import panels, models
 
 
-class Nimbus(QtWidgets.QMainWindow):
+class Aura(QtWidgets.QMainWindow):
     """
-    GUI class for the Asus LED control
+    GUI class for the ASUS LED control
     """
     def __init__(self):
         super().__init__()
@@ -112,8 +112,8 @@ class Nimbus(QtWidgets.QMainWindow):
 
 if __name__ == '__main__':
     application = QtWidgets.QApplication(sys.argv)
-    nimbus = Nimbus()
+    aura = Aura()
 
-    nimbus.show()
+    aura.show()
 
     sys.exit(application.exec_())

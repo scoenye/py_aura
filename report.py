@@ -1,6 +1,6 @@
 """
-    Aura USB
-    A tool to change the LED colors on Asus USB HID peripherals
+    pyAura USB
+    A tool to change the LED colors on ASUS Aura USB HID peripherals
 
     Copyright (C) 2019  Sven Coenye
 
@@ -147,7 +147,7 @@ class GladiusIICCReport(Report):
 
 class ITEKeyboardReport(Report):
     """
-    Report class for the Asus ITE keyboard. This variation address the keyboard as a whole.
+    Report class for the ASUS ITE keyboard. This variation address the keyboard as a whole.
     """
     SELECT_SEGMENT = 2
     SELECT_EFFECT = 3

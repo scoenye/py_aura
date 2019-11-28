@@ -1,6 +1,6 @@
 """
     gladius
-    A demo program to change the Asus RoG Gladius II mouse LED colors.
+    A demo program to change the ASUS RoG Gladius II mouse LED colors.
 
     Copyright (C) 2019  Sven Coenye
 

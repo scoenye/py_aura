@@ -1,6 +1,6 @@
 """
-    Nimbus USB
-    A tool to change the LED colors on Asus USB HID peripherals
+    pyAura USB
+    A tool to change the LED colors on ASUS Aura USB HID peripherals
 
     Copyright (C) 2019  Sven Coenye
 

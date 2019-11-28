@@ -1,6 +1,6 @@
 """
-    Aura USB
-    A tool to change the LED colors on Asus USB HID peripherals
+    pyAura USB
+    A tool to change the LED colors on ASUS Aura USB HID peripherals
 
     Copyright (C) 2019  Sven Coenye
 
@@ -198,7 +198,7 @@ class LEDTarget:
 
 class GladiusIIMouse(Device):
     """
-    Asus RoG Gladius II mouse
+    ASUS RoG Gladius II mouse
     """
     PRODUCT_ID = 0x1845
     INTERFACE = 2
@@ -242,7 +242,7 @@ class GladiusIIMouse(Device):
 
 class ITEKeyboard(Device):
     """
-    Asus ITE keyboard (8910)
+    ASUS ITE keyboard (8910)
     """
     PRODUCT_ID = 0x1869
 
