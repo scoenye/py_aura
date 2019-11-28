@@ -19,8 +19,10 @@
 """
 import ctypes
 
+from abc import ABC
 
-class Report:
+
+class Report(ABC):
     # All observed traces send 64 bytes, so that is what we start out with
     REPORT_SIZE = 64
 
