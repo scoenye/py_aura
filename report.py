@@ -38,6 +38,8 @@ class Report(ABC):
     """
     def __init__(self):
         self.report = bytearray(Report.REPORT_SIZE)
+        self.report[Report.OFFSET_ID] = self.REPORT_ID
+        self.report[Report.OFFSET_TYPE] = self.REPORT_TYPE
 
     def size(self):
         """
@@ -87,8 +89,6 @@ class GladiusIIReport(Report):
 
     def __init__(self):
         super().__init__()
-        self.report[Report.OFFSET_ID] = GladiusIIReport.REPORT_ID
-        self.report[Report.OFFSET_TYPE] = self.REPORT_TYPE
         self.report[GladiusIIReport.SELECT_EFFECT] = GladiusIIReport.EFFECT_STATIC
         self.report[GladiusIIReport.SELECT_LEVEL] = GladiusIIReport.LEVEL_100
 
@@ -134,8 +134,6 @@ class GladiusIICCReport(Report):
 
     def __init__(self):
         super().__init__()
-        self.report[Report.OFFSET_ID] = GladiusIICCReport.REPORT_ID
-        self.report[Report.OFFSET_TYPE] = self.REPORT_TYPE
         self.report[5:63] = b'\xcc' * (63-5)
 
     def color(self, red, green, blue):
@@ -169,11 +167,6 @@ class ITEKeyboardReport(Report):
     EFFECT_RAINBOW = 0x03       # All segments, no color control.
     EFFECT_STROBE = 0x0a
 
-    def __init__(self):
-        super().__init__()
-        self.report[Report.OFFSET_ID] = ITEKeyboardReport.REPORT_ID
-        self.report[Report.OFFSET_TYPE] = self.REPORT_TYPE
-
     def color(self, color_rgb):
         """
         Set the color to be sent to the device.
@@ -205,17 +198,12 @@ class ITEKeyboardReport(Report):
 class ITEKeyboardApplyReport(ITEKeyboardReport):
     REPORT_TYPE = 0xb4
 
-    def __init__(self):
-        super().__init__()
-        self.report[Report.OFFSET_TYPE] = self.REPORT_TYPE
-
 
 class ITEKeyboardCycleReport(ITEKeyboardReport):
     REPORT_TYPE = 0xb6
 
     def __init__(self):
         super().__init__()
-        self.report[Report.OFFSET_TYPE] = self.REPORT_TYPE
         self.report[2] = 0x02
         self.report[3] = 0x02
 
@@ -235,8 +223,6 @@ class ITEKeyboardSegmentReport(Report):
 
     def __init__(self):
         super().__init__()
-        self.report[Report.OFFSET_ID] = ITEKeyboardSegmentReport.REPORT_ID
-        self.report[Report.OFFSET_TYPE] = self.REPORT_TYPE
         self.report[2] = 0x01
         self.report[3] = 0x01  # 0x00 in "setup" report
 
@@ -258,7 +244,3 @@ class ITEFlushReport(ITEKeyboardReport):
     Causes the keyboard to revert to its stored color
     """
     REPORT_TYPE = 0xb5
-
-    def __init__(self):
-        super().__init__()
-        self.report[Report.OFFSET_TYPE] = self.REPORT_TYPE
