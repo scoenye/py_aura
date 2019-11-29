@@ -44,8 +44,7 @@ class ITEEffectHW(Effect):
 
         for target in self.device.selected_targets():
             # Minimal required is 1 color report + 1 flush report
-            color_report.target(target.target_segment())
-            color_report.color(target.color())
+            color_report.color_target(target.target_segment(), target.color())
             self.device.write_interrupt(color_report)
             self.device.write_interrupt(flush_report)
 

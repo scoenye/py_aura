@@ -150,12 +150,12 @@ class GladiusIICCReport(Report):
 
 
 class ITEKeyboardReport(Report):
-    REPORT_ID = 0x5d
-    REPORT_TYPE = 0xb3      # Color set report
-
     """
     Report class for the ASUS ITE keyboard. This variation address the keyboard as a whole.
     """
+    REPORT_ID = 0x5d
+    REPORT_TYPE = 0xb3      # Color set report
+
     SELECT_SEGMENT = 2
     SELECT_EFFECT = 3
     SELECT_COLOR = 4
@@ -191,12 +191,32 @@ class ITEKeyboardReport(Report):
         """
         self.report[ITEKeyboardReport.SELECT_SEGMENT] = segment
 
+    def color_target(self, segment, color_rgb):
+        """
+        Set the color for an LED
+        :param segment: segment selected for color change
+        :param color_rgb: new color for the segment
+        :return:
+        """
+        self.report[ITEKeyboardReport.SELECT_SEGMENT] = segment
+        self.report[ITEKeyboardReport.SELECT_COLOR:ITEKeyboardReport.SELECT_COLOR + 2] = color_rgb
+
     def byte_7(self, value):           # TODO: figure out purpose and improve name
         self.report[7] = value
 
 
 class ITEKeyboardApplyReport(ITEKeyboardReport):
+    """
+    Commits the current keyboard configuration to NVRAM
+    """
     REPORT_TYPE = 0xb4
+
+
+class ITEFlushReport(ITEKeyboardReport):
+    """
+    Causes the keyboard to revert to its stored color
+    """
+    REPORT_TYPE = 0xb5
 
 
 class ITEKeyboardCycleReport(ITEKeyboardReport):
@@ -238,9 +258,3 @@ class ITEKeyboardSegmentReport(Report):
             self.report[ITEKeyboardSegmentReport.SEGMENT_OFFSETS[target.target_segment() - 1]:
                         ITEKeyboardSegmentReport.SEGMENT_OFFSETS[target.target_segment() - 1] + 2] = color
 
-
-class ITEFlushReport(ITEKeyboardReport):
-    """
-    Causes the keyboard to revert to its stored color
-    """
-    REPORT_TYPE = 0xb5
