@@ -116,6 +116,16 @@ class GladiusIIReport(Report):
         """
         self.report[GladiusIIReport.SELECT_EFFECT] = effect
 
+    def color_target(self, segment, color_rgb):
+        """
+        Set the color for an LED
+        :param segment: segment selected for color change
+        :param color_rgb: new color for the segment
+        :return:
+        """
+        self.report[GladiusIIReport.SELECT_LED] = segment
+        self.report[GladiusIIReport.SELECT_COLOR:GladiusIIReport.SELECT_COLOR + 2] = color_rgb
+
     def level(self, level):
         """
         Choose a hardware intensity level

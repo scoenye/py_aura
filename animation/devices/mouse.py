@@ -38,8 +38,7 @@ class GladiusEffectHW(Effect):
         report.effect(self.EFFECT)
 
         for target in self.device.selected_targets():
-            report.target(target.target_segment())
-            report.color(target.color())
+            report.color_target(target.target_segment(), target.color())
             self.device.write_interrupt(report)
 
 
@@ -94,8 +93,7 @@ class GladiusEffectSW(RunnableEffect):
     def _send_all_targets(self, report, colors):
         # Send the report to all active targets
         for target, color in zip(self.targets, colors):
-            report.target(target.target_segment())
-            report.color(color)
+            report.color_target(target.target_segment(), color)
             self.device.write_interrupt(report)
 
 
