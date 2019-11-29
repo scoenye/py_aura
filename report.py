@@ -32,6 +32,8 @@ class Report(ABC):
     # Interesting offsets in the report structure
     OFFSET_ID = 0
     OFFSET_TYPE = 1
+    OFFSET_TARGET = 2   # Report dependent
+    OFFSET_COLOR = 3    # Report dependent
 
     """
     Base class for reports to be sent to the USB peripherals
@@ -57,6 +59,16 @@ class Report(ABC):
 
         return handle.write(c_report)
 
+    def color_target(self, target, color_rgb):
+        """
+        Set the color for an LED/segment
+        :param target: segment selected for color change
+        :param color_rgb: new color for the segment
+        :return:
+        """
+        self.report[self.OFFSET_TARGET] = target
+        self.report[self.OFFSET_COLOR:self.OFFSET_COLOR + 2] = color_rgb
+
 
 class GladiusIIReport(Report):
     """
@@ -66,10 +78,9 @@ class GladiusIIReport(Report):
     REPORT_TYPE = 0x28
 
     # Feature selector offsets. Defined here as they are not the same for other devices
-    SELECT_LED = 2
     SELECT_EFFECT = 4
     SELECT_LEVEL = 5
-    SELECT_COLOR = 6
+    OFFSET_COLOR = 6
 
     # Built-in light effects
     EFFECT_STATIC = 0x00
@@ -98,7 +109,7 @@ class GladiusIIReport(Report):
         :param color_rgb: 3-tuple with red/green/blue color components. Integer, range 0 - 255.
         :return:
         """
-        self.report[GladiusIIReport.SELECT_COLOR:GladiusIIReport.SELECT_COLOR + 2] = color_rgb
+        self.report[GladiusIIReport.OFFSET_COLOR:GladiusIIReport.OFFSET_COLOR + 2] = color_rgb
 
     def target(self, led):
         """
@@ -106,7 +117,7 @@ class GladiusIIReport(Report):
         :param led: LED selected for color change
         :return:
         """
-        self.report[GladiusIIReport.SELECT_LED] = led
+        self.report[GladiusIIReport.OFFSET_TARGET] = led
 
     def effect(self, effect):
         """
@@ -115,16 +126,6 @@ class GladiusIIReport(Report):
         :return:
         """
         self.report[GladiusIIReport.SELECT_EFFECT] = effect
-
-    def color_target(self, segment, color_rgb):
-        """
-        Set the color for an LED
-        :param segment: segment selected for color change
-        :param color_rgb: new color for the segment
-        :return:
-        """
-        self.report[GladiusIIReport.SELECT_LED] = segment
-        self.report[GladiusIIReport.SELECT_COLOR:GladiusIIReport.SELECT_COLOR + 2] = color_rgb
 
     def level(self, level):
         """
@@ -166,9 +167,8 @@ class ITEKeyboardReport(Report):
     REPORT_ID = 0x5d
     REPORT_TYPE = 0xb3      # Color set report
 
-    SELECT_SEGMENT = 2
     SELECT_EFFECT = 3
-    SELECT_COLOR = 4
+    OFFSET_COLOR = 4
 
     # Built-in light effects
     EFFECT_STATIC = 0x00
@@ -183,7 +183,7 @@ class ITEKeyboardReport(Report):
         :param color_rgb: 3-tuple with red/green/blue color components. Integer, range 0 - 255.
         :return:
         """
-        self.report[ITEKeyboardReport.SELECT_COLOR:ITEKeyboardReport.SELECT_COLOR + 2] = color_rgb
+        self.report[ITEKeyboardReport.OFFSET_COLOR:ITEKeyboardReport.OFFSET_COLOR + 2] = color_rgb
 
     def effect(self, effect):
         """
@@ -199,17 +199,7 @@ class ITEKeyboardReport(Report):
         :param segment: segment selected for color change
         :return:
         """
-        self.report[ITEKeyboardReport.SELECT_SEGMENT] = segment
-
-    def color_target(self, segment, color_rgb):
-        """
-        Set the color for an LED
-        :param segment: segment selected for color change
-        :param color_rgb: new color for the segment
-        :return:
-        """
-        self.report[ITEKeyboardReport.SELECT_SEGMENT] = segment
-        self.report[ITEKeyboardReport.SELECT_COLOR:ITEKeyboardReport.SELECT_COLOR + 2] = color_rgb
+        self.report[ITEKeyboardReport.OFFSET_TARGET] = segment
 
     def byte_7(self, value):           # TODO: figure out purpose and improve name
         self.report[7] = value
