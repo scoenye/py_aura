@@ -231,11 +231,10 @@ class ITEKeyboardCycleReport(ITEKeyboardReport):
         self.report[4] = cycle
 
 
-class ITEKeyboardSegmentReport(Report):
+class ITEKeyboardSegmentReport(ITEKeyboardReport):
     """
     Alternative ITE keyboard report which addresses different segments individually.
     """
-    REPORT_ID = 0x5d  # This is an ITEKeyboardReport but the color method is off.
     REPORT_TYPE = 0xbc
 
     # Starting as a distinct report. May merge if there are sufficient commonalities.
