@@ -115,8 +115,7 @@ class ITEEffectSW(RunnableEffect):
 
         for target in self.targets:
             # Minimal required is 1 color report + 1 flush report
-            color_report.target(target.target_segment())
-            color_report.color(target.color())
+            color_report.color_target(target.target_segment(), target.color())
             self.device.write_interrupt(color_report)
             self.device.write_interrupt(flush_report)
 
@@ -135,11 +134,9 @@ class StrobeEffectSW(ITEEffectSW):
         report.effect(ITEKeyboardReport.EFFECT_STROBE)
 
         for target in self.device.selected_targets():
-            # Enables the hardware strobe effect, but the sequence does nothing without a flush. No flush was observed
+            # Stages the hardware strobe effect, but the sequence does nothing without a flush. No flush was observed
             # in the trace.
-            report.target(target.target_segment())
-            report.color(target.color())
-
+            report.color_target(target.target_segment(), target.color())
             self.device.write_interrupt(report)
 
     def _runnable(self):
@@ -182,20 +179,17 @@ class CycleEffectSW(ITEEffectSW):
         color_report = ITEKeyboardReport()
         flush_report = ITEFlushReport()
 
-        color_report.color((0xff, 0, 0))
         color_report.effect(ITEKeyboardReport.EFFECT_CYCLE)     # Stages the hardware cycle effect.
+        color_report.color_target(self.device.LED_ALL, (0xff, 0, 0))    # Cycle effect does not care about target
         color_report.byte_7(0xeb)
+
         self.device.write_interrupt(color_report)
 
-        color_report.color((0xff, 0xff, 0xff))
+        color_report.color_target(self.device.LED_ALL, (0xff, 0xff, 0xff))
         color_report.byte_7(0xe1)
+
         self.device.write_interrupt(color_report)               # Cycle effect still set
-
         self.device.write_interrupt(flush_report)               # Enables the hardware cycle effect
-
-        self.device.write_interrupt(color_report)
-
-        self.device.write_interrupt(flush_report)
 
     def _runnable(self):
         cycle_report = ITEKeyboardCycleReport()
@@ -220,8 +214,7 @@ class RainbowEffectSW(ITEEffectSW):
     """
     def _preamble(self):
         report = ITEKeyboardReport()
-        report.color((0, 0, 0))
-        # report,byte_04(0x0a)
+        report.color_target(self.device.LED_ALL, (0, 0, 0))
         self.device.write_interrupt(report)
 
     def _runnable(self):
