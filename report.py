@@ -34,6 +34,7 @@ class Report(ABC):
     OFFSET_TYPE = 1
     OFFSET_TARGET = 2   # Report dependent
     OFFSET_COLOR = 3    # Report dependent
+    OFFSET_EFFECT = 4   # Report dependent
 
     """
     Base class for reports to be sent to the USB peripherals
@@ -78,8 +79,7 @@ class GladiusIIReport(Report):
     REPORT_TYPE = 0x28
 
     # Feature selector offsets. Defined here as they are not the same for other devices
-    SELECT_EFFECT = 4
-    SELECT_LEVEL = 5
+    OFFSET_LEVEL = 5
     OFFSET_COLOR = 6
 
     # Built-in light effects
@@ -100,8 +100,8 @@ class GladiusIIReport(Report):
 
     def __init__(self):
         super().__init__()
-        self.report[GladiusIIReport.SELECT_EFFECT] = GladiusIIReport.EFFECT_STATIC
-        self.report[GladiusIIReport.SELECT_LEVEL] = GladiusIIReport.LEVEL_100
+        self.report[GladiusIIReport.OFFSET_EFFECT] = GladiusIIReport.EFFECT_STATIC
+        self.report[GladiusIIReport.OFFSET_LEVEL] = GladiusIIReport.LEVEL_100
 
     def effect(self, effect):
         """
@@ -109,7 +109,7 @@ class GladiusIIReport(Report):
         :param effect: the code of the hardware effect to set
         :return:
         """
-        self.report[GladiusIIReport.SELECT_EFFECT] = effect
+        self.report[GladiusIIReport.OFFSET_EFFECT] = effect
 
     def level(self, level):
         """
@@ -117,7 +117,7 @@ class GladiusIIReport(Report):
         :param level: the code of the hardware intensity level
         return:
         """
-        self.report[GladiusIIReport.SELECT_LEVEL] = level
+        self.report[GladiusIIReport.OFFSET_LEVEL] = level
 
 
 class GladiusIICCReport(Report):
@@ -150,7 +150,7 @@ class ITEKeyboardReport(Report):
     REPORT_ID = 0x5d
     REPORT_TYPE = 0xb3      # Color set report
 
-    SELECT_EFFECT = 3
+    OFFSET_EFFECT = 3
     OFFSET_COLOR = 4
 
     # Built-in light effects
@@ -166,7 +166,7 @@ class ITEKeyboardReport(Report):
         :param effect: the code of the hardware effect to set
         :return:
         """
-        self.report[ITEKeyboardReport.SELECT_EFFECT] = effect
+        self.report[ITEKeyboardReport.OFFSET_EFFECT] = effect
 
     def byte_7(self, value):           # TODO: figure out purpose and improve name
         self.report[7] = value
