@@ -51,7 +51,7 @@ class Report(ABC):
 
     def send(self, handle):
         """
-        Send the report to the device Aura endpoint
+        Send the report to the device
         :param handle: handle to open HIDAPI device
         :return:
         """
@@ -103,22 +103,6 @@ class GladiusIIReport(Report):
         self.report[GladiusIIReport.SELECT_EFFECT] = GladiusIIReport.EFFECT_STATIC
         self.report[GladiusIIReport.SELECT_LEVEL] = GladiusIIReport.LEVEL_100
 
-    def color(self, color_rgb):
-        """
-        Set the color to be sent to the device.
-        :param color_rgb: 3-tuple with red/green/blue color components. Integer, range 0 - 255.
-        :return:
-        """
-        self.report[GladiusIIReport.OFFSET_COLOR:GladiusIIReport.OFFSET_COLOR + 2] = color_rgb
-
-    def target(self, led):
-        """
-        Set the target LED for the color change
-        :param led: LED selected for color change
-        :return:
-        """
-        self.report[GladiusIIReport.OFFSET_TARGET] = led
-
     def effect(self, effect):
         """
         Choose a hardware color effect
@@ -147,17 +131,16 @@ class GladiusIICCReport(Report):
         super().__init__()
         self.report[5:63] = b'\xcc' * (63-5)
 
-    def color(self, red, green, blue):
+    def color_target(self, target, color_rgb):
         """
         Set the color to be sent to the device
-        :param red: Red value, 0 - 255
-        :param green: Green value, 0 - 255
-        :param blue: Blue value, 0 - 255
+        :param target: segment selected for color change
+        :param color_rgb: new color for the segment
         :return:
         """
-        self.report[4] = red        # These may not be color values
-#        self.report[5] = green
-#        self.report[6] = blue
+        self.report[4] = color_rgb[0]        # These may not be color values
+#        self.report[5] = color_rgb[1]
+#        self.report[6] = color_rgb[2]
 
 
 class ITEKeyboardReport(Report):
@@ -177,14 +160,6 @@ class ITEKeyboardReport(Report):
     EFFECT_RAINBOW = 0x03       # All segments, no color control.
     EFFECT_STROBE = 0x0a
 
-    def color(self, color_rgb):
-        """
-        Set the color to be sent to the device.
-        :param color_rgb: 3-tuple with red/green/blue color components. Integer, range 0 - 255.
-        :return:
-        """
-        self.report[ITEKeyboardReport.OFFSET_COLOR:ITEKeyboardReport.OFFSET_COLOR + 2] = color_rgb
-
     def effect(self, effect):
         """
         Choose a hardware color effect
@@ -192,14 +167,6 @@ class ITEKeyboardReport(Report):
         :return:
         """
         self.report[ITEKeyboardReport.SELECT_EFFECT] = effect
-
-    def target(self, segment):
-        """
-        Select a keyboard segment to address.
-        :param segment: segment selected for color change
-        :return:
-        """
-        self.report[ITEKeyboardReport.OFFSET_TARGET] = segment
 
     def byte_7(self, value):           # TODO: figure out purpose and improve name
         self.report[7] = value
