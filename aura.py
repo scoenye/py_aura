@@ -79,7 +79,7 @@ class Aura(QtWidgets.QMainWindow):
         devices = self.device_list.selected()
         effect = self.effect_list.instance(effect_keys)
 
-        meta_device = MetaDevice(devices, effect, (color.red(), color.green(), color.blue()))
+        meta_device = MetaDevice(devices, effect)
         meta_device.open()
         meta_device.try_out()
         meta_device.stop()
@@ -96,7 +96,7 @@ class Aura(QtWidgets.QMainWindow):
         devices = self.device_list.selected()
         effect = self.effect_list.instance(effect_keys)
 
-        meta_device = MetaDevice(devices, effect, (0, 0, 0))
+        meta_device = MetaDevice(devices, effect)
         meta_device.open()
         meta_device.apply()
         meta_device.close()

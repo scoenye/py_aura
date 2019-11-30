@@ -468,15 +468,13 @@ class MetaDevice:
     """
     Apply an effect to multiple devices
     """
-    def __init__(self, devices, effect, color):
+    def __init__(self, devices, effect):
         """
         :param devices: list of device instances to apply the effect to
         :param effect: descriptor of the effect to apply to the devices
-        :param color: initial color selection for the effect
         """
         self.devices = devices
         self.effect = effect
-        self.color = color
         self.active_effects = None
 
     def open(self):
