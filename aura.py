@@ -37,6 +37,8 @@ class Aura(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
 
+        self.meta_device = None
+
         self.device_list = DeviceList()
         self._populate_devices()
 
@@ -54,6 +56,7 @@ class Aura(QtWidgets.QMainWindow):
 
         self.center_panel.add_try_listener(self.try_clicked)
         self.center_panel.add_apply_listener(self.apply_clicked)
+        self.center_panel.add_stop_listener(self.stop_clicked)
 
         self.setGeometry(10, 10, 1000, 300)
         self.setWindowTitle('Nimbus')
@@ -78,11 +81,13 @@ class Aura(QtWidgets.QMainWindow):
         devices = self.device_list.selected()
         effect = self.effect_list.instance(effect_keys)
 
-        meta_device = MetaDevice(devices, effect)
-        meta_device.open()
-        meta_device.try_out()
-        meta_device.stop()
-        meta_device.close()
+        if self.meta_device:
+            self.meta_device.stop()
+            self.meta_device.close()
+
+        self.meta_device = MetaDevice(devices, effect)
+        self.meta_device.open()
+        self.meta_device.try_out()
 
     def apply_clicked(self, selected_effect):
         """
@@ -95,10 +100,23 @@ class Aura(QtWidgets.QMainWindow):
         devices = self.device_list.selected()
         effect = self.effect_list.instance(effect_keys)
 
-        meta_device = MetaDevice(devices, effect)
-        meta_device.open()
-        meta_device.apply()
-        meta_device.close()
+        if self.meta_device:
+            self.meta_device.stop()
+            self.meta_device.close()
+
+        self.meta_device = MetaDevice(devices, effect)
+        self.meta_device.open()
+        self.meta_device.apply()
+        self.meta_device.close()
+
+    def stop_clicked(self):
+        """
+        Handle a click on the stop button
+        :return:
+        """
+        if self.meta_device:
+            self.meta_device.stop()
+            self.meta_device.close()
 
     def color_changed(self, color):
         """
