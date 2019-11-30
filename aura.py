@@ -67,11 +67,10 @@ class Aura(QtWidgets.QMainWindow):
         enum.add_listener(self.device_list)
         enum.enumerate()
 
-    def try_clicked(self, selected_effect, color):
+    def try_clicked(self, selected_effect):
         """
         Handle a click on the try button
         :param selected_effect: List with the QModelIndex of the selected effect.
-        :param color: selected QColor for the effect
         :return:
         """
         effect_keys = [index.row() for index in selected_effect]

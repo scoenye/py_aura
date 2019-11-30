@@ -63,7 +63,7 @@ class TargetTableView(QtWidgets.QTableView):
 
 
 class CenterPanel(QtWidgets.QWidget):
-    try_clicked = Signal(list, object)
+    try_clicked = Signal(list)
     apply_clicked = Signal(list)
 
     """
@@ -100,8 +100,7 @@ class CenterPanel(QtWidgets.QWidget):
 
     def _try_clicked(self):
         # Relay Try button click with all selected items
-        self.try_clicked.emit(self.effect_widget.selectedIndexes(),
-                              self.color_widget.currentColor())
+        self.try_clicked.emit(self.effect_widget.selectedIndexes())
 
     def _apply_clicked(self):
         # Relay Apply button click with all selected items
