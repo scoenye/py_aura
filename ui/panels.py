@@ -63,12 +63,13 @@ class TargetTableView(QtWidgets.QTableView):
 
 
 class CenterPanel(QtWidgets.QWidget):
-    try_clicked = Signal(list)
-    apply_clicked = Signal(list)
-
     """
     Main window central widget
     """
+    try_clicked = Signal(list)
+    apply_clicked = Signal(list)
+    stop_clicked = Signal()
+
     def __init__(self):
         super().__init__()
         self.main_layout = QtWidgets.QGridLayout(self)
@@ -80,6 +81,7 @@ class CenterPanel(QtWidgets.QWidget):
         self.color_widget = QtWidgets.QColorDialog()
         self.try_button = QtWidgets.QPushButton('&Try')
         self.apply_button = QtWidgets.QPushButton('&Apply')
+        self.stop_button = QtWidgets.QPushButton('&Stop')
 
         # Hide OK/Cancel buttons on color picker
         self.color_widget.setOption(QtWidgets.QColorDialog.NoButtons, True)
@@ -89,6 +91,7 @@ class CenterPanel(QtWidgets.QWidget):
 
         self.try_button.clicked.connect(self._try_clicked)
         self.apply_button.clicked.connect(self._apply_clicked)
+        self.stop_button.clicked.connect(self._stop_clicked)
 
     def _assemble_panel(self):
         self.main_layout.addWidget(self.device_widget, 0, 0)
@@ -97,6 +100,7 @@ class CenterPanel(QtWidgets.QWidget):
         self.main_layout.addWidget(self.color_widget, 0, 2, 2, 2)
         self.main_layout.addWidget(self.try_button, 2, 0)
         self.main_layout.addWidget(self.apply_button, 2, 1)
+        self.main_layout.addWidget(self.stop_button, 2, 2)
 
     def _try_clicked(self):
         # Relay Try button click with all selected items
@@ -105,6 +109,10 @@ class CenterPanel(QtWidgets.QWidget):
     def _apply_clicked(self):
         # Relay Apply button click with all selected items
         self.apply_clicked.emit(self.effect_widget.selectedIndexes())
+
+    def _stop_clicked(self):
+        # Relay Stop button click
+        self.stop_clicked.emit()
 
     def set_device_list(self, device_list):
         """
@@ -148,3 +156,11 @@ class CenterPanel(QtWidgets.QWidget):
         """
         # As long as the receiver is inside the Qt portion, use slot/signal.
         self.apply_clicked.connect(listener)
+
+    def add_stop_listener(self, listener):
+        """
+        Add a listener interested in clicks on the Stop button
+        :param listener:
+        :return:
+        """
+        self.stop_clicked.connect(listener)
