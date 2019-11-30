@@ -192,3 +192,11 @@ class RainbowEffectSW(GladiusEffectSW):
             self._send_all_targets(report, step_colors)
 
             time.sleep(0.01)
+
+
+# Null effect
+
+class NullEffect(Effect):
+    """
+    Do nothing placeholder for effects not supported by the Gladius II mouse
+    """

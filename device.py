@@ -130,7 +130,8 @@ class Device(ABC):
     @abstractmethod
     def effect(self, descriptor):
         """
-        Obtain a device specific instance of an effect
+        Obtain a device specific instance of an effect. A "do nothing" effect is returned if the device does not
+        support the requested effect.
         :param descriptor: which effect to create
         :return:
         """
@@ -206,7 +207,6 @@ class GladiusIIMouse(Device):
     EFFECT_MAP = {
         Effects.STATIC: mouse.StaticEffectHW,
         Effects.BREATHE: mouse.BreatheEffectHW,
-        Effects.STROBE: mouse.StrobeEffectSW,
         Effects.CYCLE: mouse.CycleEffectHW,
         Effects.PULSE: mouse.PulseEffectHW,
         Effects.RAINBOW: mouse.RainbowEffectHW,
@@ -229,7 +229,7 @@ class GladiusIIMouse(Device):
         ]
 
     def effect(self, descriptor):
-        return GladiusIIMouse.EFFECT_MAP.get(descriptor)(self)
+        return GladiusIIMouse.EFFECT_MAP.get(descriptor, mouse.NullEffect)(self)
 
     def selected_targets(self):
         """
@@ -278,7 +278,7 @@ class ITEKeyboard(Device):
         ]
 
     def effect(self, descriptor):
-        return ITEKeyboard.EFFECT_MAP.get(descriptor)(self)
+        return ITEKeyboard.EFFECT_MAP.get(descriptor, keyboard.NullEffect)(self)
 
     def selected_targets(self):
         """
