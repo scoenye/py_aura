@@ -24,7 +24,7 @@ from abc import ABC, abstractmethod
 import animation.devices.mouse as mouse
 import animation.devices.keyboard as keyboard
 
-from animation.effects import Effects
+from animation.effects import Effects, EffectContainer, Implementation
 from udev import USBEventListener, NodeResolver
 
 
@@ -48,7 +48,7 @@ class Device(ABC):
         return self.model
 
     def _find_path(self):
-        # Start of with the list of matching hardware
+        # Start off with the list of matching hardware
         device_list = hid.enumerate(self.VENDOR_ID, self.PRODUCT_ID)
 
         for device in device_list:
@@ -128,11 +128,12 @@ class Device(ABC):
         return [target for target in self.targets if target.selected()]
 
     @abstractmethod
-    def effect(self, descriptor):
+    def effect(self, descriptor, flavor):
         """
         Obtain a device specific instance of an effect. A "do nothing" effect is returned if the device does not
-        support the requested effect.
+        support the requested effect flavor.
         :param descriptor: which effect to create
+        :param flavor: whether to create a hardware or software effect.
         :return:
         """
 
@@ -205,12 +206,12 @@ class GladiusIIMouse(Device):
     INTERFACE = 2
 
     EFFECT_MAP = {
-        Effects.STATIC: mouse.StaticEffectHW,
-        Effects.BREATHE: mouse.BreatheEffectHW,
-        Effects.CYCLE: mouse.CycleEffectHW,
-        Effects.PULSE: mouse.PulseEffectHW,
-        Effects.RAINBOW: mouse.RainbowEffectHW,
-        Effects.RUNNING: mouse.RunningEffectHW
+        Effects.STATIC: EffectContainer(mouse.StaticEffectHW, None),
+        Effects.BREATHE: EffectContainer(mouse.BreatheEffectHW, None),
+        Effects.CYCLE: EffectContainer(mouse.CycleEffectHW, None),
+        Effects.PULSE: EffectContainer(mouse.PulseEffectHW, None),
+        Effects.RAINBOW: EffectContainer(mouse.RainbowEffectHW, None),
+        Effects.RUNNING: EffectContainer(mouse.RunningEffectHW, None)
     }
 
     # Selectable LEDs
@@ -228,8 +229,16 @@ class GladiusIIMouse(Device):
             LEDTarget(self, GladiusIIMouse.LED_BASE, 'Base')
         ]
 
-    def effect(self, descriptor):
-        return GladiusIIMouse.EFFECT_MAP.get(descriptor, mouse.NullEffect)(self)
+    def effect(self, descriptor, flavor):
+        container = GladiusIIMouse.EFFECT_MAP.get(descriptor)
+
+        if container:       # Requested effect may not be supported at all
+            effect_class = container.effect(flavor)
+
+            if effect_class:
+                return effect_class(self)
+
+        return mouse.NullEffect(self)
 
     def selected_targets(self):
         """
@@ -277,7 +286,7 @@ class ITEKeyboard(Device):
             # LEDTarget(self, ITEKeyboard.LED_SEGMENT7, 'SW Segment 7')
         ]
 
-    def effect(self, descriptor):
+    def effect(self, descriptor, flavor):
         return ITEKeyboard.EFFECT_MAP.get(descriptor, keyboard.NullEffect)(self)
 
     def selected_targets(self):
@@ -498,7 +507,7 @@ class MetaDevice:
         Execute the effect but do not issue an "apply" command
         :return:
         """
-        self.active_effects = [device.effect(self.effect) for device in self.devices]
+        self.active_effects = [device.effect(self.effect, Implementation.HARDWARE) for device in self.devices]
 
         for effect in self.active_effects:
             effect.start()

@@ -32,6 +32,11 @@ class Effects(Enum):
     RUNNING = 6
 
 
+class Implementation(Enum):
+    HARDWARE = 0
+    SOFTWARE = 1
+
+
 EFFECTS = [
     {'effect': Effects.STATIC, 'name': 'Static'},
     {'effect': Effects.BREATHE, 'name': 'Breathe'},
@@ -124,3 +129,14 @@ class EffectList:
         """
         # Rather simplistic but we may not be done yet with the definition of the effect list itself.
         return EFFECTS[selection[0]]['effect']
+
+
+class EffectContainer:
+    def __init__(self, hw_effect, sw_effect):
+        self.effects = {
+            Implementation.HARDWARE: hw_effect,
+            Implementation.SOFTWARE: sw_effect
+        }
+
+    def effect(self, flavor):
+        return self.effects[flavor]
