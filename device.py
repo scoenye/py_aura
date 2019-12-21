@@ -208,9 +208,10 @@ class GladiusIIMouse(Device):
     EFFECT_MAP = {
         Effects.STATIC: EffectContainer(mouse.StaticEffectHW, None),
         Effects.BREATHE: EffectContainer(mouse.BreatheEffectHW, None),
+        Effects.STROBE: EffectContainer(None, mouse.StrobeEffectSW),
         Effects.CYCLE: EffectContainer(mouse.CycleEffectHW, None),
         Effects.PULSE: EffectContainer(mouse.PulseEffectHW, None),
-        Effects.RAINBOW: EffectContainer(mouse.RainbowEffectHW, None),
+        Effects.RAINBOW: EffectContainer(mouse.RainbowEffectHW, mouse.RainbowEffectSW),
         Effects.RUNNING: EffectContainer(mouse.RunningEffectHW, None)
     }
 
@@ -507,7 +508,7 @@ class MetaDevice:
         Execute the effect but do not issue an "apply" command
         :return:
         """
-        self.active_effects = [device.effect(self.effect, Implementation.HARDWARE) for device in self.devices]
+        self.active_effects = [device.effect(self.effect, Implementation.SOFTWARE) for device in self.devices]
 
         for effect in self.active_effects:
             effect.start()
