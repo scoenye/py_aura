@@ -257,11 +257,11 @@ class ITEKeyboard(Device):
     PRODUCT_ID = 0x1869
 
     EFFECT_MAP = {
-        Effects.STATIC: keyboard.StaticEffectHW,
-        Effects.BREATHE: keyboard.BreatheEffectHW,
-        Effects.STROBE: keyboard.StrobeEffectHW,
-        Effects.CYCLE: keyboard.CycleEffectHW,
-        Effects.RAINBOW: keyboard.RainbowEffectHW
+        Effects.STATIC: EffectContainer(keyboard.StaticEffectHW, None),
+        Effects.BREATHE: EffectContainer(keyboard.BreatheEffectHW, None),
+        Effects.STROBE: EffectContainer(keyboard.StrobeEffectHW, keyboard.StrobeEffectSW),
+        Effects.CYCLE: EffectContainer(keyboard.CycleEffectHW, keyboard.CycleEffectSW),
+        Effects.RAINBOW: EffectContainer(keyboard.RainbowEffectHW, keyboard.RainbowEffectSW)
     }
 
     # Selectable segments
@@ -288,7 +288,15 @@ class ITEKeyboard(Device):
         ]
 
     def effect(self, descriptor, implementation):
-        return ITEKeyboard.EFFECT_MAP.get(descriptor, keyboard.NullEffect)(self)
+        container = ITEKeyboard.EFFECT_MAP.get(descriptor)
+
+        if container:  # Requested effect may not be supported at all
+            effect_class = container.effect(implementation)
+
+            if effect_class:
+                return effect_class(self)
+
+        return keyboard.NullEffect(self)
 
     def selected_targets(self):
         """
