@@ -160,7 +160,7 @@ class StrobeEffectSW(ITEEffectSW):
             step_colors = [next(color) for color in colors]
 
             for target, color in zip(self.targets, step_colors):
-                report.color_target(target, color)
+                report.color_target(target.target_segment(), color)
 
             self.device.write_interrupt(report)
 
@@ -245,23 +245,19 @@ class RainbowEffectSW(ITEEffectSW):
 
         while self.keep_running:
             colors = next(colors1)
-            for target, color in zip([device_module.ITEKeyboard.LED_SEGMENT1,
-                                      device_module.ITEKeyboard.LED_SEGMENT6], colors):
-                report.color_target(target, color)
+            report.color_target(device_module.ITEKeyboard.LED_SEGMENT1, colors)
+            report.color_target(device_module.ITEKeyboard.LED_SEGMENT6, colors)
 
             colors = next(colors2)
-            for target, color in zip([device_module.ITEKeyboard.LED_SEGMENT2],colors):
-                report.color_target(target, color)
+            report.color_target(device_module.ITEKeyboard.LED_SEGMENT2, colors)
 
             colors = next(colors3)
-            for target, color in zip([device_module.ITEKeyboard.LED_SEGMENT3,
-                                      device_module.ITEKeyboard.LED_SEGMENT7], colors):
-                report.color_target(target, color)
+            report.color_target(device_module.ITEKeyboard.LED_SEGMENT3, colors)
+            report.color_target(device_module.ITEKeyboard.LED_SEGMENT7, colors)
 
             colors = next(colors4)
-            for target, color in zip([device_module.ITEKeyboard.LED_SEGMENT4,
-                                      device_module.ITEKeyboard.LED_SEGMENT5], colors):
-                report.color_target(target, color)
+            report.color_target(device_module.ITEKeyboard.LED_SEGMENT4, colors)
+            report.color_target(device_module.ITEKeyboard.LED_SEGMENT5, colors)
 
             self.device.write_interrupt(report)
 

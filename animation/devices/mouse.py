@@ -162,7 +162,7 @@ class CycleEffectSW(GladiusEffectSW):
 
             sw_byte_04 = next(sw_colors)                    # Value may not be color related at all
 
-            sw_report.color(sw_byte_04, 0, 0)
+            sw_report.color_target(None, (sw_byte_04, 0, 0))
 
             time.sleep(1)
 
