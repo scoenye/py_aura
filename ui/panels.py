@@ -79,6 +79,8 @@ class CenterPanel(QtWidgets.QWidget):
         self.target_widget = TargetTableView(self)
         self.effect_widget = QtWidgets.QListView()
         self.color_widget = QtWidgets.QColorDialog()
+        self.hw_check = QtWidgets.QCheckBox()
+        self.hw_label = QtWidgets.QLabel('Hardware effect?')
         self.try_button = QtWidgets.QPushButton('&Try')
         self.apply_button = QtWidgets.QPushButton('&Apply')
         self.stop_button = QtWidgets.QPushButton('&Stop')
@@ -94,13 +96,15 @@ class CenterPanel(QtWidgets.QWidget):
         self.stop_button.clicked.connect(self._stop_clicked)
 
     def _assemble_panel(self):
-        self.main_layout.addWidget(self.device_widget, 0, 0)
-        self.main_layout.addWidget(self.target_widget, 1, 0, 1, 2)
-        self.main_layout.addWidget(self.effect_widget, 0, 1)
-        self.main_layout.addWidget(self.color_widget, 0, 2, 2, 2)
-        self.main_layout.addWidget(self.try_button, 2, 0)
-        self.main_layout.addWidget(self.apply_button, 2, 1)
-        self.main_layout.addWidget(self.stop_button, 2, 2)
+        self.main_layout.addWidget(self.device_widget, 0, 0, 2, 2)
+        self.main_layout.addWidget(self.effect_widget, 0, 2, 1, 2)
+        self.main_layout.addWidget(self.color_widget, 0, 4, 3, 2)
+        self.main_layout.addWidget(self.hw_label, 1, 2)
+        self.main_layout.addWidget(self.hw_check, 1, 3)
+        self.main_layout.addWidget(self.target_widget, 2, 0, 1, 4)
+        self.main_layout.addWidget(self.try_button, 4, 0)
+        self.main_layout.addWidget(self.apply_button, 4, 1)
+        self.main_layout.addWidget(self.stop_button, 4, 2)
 
     def _try_clicked(self):
         # Relay Try button click with all selected items
