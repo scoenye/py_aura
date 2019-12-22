@@ -66,7 +66,7 @@ class CenterPanel(QtWidgets.QWidget):
     """
     Main window central widget
     """
-    try_clicked = Signal(list)
+    try_clicked = Signal(list, bool)
     apply_clicked = Signal(list)
     stop_clicked = Signal()
 
@@ -108,7 +108,7 @@ class CenterPanel(QtWidgets.QWidget):
 
     def _try_clicked(self):
         # Relay Try button click with all selected items
-        self.try_clicked.emit(self.effect_widget.selectedIndexes())
+        self.try_clicked.emit(self.effect_widget.selectedIndexes(), self.hw_check.checkState())
 
     def _apply_clicked(self):
         # Relay Apply button click with all selected items

@@ -70,10 +70,11 @@ class Aura(QtWidgets.QMainWindow):
         enum.add_listener(self.device_list)
         enum.enumerate()
 
-    def try_clicked(self, selected_effect):
+    def try_clicked(self, selected_effect, use_hw):
         """
         Handle a click on the try button
         :param selected_effect: List with the QModelIndex of the selected effect.
+        :param use_hw: use hardware effects if true, software effects if false
         :return:
         """
         effect_keys = [index.row() for index in selected_effect]
