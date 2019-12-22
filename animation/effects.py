@@ -138,5 +138,10 @@ class EffectContainer:
             Implementation.SOFTWARE: sw_effect
         }
 
-    def effect(self, flavor):
-        return self.effects[flavor]
+    def effect(self, implementation):
+        """
+        Return an effect implementation class.
+        :param implementation: which implementation to return
+        :return: desired implementing class.
+        """
+        return self.effects[implementation]

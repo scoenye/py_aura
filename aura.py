@@ -88,7 +88,7 @@ class Aura(QtWidgets.QMainWindow):
 
         self.meta_device = MetaDevice(devices, effect)
         self.meta_device.open()
-        self.meta_device.try_out()
+        self.meta_device.try_out(use_hw)
 
     def apply_clicked(self, selected_effect):
         """

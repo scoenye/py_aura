@@ -128,12 +128,12 @@ class Device(ABC):
         return [target for target in self.targets if target.selected()]
 
     @abstractmethod
-    def effect(self, descriptor, flavor):
+    def effect(self, descriptor, implementation):
         """
         Obtain a device specific instance of an effect. A "do nothing" effect is returned if the device does not
-        support the requested effect flavor.
+        support the requested effect implementation.
         :param descriptor: which effect to create
-        :param flavor: whether to create a hardware or software effect.
+        :param implementation: whether to create a hardware or software effect.
         :return:
         """
 
@@ -209,7 +209,7 @@ class GladiusIIMouse(Device):
         Effects.STATIC: EffectContainer(mouse.StaticEffectHW, None),
         Effects.BREATHE: EffectContainer(mouse.BreatheEffectHW, None),
         Effects.STROBE: EffectContainer(None, mouse.StrobeEffectSW),
-        Effects.CYCLE: EffectContainer(mouse.CycleEffectHW, None),
+        Effects.CYCLE: EffectContainer(mouse.CycleEffectHW, mouse.CycleEffectSW),
         Effects.PULSE: EffectContainer(mouse.PulseEffectHW, None),
         Effects.RAINBOW: EffectContainer(mouse.RainbowEffectHW, mouse.RainbowEffectSW),
         Effects.RUNNING: EffectContainer(mouse.RunningEffectHW, None)
@@ -230,11 +230,11 @@ class GladiusIIMouse(Device):
             LEDTarget(self, GladiusIIMouse.LED_BASE, 'Base')
         ]
 
-    def effect(self, descriptor, flavor):
+    def effect(self, descriptor, implementation):
         container = GladiusIIMouse.EFFECT_MAP.get(descriptor)
 
         if container:       # Requested effect may not be supported at all
-            effect_class = container.effect(flavor)
+            effect_class = container.effect(implementation)
 
             if effect_class:
                 return effect_class(self)
@@ -287,7 +287,7 @@ class ITEKeyboard(Device):
             # LEDTarget(self, ITEKeyboard.LED_SEGMENT7, 'SW Segment 7')
         ]
 
-    def effect(self, descriptor, flavor):
+    def effect(self, descriptor, implementation):
         return ITEKeyboard.EFFECT_MAP.get(descriptor, keyboard.NullEffect)(self)
 
     def selected_targets(self):
@@ -503,12 +503,18 @@ class MetaDevice:
         for device in self.devices:
             device.close()
 
-    def try_out(self):
+    def try_out(self, use_hw):
         """
         Execute the effect but do not issue an "apply" command
+        :param use_hw: use hardware implementation if true, software otherwise.
         :return:
         """
-        self.active_effects = [device.effect(self.effect, Implementation.SOFTWARE) for device in self.devices]
+        if use_hw:
+            implementation = Implementation.HARDWARE
+        else:
+            implementation = Implementation.SOFTWARE
+
+        self.active_effects = [device.effect(self.effect, implementation) for device in self.devices]
 
         for effect in self.active_effects:
             effect.start()
