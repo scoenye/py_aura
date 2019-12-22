@@ -269,11 +269,3 @@ class RainbowEffectSW(ITEEffectSW):
             time.sleep(0.01)
 
         self._wind_down()
-
-
-# Null effect
-
-class NullEffect(Effect):
-    """
-    Do nothing placeholder for effects not supported by the ITE keyboard
-    """

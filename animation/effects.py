@@ -111,6 +111,12 @@ class RunnableEffect(Effect):
         self.thread.join()
 
 
+class NullEffect(Effect):
+    """
+    Do nothing placeholder for effects not supported by a device
+    """
+
+
 class EffectList:
     """
     List of available effects

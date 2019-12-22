@@ -19,12 +19,12 @@
 """
 import hid
 
-from abc import ABC, abstractmethod
+from abc import ABC
 
 import animation.devices.mouse as mouse
 import animation.devices.keyboard as keyboard
 
-from animation.effects import Effects, EffectContainer, Implementation
+from animation.effects import Effects, NullEffect, EffectContainer, Implementation
 from udev import USBEventListener, NodeResolver
 
 
@@ -127,7 +127,6 @@ class Device(ABC):
         """
         return [target for target in self.targets if target.selected()]
 
-    @abstractmethod
     def effect(self, descriptor, implementation):
         """
         Obtain a device specific instance of an effect. A "do nothing" effect is returned if the device does not
@@ -136,6 +135,15 @@ class Device(ABC):
         :param implementation: whether to create a hardware or software effect.
         :return:
         """
+        container = self.EFFECT_MAP.get(descriptor)
+
+        if container:  # Requested effect may not be supported at all
+            effect_class = container.effect(implementation)
+
+            if effect_class:
+                return effect_class(self)
+
+        return NullEffect(self)
 
 
 class LEDTarget:
@@ -230,17 +238,6 @@ class GladiusIIMouse(Device):
             LEDTarget(self, GladiusIIMouse.LED_BASE, 'Base')
         ]
 
-    def effect(self, descriptor, implementation):
-        container = GladiusIIMouse.EFFECT_MAP.get(descriptor)
-
-        if container:       # Requested effect may not be supported at all
-            effect_class = container.effect(implementation)
-
-            if effect_class:
-                return effect_class(self)
-
-        return mouse.NullEffect(self)
-
     def selected_targets(self):
         """
         Return the list of selected targets for the device. Return the ALL target if no selection was made.
@@ -286,17 +283,6 @@ class ITEKeyboard(Device):
             # LEDTarget(self, ITEKeyboard.LED_SEGMENT6, 'SW Segment 6'),      # used by the parallel report
             # LEDTarget(self, ITEKeyboard.LED_SEGMENT7, 'SW Segment 7')
         ]
-
-    def effect(self, descriptor, implementation):
-        container = ITEKeyboard.EFFECT_MAP.get(descriptor)
-
-        if container:  # Requested effect may not be supported at all
-            effect_class = container.effect(implementation)
-
-            if effect_class:
-                return effect_class(self)
-
-        return keyboard.NullEffect(self)
 
     def selected_targets(self):
         """
