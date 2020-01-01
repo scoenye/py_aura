@@ -26,7 +26,7 @@ from PySide2 import QtWidgets
 from device import DeviceList, TargetLEDTable, MetaDevice
 
 from animation.effects import EffectList
-from udev import USBEnumerator
+from udev import USBEnumerator, USBMonitor
 from ui import panels, models
 
 
@@ -41,6 +41,9 @@ class Aura(QtWidgets.QMainWindow):
 
         self.device_list = DeviceList()
         self._populate_devices()
+        self.usb_monitor = USBMonitor()
+        self.usb_monitor.add_listener(self.device_list)
+        self.usb_monitor.start()
 
         self.effect_list = EffectList()
 
@@ -126,6 +129,15 @@ class Aura(QtWidgets.QMainWindow):
         :return:
         """
         self.effect_model.change_color(color)
+
+    def closeEvent(self, event):
+        """
+        Clean up on window closure
+        :param event:
+        :return:
+        """
+        self.usb_monitor.stop()
+        event.accept()
 
 
 if __name__ == '__main__':
