@@ -331,12 +331,27 @@ class DeviceList(USBEventListener):
         self.devices = {}
         self.model_list = []    # dict does not fit in Qt's model concept
         self.device_targets = TargetLEDTable(self)
+        self.update_listeners = []
 
     def __len__(self):
         return len(self.model_list)
 
     def __getitem__(self, item):
         return self.devices[self.model_list[item]]
+
+    def add_update_listener(self, listener):
+        """
+        Add a listener interested in receiving updates about external changes to the device list.
+        :return:
+        """
+        self.update_listeners.append(listener)
+
+    def remove_update_listener(self, listener):
+        """
+        Remove a listener from the external changes update list.
+        :return:
+        """
+        self.update_listeners.remove(listener)
 
     def added(self, vendor_id, product_id, bus_num, dev_num, model):
         """
@@ -363,8 +378,14 @@ class DeviceList(USBEventListener):
         :param dev_num: device number on the bus
         :return:
         """
-        if (bus_num, dev_num) in self.devices:
-            key = (bus_num, dev_num)
+        key = (bus_num, dev_num)
+
+        if key in self.devices:
+            model_index = self.model_list.index(key)
+
+            for listener in self.update_listeners:
+                listener.remove(model_index)
+
             del self.devices[key]
             self.model_list.remove(key)
 

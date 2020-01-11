@@ -28,9 +28,16 @@ class DeviceListModel(QtCore.QAbstractListModel):
     def __init__(self, devices=None):
         super().__init__()
         self.devices = devices
+        self.devices.add_update_listener(self)      # For USB plug/unplug event notification
 
     def rowCount(self, parent=QtCore.QModelIndex()):
         return len(self.devices)
+
+    def removeRows(self, row, count, parent=QtCore.QModelIndex()):
+        self.beginRemoveRows(parent, row, row + count)
+        # Nothing in between as the row has already been removed from the data source.
+        self.endRemoveRows()
+        return True
 
     def data(self, index, role: int = ...):
         if not index.isValid():
@@ -54,6 +61,14 @@ class DeviceListModel(QtCore.QAbstractListModel):
 
         for index in deselected.indexes():
             self.devices.deselect(index.row())
+
+    def remove(self, index):
+        """
+        Called to signal a device was removed from the system.
+        :param index: position of item removed from the model's data
+        :return:
+        """
+        self.removeRows(index, 1)
 
 
 class EffectListModel(QtCore.QAbstractListModel):
