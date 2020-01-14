@@ -17,11 +17,20 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
+from abc import ABC
+
 from PySide2 import QtCore, QtGui
 from PySide2.QtCore import Qt
 
+from ui.assist import ListUpdateListener
 
-class DeviceListModel(QtCore.QAbstractListModel):
+
+# PySide2 uses a custom metaclass which makes it impossible to use Python's ABC class without extra work.
+class ABCInterfaceBase(type(QtCore.QObject), type(ABC)):
+    pass
+
+
+class DeviceListModel(QtCore.QAbstractListModel, ListUpdateListener, metaclass=ABCInterfaceBase):
     """
     Model for the DeviceListView
     """

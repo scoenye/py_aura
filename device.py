@@ -342,6 +342,7 @@ class DeviceList(USBEventListener):
     def add_update_listener(self, listener):
         """
         Add a listener interested in receiving updates about external changes to the device list.
+        :param listener: ListUpdateListener instance to add to the collection interested in update notifications.
         :return:
         """
         self.update_listeners.append(listener)
@@ -349,6 +350,7 @@ class DeviceList(USBEventListener):
     def remove_update_listener(self, listener):
         """
         Remove a listener from the external changes update list.
+        :param listener: ListUpdateListener instance to remove from the collection of update listeners.
         :return:
         """
         self.update_listeners.remove(listener)
