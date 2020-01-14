@@ -48,6 +48,12 @@ class DeviceListModel(QtCore.QAbstractListModel, ListUpdateListener, metaclass=A
         self.endRemoveRows()
         return True
 
+    def insertRows(self, row, count, parent=QtCore.QModelIndex()):
+        self.beginInsertRows(parent, row, row + count)
+        # Nothing in between as the row has already been inserted in the data source.
+        self.endInsertRows()
+        return True
+
     def data(self, index, role: int = ...):
         if not index.isValid():
             return ''
@@ -74,10 +80,18 @@ class DeviceListModel(QtCore.QAbstractListModel, ListUpdateListener, metaclass=A
     def remove(self, index):
         """
         Called to signal a device was removed from the system.
-        :param index: position of item removed from the model's data
+        :param index: position of item removed from the model.
         :return:
         """
         self.removeRows(index, 1)
+
+    def insert(self, index):
+        """
+        Called to signal a device was added to the system.
+        :param index: position where the item is to be inserted in the model.
+        :return:
+        """
+        self.insertRows(index, 1)
 
 
 class EffectListModel(QtCore.QAbstractListModel):

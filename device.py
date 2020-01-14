@@ -371,7 +371,9 @@ class DeviceList(USBEventListener):
             if product_id in SUPPORTED_DEVICES[vendor_id]:
                 key = (bus_num, dev_num)
                 self.devices[key] = SUPPORTED_DEVICES[vendor_id][product_id](key, model)
-                self.model_list.append(key)     # Get around Qt model limitations
+                self.model_list.append(key)                 # Get around Qt model limitations
+                for listener in self.update_listeners:      # Signal models their data changed.
+                    listener.insert(len(self.model_list))
 
     def removed(self, bus_num, dev_num):
         """

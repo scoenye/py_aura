@@ -22,12 +22,22 @@ from abc import ABC, abstractmethod
 
 class ListUpdateListener(ABC):
     """
-    Implementers provide methods to add and remove items from a list
+    Qt's model update API is one way: Qt models can update their underlying data source but there are no methods to
+    make the model aware of an external change to the data source. This interface provides a way for models to
+    receive notice of changes to the contents of their underlying data.
     """
     @abstractmethod
     def remove(self, index):
         """
         Signal an item needs to be removed from the list
         :param index: position of the item that needs to be removed
+        :return:
+        """
+
+    @abstractmethod
+    def insert(self, index):
+        """
+        Signal an item has been added to the list
+        :param index: position where the item was inserted
         :return:
         """
