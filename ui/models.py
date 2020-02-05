@@ -116,13 +116,14 @@ class EffectListModel(QtCore.QAbstractListModel):
         return None
 
 
-class TargetTableModel(QtCore.QAbstractTableModel):
+class TargetTableModel(QtCore.QAbstractTableModel, ListUpdateListener, metaclass=ABCInterfaceBase):
     """
     Model for the LED target color assignment
     """
     def __init__(self, targets=None):
         super().__init__()
         self.targets = targets
+        self.targets.add_update_listener(self)
 
     def rowCount(self, parent=QtCore.QModelIndex()):
         return len(self.targets)
@@ -191,3 +192,23 @@ class TargetTableModel(QtCore.QAbstractTableModel):
 
         for index in deselected.indexes():
             self.targets.deselect(index.column(), index.row())
+
+    def remove(self, index):
+        """
+        Remove the targets for a device from the screen
+        :param index:
+        :return:
+        """
+        # Trying this here instead of overriding removeColumn to preserve it for Qt's intended reverse use
+        self.beginRemoveColumns(QtCore.QModelIndex(), index, index)
+        # Nothing in between as the device has already been removed from the data source.
+        self.endRemoveColumns()
+        return True
+
+    def insert(self, index):
+        """
+        Insert a set of targets for a new device
+        :param index:
+        :return:
+        """
+        pass

@@ -387,6 +387,7 @@ class DeviceList(USBEventListener):
         if key in self.devices:
             model_index = self.model_list.index(key)
 
+            self.device_targets.remove(model_index)     # TODO: make this a real ListUpdateListener
             for listener in self.update_listeners:
                 listener.remove(model_index)
 
@@ -434,10 +435,11 @@ class DeviceList(USBEventListener):
 class TargetLEDTable:
     """
     Aggregates all LEDs on all devices
-    :return:
     """
     def __init__(self, device_list):
         self.device_list = device_list
+        self.update_listeners = []
+        # TODO: make TLT an update_listener (class hierarchy needs sorting out as UL is now tied to Qt.)
 
     def __len__(self):
         """
@@ -453,6 +455,22 @@ class TargetLEDTable:
         :return:
         """
         return self.device_list[item].show_targets()
+
+    def add_update_listener(self, listener):
+        """
+        Add a listener interested in receiving updates about external changes to the device list.
+        :param listener: ListUpdateListener instance to add to the collection interested in update notifications.
+        :return:
+        """
+        self.update_listeners.append(listener)
+
+    def remove_update_listener(self, listener):
+        """
+        Remove a listener from the external changes update list.
+        :param listener: ListUpdateListener instance to remove from the collection of update listeners.
+        :return:
+        """
+        self.update_listeners.remove(listener)
 
     def select(self, device_index, target_index):
         """
@@ -491,6 +509,15 @@ class TargetLEDTable:
         :return:
         """
         return str(self.device_list[section])
+
+    def remove(self, index):
+        """
+        Remove the targets for the device at the specified index from the table
+        :param index:
+        :return:
+        """
+        for listener in self.update_listeners:
+            listener.remove(index)
 
 
 class MetaDevice:
