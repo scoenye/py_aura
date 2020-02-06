@@ -518,7 +518,7 @@ class MetaDevice:
         Make the current effect permanent if supported by the underlying hardware.
         :return:
         """
-        self.active_effects = [device.effect(self.effect) for device in self.devices]
+        self.active_effects = [device.effect(self.effect, Implementation.HARDWARE) for device in self.devices]
 
         for effect in self.active_effects:
             effect.apply()
