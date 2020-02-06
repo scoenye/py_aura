@@ -23,7 +23,8 @@ import time
 
 from PySide2 import QtWidgets
 
-from device.core import DeviceList, TargetLEDTable, MetaDevice
+from device.core import MetaDevice
+from device.containers import DeviceList, TargetLEDTable
 
 from animation.effects import EffectList
 from udev import USBEnumerator, USBMonitor
