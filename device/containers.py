@@ -41,7 +41,6 @@ class DeviceList(USBEventListener):
     def __init__(self):
         self.devices = {}
         self.model_list = []    # dict does not fit in Qt's model concept
-        self.device_targets = TargetLEDTable(self)
         self.update_listeners = []
 
     def __len__(self):
@@ -192,91 +191,3 @@ class DeviceList(USBEventListener):
         :return: TargetLEDTable instance
         """
         return self.device_targets
-
-
-class TargetLEDTable:
-    """
-    Aggregates all LEDs on all devices
-    """
-    def __init__(self, device_list):
-        self.device_list = device_list
-        self.update_listeners = []
-        # TODO: make TLT an update_listener (class hierarchy needs sorting out as UL is now tied to Qt.)
-
-    def __len__(self):
-        """
-        Return the length of the longest list of targets
-        :return:
-        """
-        return max([len(device.show_targets()) for device in self.device_list])
-
-    def __getitem__(self, item):
-        """
-        Produces the regular data items for the Qt view
-        :param item: index of the
-        :return:
-        """
-        return self.device_list[item].show_targets()
-
-    def add_update_listener(self, listener):
-        """
-        Add a listener interested in receiving updates about external changes to the device list.
-        :param listener: ListUpdateListener instance to add to the collection interested in update notifications.
-        :return:
-        """
-        self.update_listeners.append(listener)
-
-    def remove_update_listener(self, listener):
-        """
-        Remove a listener from the external changes update list.
-        :param listener: ListUpdateListener instance to remove from the collection of update listeners.
-        :return:
-        """
-        self.update_listeners.remove(listener)
-
-    def select(self, device_index, target_index):
-        """
-        Tell a target it has been selected on-screen
-        :param device_index: device index of the selected target
-        :param target_index: selected target index
-        :return:
-        """
-        try:
-            self[device_index][target_index].select()
-        except IndexError:          # Non-existing target selected
-            pass
-
-    def deselect(self, device, target):
-        """
-        Tell a target it has been removed from selection
-        :param device: device index of the deselected target
-        :param target: deselected target index
-        :return:
-        """
-        try:
-            self[device][target].deselect()
-        except IndexError:          # Non-existing target selected
-            pass
-
-    def device_count(self):
-        """
-        Return how many devices this container holds
-        :return:
-        """
-        return len(self.device_list)
-
-    def device_name(self, section):
-        """
-        Return the device name for a set of targets
-        :return:
-        """
-        return str(self.device_list[section])
-
-    def remove(self, index):
-        """
-        Remove the targets for the device at the specified index from the table
-        :param index:
-        :return:
-        """
-        for listener in self.update_listeners:
-            listener.remove(index)
