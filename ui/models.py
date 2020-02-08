@@ -136,7 +136,7 @@ class TargetTableModel(QtCore.QAbstractTableModel, ListUpdateListener, metaclass
 
     def columnCount(self, parent=QtCore.QModelIndex()):
         # Returns the total number of devices attached to the system.
-        return self.targets.device_count()
+        return len(self.devices)
 
     def headerData(self, section, orientation, role: int = ...):
         if role != Qt.DisplayRole:
