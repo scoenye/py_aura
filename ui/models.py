@@ -143,7 +143,7 @@ class TargetTableModel(QtCore.QAbstractTableModel, ListUpdateListener, metaclass
             return None
 
         if orientation == Qt.Orientation.Horizontal:
-            return self.targets.device_name(section)
+            return str(self.devices[section])
 
         return None
 
