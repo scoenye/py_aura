@@ -19,7 +19,7 @@
 """
 import time
 
-import device as device_module
+import device.keyboard as keyboards
 
 from animation.devices.common import RainbowBlockLine, RainbowCurvedLine, CycleCurve, StrobeCurve
 from animation.effects import Effect, RunnableEffect
@@ -224,14 +224,14 @@ class RainbowEffectSW(ITEEffectSW):
 
         self._preamble()
 
-        clear_targets = [device_module.ITEKeyboard.LED_SEGMENT5, device_module.ITEKeyboard.LED_SEGMENT6,
-                         device_module.ITEKeyboard.LED_SEGMENT7]
+        clear_targets = [keyboards.ITEKeyboard.LED_SEGMENT5, keyboards.ITEKeyboard.LED_SEGMENT6,
+                         keyboards.ITEKeyboard.LED_SEGMENT7]
 
         self.targets = self.targets or \
-                       [device_module.ITEKeyboard.LED_SEGMENT1, device_module.ITEKeyboard.LED_SEGMENT2,
-                        device_module.ITEKeyboard.LED_SEGMENT3, device_module.ITEKeyboard.LED_SEGMENT4,
-                        device_module.ITEKeyboard.LED_SEGMENT5, device_module.ITEKeyboard.LED_SEGMENT6,
-                        device_module.ITEKeyboard.LED_SEGMENT7]
+                       [keyboards.ITEKeyboard.LED_SEGMENT1, keyboards.ITEKeyboard.LED_SEGMENT2,
+                        keyboards.ITEKeyboard.LED_SEGMENT3, keyboards.ITEKeyboard.LED_SEGMENT4,
+                        keyboards.ITEKeyboard.LED_SEGMENT5, keyboards.ITEKeyboard.LED_SEGMENT6,
+                        keyboards.ITEKeyboard.LED_SEGMENT7]
 
         segment1 = CompositeGeneratorRGB(RainbowBlockLine(112), RainbowCurvedLine(112), RainbowCurvedLine(432))
         segment2 = CompositeGeneratorRGB(RainbowBlockLine(75), RainbowCurvedLine(75), RainbowCurvedLine(395))
@@ -245,19 +245,19 @@ class RainbowEffectSW(ITEEffectSW):
 
         while self.keep_running:
             colors = next(colors1)
-            report.color_target(device_module.ITEKeyboard.LED_SEGMENT1, colors)
-            report.color_target(device_module.ITEKeyboard.LED_SEGMENT6, colors)
+            report.color_target(keyboards.ITEKeyboard.LED_SEGMENT1, colors)
+            report.color_target(keyboards.ITEKeyboard.LED_SEGMENT6, colors)
 
             colors = next(colors2)
-            report.color_target(device_module.ITEKeyboard.LED_SEGMENT2, colors)
+            report.color_target(keyboards.ITEKeyboard.LED_SEGMENT2, colors)
 
             colors = next(colors3)
-            report.color_target(device_module.ITEKeyboard.LED_SEGMENT3, colors)
-            report.color_target(device_module.ITEKeyboard.LED_SEGMENT7, colors)
+            report.color_target(keyboards.ITEKeyboard.LED_SEGMENT3, colors)
+            report.color_target(keyboards.ITEKeyboard.LED_SEGMENT7, colors)
 
             colors = next(colors4)
-            report.color_target(device_module.ITEKeyboard.LED_SEGMENT4, colors)
-            report.color_target(device_module.ITEKeyboard.LED_SEGMENT5, colors)
+            report.color_target(keyboards.ITEKeyboard.LED_SEGMENT4, colors)
+            report.color_target(keyboards.ITEKeyboard.LED_SEGMENT5, colors)
 
             self.device.write_interrupt(report)
 
