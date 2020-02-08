@@ -110,6 +110,7 @@ class Device(ABC):
         """
         return self.is_selected
 
+    # Qt model delegation for target access
     def target_count(self):
         """
         :return: the number of addressable target LEDs on this device
@@ -129,6 +130,22 @@ class Device(ABC):
         :return: target color
         """
         return self.targets[index].color()
+
+    def target_select(self, index):
+        """
+        Mark the requested target as selected
+        :param index: Which target to mark selected
+        :return:
+        """
+        self.targets[index].select()
+
+    def target_deselect(self, index):
+        """
+        Mark the requested target as no longer selected
+        :param index: Which target to deselect
+        :return:
+        """
+        self.targets[index].deselect()
 
     def change_color(self, index, color):
         """

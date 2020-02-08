@@ -134,6 +134,7 @@ class DeviceList(USBEventListener):
 
         return device_list
 
+    # Qt model delegation for target access
     def target_count(self):
         """
         :return: the length of the longest list of targets
@@ -143,7 +144,7 @@ class DeviceList(USBEventListener):
     def target_name(self, device_index, target_index):
         """
         :param device_index: Index of the device in the model list
-        :param target_index: Index of he target on the requested device
+        :param target_index: Index of the target on the requested device
         :return: the name of the requested target
         """
         return self[device_index].target_name(target_index)
@@ -151,16 +152,34 @@ class DeviceList(USBEventListener):
     def target_color(self, device_index, target_index):
         """
         :param device_index: Index of the device in the model list
-        :param target_index: Index of he target on the requested device
+        :param target_index: Index the target on the requested device
         :return: the current color of the requested target
         """
         return self[device_index].target_color(target_index)
+
+    def target_select(self, device_index, target_index):
+        """
+        Mark the requested target as selected
+        :param device_index: Index of the device in the model list
+        :param target_index: Index of the target on the requested device
+        :return:
+        """
+        self[device_index].target_select(target_index)
+
+    def target_deselect(self, device_index, target_index):
+        """
+        Mark the requested target as no longer selected
+        :param device_index: Index of the device in the model list
+        :param target_index: Index of the target on the requested device
+        :return:
+        """
+        self[device_index].target_deselect(target_index)
 
     def change_color(self, device_index, target_index, color):
         """
         Change the color of a target on a device
         :param device_index: Index of the device in the model list
-        :param target_index: Index of he target on the requested device
+        :param target_index: Index of the target on the requested device
         :param color: the new color value for the specified target
         :return: success/failure of the color change (always succeeds)
         """

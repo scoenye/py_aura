@@ -197,10 +197,10 @@ class TargetTableModel(QtCore.QAbstractTableModel, ListUpdateListener, metaclass
         :return:
         """
         for index in selected.indexes():
-            self.targets.select(index.column(), index.row())
+            self.devices.target_select(index.column(), index.row())
 
         for index in deselected.indexes():
-            self.targets.deselect(index.column(), index.row())
+            self.devices.target_deselect(index.column(), index.row())
 
     def remove(self, index):
         """
