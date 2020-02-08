@@ -118,10 +118,17 @@ class Device(ABC):
 
     def target_name(self, index):
         """
-        :param index: which target to return the name for
+        :param index: which target to return the name of
         :return: target name
         """
         return self.targets[index].name()
+
+    def target_color(self, index):
+        """
+        :param index: which target to return the color of
+        :return: target color
+        """
+        return self.targets[index].color()
 
     def show_targets(self):
         """

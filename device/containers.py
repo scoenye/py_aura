@@ -148,6 +148,14 @@ class DeviceList(USBEventListener):
         """
         return self[device_index].target_name(target_index)
 
+    def target_color(self, device_index, target_index):
+        """
+        :param device_index: Index of the device in the model list
+        :param target_index: Index of he target on the requested device
+        :return: the current color of the requested target
+        """
+        return self[device_index].target_color(target_index)
+
     def target_table(self):
         """
         Return the TargetLEDTable instance responsible for communication about the targets available on the devices

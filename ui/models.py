@@ -153,8 +153,9 @@ class TargetTableModel(QtCore.QAbstractTableModel, ListUpdateListener, metaclass
 
         if role == Qt.DecorationRole:
             try:
-                # Ugly, but we aim to keep Qt dependencies out of the domain objects
-                color_rgb = self.targets[index.column()][index.row()].color()
+                # devices[column] is also possible, but the target_name method is more in line with the other pieces
+                # of the API and it does not expose the Device here.
+                color_rgb = self.devices.target_color(index.column(), index.row())
                 color = QtGui.QColor(color_rgb[0], color_rgb[1], color_rgb[2])
             except IndexError:
                 color = None
@@ -163,8 +164,7 @@ class TargetTableModel(QtCore.QAbstractTableModel, ListUpdateListener, metaclass
 
         if role == Qt.DisplayRole:
             try:
-                # devices[column] is also possible, but the target_name method is more in line with the other pieces
-                # of the API and it does not expose the Device here.
+                # Color retrieval comment applies here as well.
                 element = self.devices.target_name(index.column(), index.row())
             except IndexError:
                 element = None
