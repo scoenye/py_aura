@@ -177,8 +177,8 @@ class TargetTableModel(QtCore.QAbstractTableModel, ListUpdateListener, metaclass
     def setData(self, index, value, role=Qt.EditRole):
         if role == Qt.EditRole:
             try:
-                element = self.targets[index.column()][index.row()]
-                result = element.change_color((value.red(), value.green(), value.blue()))
+                result = self.devices.change_color(index.column(), index.row(),
+                                                   (value.red(), value.green(), value.blue()))
             except IndexError:
                 result = False
         else:

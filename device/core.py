@@ -130,6 +130,15 @@ class Device(ABC):
         """
         return self.targets[index].color()
 
+    def change_color(self, index, color):
+        """
+        Change the color of a target
+        :param index: which target to change the color of
+        :param color: the new color for the target
+        :return: outcome of the color change operation. Qt model necessity, always True.
+        """
+        return self.targets[index].change_color(color)
+
     def show_targets(self):
         """
         Return the collection of the device's targets for display
