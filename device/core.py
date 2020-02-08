@@ -178,14 +178,14 @@ class LEDTarget:
 
     def select(self):
         """
-        Mark the device as selected
+        Mark the target as selected
         :return:
         """
         self.is_selected = True
 
     def deselect(self):
         """
-        Forget the device was selected
+        Forget the target was selected
         :return:
         """
         self.is_selected = False
