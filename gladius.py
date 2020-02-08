@@ -20,12 +20,13 @@
 import time
 import udev
 
-from device import GladiusIIMouse, ITEKeyboard
+from device.mouse import GladiusIIMouse
+from device.keyboard import ITEKeyboard
 from animation.devices.keyboard import StaticEffectHW, RainbowEffectSW, CycleEffectSW, StrobeEffectSW
 from animation.devices.mouse import StaticEffectHW, RainbowEffectSW, CycleEffectSW, StrobeEffectSW
 
 from udev import USBEnumerator, USBMonitor
-from device import DeviceList
+from device.containers import DeviceList
 
 mouse_port = udev.NodeResolver.bus_location('/dev/hidraw2')
 kbd_port = udev.NodeResolver.bus_location('/dev/hidraw4')
