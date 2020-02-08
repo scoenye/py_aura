@@ -218,4 +218,8 @@ class TargetTableModel(QtCore.QAbstractTableModel, ListUpdateListener, metaclass
         :param index:
         :return:
         """
-        pass
+        # Doing this here instead of overriding insertColumn to preserve it for Qt's intended reverse use
+        self.beginInsertColumns(QtCore.QModelIndex(), index, index)
+        # Nothing in between as the device has already been added to the data source.
+        self.endInsertColumns()
+        return True
