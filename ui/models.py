@@ -126,6 +126,7 @@ class TargetTableModel(QtCore.QAbstractTableModel, ListUpdateListener, metaclass
         """
         super().__init__()
         self.devices = devices
+        self.devices.add_update_listener(self)  # For USB plug/unplug event notification
 
     def rowCount(self, parent=QtCore.QModelIndex()):
         # Returns the length of the longest set of targets across all devices.
@@ -205,7 +206,7 @@ class TargetTableModel(QtCore.QAbstractTableModel, ListUpdateListener, metaclass
         :param index:
         :return:
         """
-        # Trying this here instead of overriding removeColumn to preserve it for Qt's intended reverse use
+        # Doing this here instead of overriding removeColumn to preserve it for Qt's intended reverse use
         self.beginRemoveColumns(QtCore.QModelIndex(), index, index)
         # Nothing in between as the device has already been removed from the data source.
         self.endRemoveColumns()
