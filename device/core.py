@@ -116,6 +116,13 @@ class Device(ABC):
         """
         return len(self.targets)
 
+    def target_name(self, index):
+        """
+        :param index: which target to return the name for
+        :return: target name
+        """
+        return self.targets[index].name()
+
     def show_targets(self):
         """
         Return the collection of the device's targets for display

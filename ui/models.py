@@ -163,7 +163,9 @@ class TargetTableModel(QtCore.QAbstractTableModel, ListUpdateListener, metaclass
 
         if role == Qt.DisplayRole:
             try:
-                element = self.targets[index.column()][index.row()].name()
+                # devices[column] is also possible, but the target_name method is more in line with the other pieces
+                # of the API and it does not expose the Device here.
+                element = self.devices.target_name(index.column(), index.row())
             except IndexError:
                 element = None
 
