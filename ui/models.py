@@ -120,15 +120,12 @@ class TargetTableModel(QtCore.QAbstractTableModel, ListUpdateListener, metaclass
     """
     Model for the LED target color assignment
     """
-    def __init__(self, devices, targets=None):
+    def __init__(self, devices):
         """
         :param devices: DeviceList holding the devices for which this model will show the target LEDs.
-        :param targets: TargetLEDTable
         """
         super().__init__()
         self.devices = devices
-        self.targets = targets
-        self.targets.add_update_listener(self)
 
     def rowCount(self, parent=QtCore.QModelIndex()):
         # Returns the length of the longest set of targets across all devices.

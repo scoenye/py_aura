@@ -24,7 +24,7 @@ import time
 from PySide2 import QtWidgets
 
 from device.core import MetaDevice
-from device.containers import DeviceList, TargetLEDTable
+from device.containers import DeviceList
 
 from animation.effects import EffectList
 from udev import USBEnumerator, USBMonitor
@@ -49,7 +49,7 @@ class Aura(QtWidgets.QMainWindow):
         self.effect_list = EffectList()
 
         self.device_model = models.DeviceListModel(self.device_list)
-        self.target_model = models.TargetTableModel(self.device_list, self.device_list.target_table())
+        self.target_model = models.TargetTableModel(self.device_list)
         self.effect_model = models.EffectListModel(self.effect_list)
 
         self.center_panel = panels.CenterPanel()
