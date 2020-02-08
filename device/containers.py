@@ -134,6 +134,12 @@ class DeviceList(USBEventListener):
 
         return device_list
 
+    def target_count(self):
+        """
+        :return: the length of the longest list of targets
+        """
+        return max([device.target_count() for device in self.devices.values()])
+
     def target_table(self):
         """
         Return the TargetLEDTable instance responsible for communication about the targets available on the devices

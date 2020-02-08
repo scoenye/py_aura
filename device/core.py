@@ -110,6 +110,12 @@ class Device(ABC):
         """
         return self.is_selected
 
+    def target_count(self):
+        """
+        :return: the number of addressable target LEDs on this device
+        """
+        return len(self.targets)
+
     def show_targets(self):
         """
         Return the collection of the device's targets for display

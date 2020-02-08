@@ -132,7 +132,7 @@ class TargetTableModel(QtCore.QAbstractTableModel, ListUpdateListener, metaclass
 
     def rowCount(self, parent=QtCore.QModelIndex()):
         # Returns the length of the longest set of targets across all devices.
-        return len(self.targets)
+        return self.devices.target_count()
 
     def columnCount(self, parent=QtCore.QModelIndex()):
         # Returns the total number of devices attached to the system.
