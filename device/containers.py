@@ -97,7 +97,6 @@ class DeviceList(USBEventListener):
         if key in self.devices:
             model_index = self.model_list.index(key)
 
-            self.device_targets.remove(model_index)     # TODO: make this a real ListUpdateListener
             for listener in self.update_listeners:
                 listener.remove(model_index)
 
@@ -183,11 +182,3 @@ class DeviceList(USBEventListener):
         :return: success/failure of the color change (always succeeds)
         """
         return self[device_index].change_color(target_index, color)
-
-    def target_table(self):
-        """
-        Return the TargetLEDTable instance responsible for communication about the targets available on the devices
-        in this DevjceList.
-        :return: TargetLEDTable instance
-        """
-        return self.device_targets
