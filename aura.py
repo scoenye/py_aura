@@ -138,6 +138,7 @@ class Aura(QtWidgets.QMainWindow):
         :return:
         """
         self.usb_monitor.stop()
+        self.stop_clicked()
         event.accept()
 
 
