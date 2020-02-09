@@ -61,6 +61,7 @@ The Apply button instructs the selected devices to make the effect permanent. No
 Halts the currently running software effect.
 
 ## Supported peripherals
+py_aura was developed on a RoG Strix Scar/GL703GE laptop. It currently supports the Gladius II mouse and the GL703GE keyboard.
 
 ### Gladius II mouse
 [VID:PID 0x0b05:0x1845]
